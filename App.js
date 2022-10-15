@@ -5,6 +5,8 @@ const path = require('path')
 const mongoose=require('./config/connection')
 const app = express();
 
+
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
@@ -62,6 +64,10 @@ app.listen(3000,()=>{
 // app.get('/admin-login',(req,res)=>{
 //     res.render('admin/admin-login')
 // })
+
+app.get('/admin-addproducts',(req,res)=>{
+  res.render('admin/admin-addproduct')
+})
 
 
 // const PORT = process.env.PORT || 3000;

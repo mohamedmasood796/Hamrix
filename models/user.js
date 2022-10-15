@@ -11,7 +11,7 @@ let userSchema = new Schema({
       type: String,
       required:true
     },
-    phoneNo: {
+    phone: {
       type: String,
       required:true
     },
@@ -22,4 +22,4 @@ let userSchema = new Schema({
 
   });
 
-  mongoose.exports=mongoose.model('user',userSchema)
+  module.exports=mongoose.model('User',userSchema)

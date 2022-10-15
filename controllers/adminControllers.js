@@ -30,7 +30,23 @@ module.exports={
             }
         })
         
+    },
+
+    //add product by admin
+    getAdminAllProduct:(req,res)=>{
+        res.render('admin/admin-allproduct')
+    },
+    //add product by admin
+    getAdminAddProduct:(req,res)=>{
+        res.render('admin/admin-addproduct')
+    },
+
+    //add product post methord
+    getAdminAddProductPost:(req,res)=>{
+        console.log(req.body)
+        res.redirect('/admin/add-product')
     }
+
 }
 
 

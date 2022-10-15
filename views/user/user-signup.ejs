@@ -134,7 +134,7 @@
               <!-- /Logo -->
               <h4 class="mb-2">create New Account </h4>
 
-              <form id="formAuthentication" class="mb-3" action="/user-signup" method="POST">
+              <form id="formAuthentication" class="mb-3" action="/user-signup" method="post">
                 <div class="mb-3">
                   <label for="username" class="form-label">Username</label>
                   <input
@@ -152,7 +152,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="email" name="email" placeholder="Enter your phone number" />
+                    <input type="text" class="form-control" id="email" name="phone" placeholder="Enter your phone number" />
                   </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
@@ -169,8 +169,23 @@
                   </div>
                 </div>
 
+                <div class="mb-3 form-password-toggle">
+                  <label class="form-label" for="password">conform Password</label>
+                  <div class="input-group input-group-merge">
+                    <input
+                      type="password"
+                      id="password"
+                      class="form-control"
+                      name="password"
+                      placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                      aria-describedby="password"
+                    />
+                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                  </div>
+                </div>
+
                 
-                <button class="btn btn-primary d-grid w-100">Sign up</button>
+                <button type="submit" class="btn btn-primary d-grid w-100">Sign up</button>
               </form>
 
               <p class="text-center">
@@ -218,3 +233,44 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
+
+
+<script>
+  function validate_password() {
+
+      var pass = document.getElementById('password').value;
+      var confirm_pass = document.getElementById('password2').value;
+      if (pass != confirm_pass) {
+          document.getElementById('wrong_pass_alert').style.color = 'red';
+          document.getElementById('wrong_pass_alert').innerHTML
+            = '☒ Use same password';
+          document.getElementById('create').disabled = true;
+          document.getElementById('create').style.opacity = (0.4);
+      } else {
+          document.getElementById('wrong_pass_alert').style.color = 'green';
+          document.getElementById('wrong_pass_alert').innerHTML =
+              '🗹 Password Matched';
+          document.getElementById('create').disabled = false;
+          document.getElementById('create').style.opacity = (1);
+      }
+  }
+
+  function fieldvalidation() {
+      if (document.getElementById('password').value == "") {
+          document.getElementById('passwordErr').innerHTML="required"
+      }
+      if(document.getElementById('password2').value == ""){
+          document.getElementById('comPassErr').innerHTML="required"
+      }
+      if(document.getElementById('username').value ==""){
+          document.getElementById('userNameErr').innerHTML="required"
+      }
+      if(document.getElementById('email').value ==""){
+          document.getElementById('emailErr').innerHTML='required'
+      }
+      if(document.getElementById('mobile').value ==""){
+          document.getElementById('phoneErr').innerHTML='required'
+      }
+       
+  }
+</script>
