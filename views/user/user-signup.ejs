@@ -145,14 +145,17 @@
                     placeholder="Enter your username"
                     autofocus
                   />
+                  <span class="float-right text-danger" id="userNameErr"></span>
                 </div>
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
                   <input type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
+                  <span class="float-right text-danger"   id="emailErr"></span>
                 </div>
                 <div class="mb-3">
                     <label for="email" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="email" name="phone" placeholder="Enter your phone number" />
+                    <input type="text" class="form-control" id="mobile" name="phone" placeholder="Enter your phone number" />
+                    <span class="float-right text-danger" id="phoneErr"></span>
                   </div>
                 <div class="mb-3 form-password-toggle">
                   <label class="form-label" for="password">Password</label>
@@ -165,7 +168,7 @@
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    <span class="float-right text-danger" id="passwordErr"></span>
                   </div>
                 </div>
 
@@ -174,18 +177,20 @@
                   <div class="input-group input-group-merge">
                     <input
                       type="password"
-                      id="password"
+                      id="password2"
                       class="form-control"
-                      name="password"
+                      name="ConfirmPassword"
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
+                      onkeyup="validate_password()"
                     />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    <span class="float-right text-danger" id="comPassErr"></span>
                   </div>
                 </div>
 
-                
-                <button type="submit" class="btn btn-primary d-grid w-100">Sign up</button>
+                <span id="wrong_pass_alert"></span>
+
+                <button type="submit" onclick="fieldvalidation()" class="btn btn-primary d-grid w-100">Sign up</button>
               </form>
 
               <p class="text-center">

@@ -1,4 +1,5 @@
 const admin=require('../models/admin')
+const product=require('../models/productSchema')
 
 module.exports={
     getAdminHome :(req,res)=>{
@@ -44,7 +45,28 @@ module.exports={
     //add product post methord
     getAdminAddProductPost:(req,res)=>{
         console.log(req.body)
-        res.redirect('/admin/add-product')
+        const name=req.body.name
+        const description=req.body.description
+        const price=req.body.price
+        const category=req.body.category
+        const image=req.body.image
+
+        let files=req.files
+        if(files){
+            let Images=[]
+            for(i=0;i<req.files.length;i++){
+                Images[i]=files[i].filename
+            }
+            req.body.image=Images
+            const addProduct=new product({name:name,price:price,description:description,category:category,image:Images})
+            console.log(addProduct)
+        addProduct.save().then((result)=>{
+            res.redirect('/admin/add-product')
+        }
+        )}else{
+            console.log(err)
+        }
+        
     }
 
 }

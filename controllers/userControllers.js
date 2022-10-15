@@ -38,6 +38,7 @@ module.exports={
 //---------------------usre signup post methord
 
     getUserSignupPost:(req,res)=>{
+        console.log(req.body.password)
         userModel.find({userEmail:req.body.email},async(err,data)=>{
             if(data.length==0){
                 const userName = req.body.username
