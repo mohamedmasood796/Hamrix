@@ -15,8 +15,13 @@
 					</a> -->
 
 					<a href="#" class="flex-c-m trans-04 p-lr-25">
-						My Account
+						<% if(user){ %>
+							<%=user.userName%>
+							<% } else { %>
+							My Account
+							<% } %>
 					</a>
+					
 
 					<a href="#" class="flex-c-m trans-04 p-lr-25">
 						EN
@@ -44,8 +49,8 @@
 							<a href="index.html">Home</a>
 							<ul class="sub-menu">
 								<li><a href="index.html">Homepage 1</a></li>
-								<li><a href="home-02.html">Homepage 2</a></li>
-								<li><a href="home-03.html">Homepage 3</a></li>
+								<!-- <li><a href="home-02.html">Homepage 2</a></li>
+								<li><a href="home-03.html">Homepage 3</a></li> -->
 							</ul>
 						</li>
 
@@ -67,6 +72,21 @@
 
 						<li>
 							<a href="contact.html">Contact</a>
+						</li>
+						<li class="active-menu">
+							<a href="">Account</a>
+							<ul class="sub-menu">
+								<!-- <li><a href="/user-login">Login</a></li>
+								<li><a href="/user-signup">Signup</a></li> -->
+
+								<% if(user){ %>
+									<li><a href="/user-logout">Logout</a></li>
+									<% } else { %>
+										<li><a href="/user-login">Login</a></li>
+										<li><a href="/user-signup">Signup</a></li>
+									<% } %>
+								
+							</ul>
 						</li>
 					</ul>
 				</div>	

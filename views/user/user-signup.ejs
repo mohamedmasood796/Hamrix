@@ -168,8 +168,9 @@
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
-                    <span class="float-right text-danger" id="passwordErr"></span>
+                    
                   </div>
+                  <span class="float-right text-danger" id="passwordErr"></span>
                 </div>
 
                 <div class="mb-3 form-password-toggle">
@@ -184,8 +185,9 @@
                       aria-describedby="password"
                       onkeyup="validate_password()"
                     />
-                    <span class="float-right text-danger" id="comPassErr"></span>
+                    
                   </div>
+                  <span class="float-right text-danger" id="comPassErr"></span>
                 </div>
 
                 <span id="wrong_pass_alert"></span>
@@ -261,20 +263,20 @@
   }
 
   function fieldvalidation() {
-      if (document.getElementById('password').value == "") {
-          document.getElementById('passwordErr').innerHTML="required"
+      if (document.getElementById('password').value =="") {
+          document.getElementById('passwordErr').innerHTML="Enter password "
       }
-      if(document.getElementById('password2').value == ""){
-          document.getElementById('comPassErr').innerHTML="required"
+      if(document.getElementById('password2').value ==""){
+          document.getElementById('comPassErr').innerHTML="Enter conform password "
       }
       if(document.getElementById('username').value ==""){
-          document.getElementById('userNameErr').innerHTML="required"
+          document.getElementById('userNameErr').innerHTML="Enter user name "
       }
       if(document.getElementById('email').value ==""){
-          document.getElementById('emailErr').innerHTML='required'
+          document.getElementById('emailErr').innerHTML='Enter Email '
       }
       if(document.getElementById('mobile').value ==""){
-          document.getElementById('phoneErr').innerHTML='required'
+          document.getElementById('phoneErr').innerHTML='Enter mobile number '
       }
        
   }

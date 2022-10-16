@@ -4,8 +4,7 @@ const bodyParser = require('body-parser')
 const path = require('path')
 const mongoose=require('./config/connection')
 const app = express();
-
-
+var session = require('express-session')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
@@ -24,6 +23,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 //app.use(express.static('public'))    public folder ullath kittan
 app.use(express.static(path.join(__dirname, 'views')));
 app.set('view engine', 'ejs');
+app.use(session({secret:"key",cookie:{maxAge:600000},resave:true,saveUninitialized:false}))
 
 
 app.use('/',userRouter);

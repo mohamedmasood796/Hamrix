@@ -17,5 +17,11 @@ router.post('/user-login',userControllers.getUserLoginPost)
 //get user signup post
 router.post('/user-signup',userControllers.getUserSignupPost)
 
+//get user session distroy 
+router.get('/user-logout',userControllers.getUserLogout)
+
+//user home login button kittitilla
+//router.get('/uesr-login',userControllers.getUserLoginhome)
+
 
 module.exports=router
