@@ -133,11 +133,12 @@
                 </a>
               </div>
               <!-- /Logo -->
-              <h4 class="mb-2">Welcome to Hamrix</h4>
+              <h4 class="mb-2">Welcome to Hamrix-Admin</h4>
 
               <form id="formAuthentication" class="mb-3" action="/user-login" method="POST">
                 <div class="mb-3">
                   <label for="email" class="form-label">Email</label>
+                  
                   <input
                     type="text"
                     class="form-control"
@@ -147,10 +148,13 @@
                     autofocus
                   />
                 </div>
+                <span class="float-right text-danger"   id="emailErr"></span>
+                
                 <div class="mb-3 form-password-toggle">
                   <div class="d-flex justify-content-between">
                     <label class="form-label" for="password">Password</label>
                     <a href="auth-forgot-password-basic.html">
+                      
                       <small>Forgot Password?</small>
                     </a>
                   </div>
@@ -163,17 +167,23 @@
                       placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                       aria-describedby="password"
                     />
-                    <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                    
                   </div>
+                  <span class="float-right text-danger" id="passwordErr"></span>
                 </div>
-                <div class="mb-3">
-                  <!-- <div class="form-check">
+                <!-- <div class="mb-3">
+                  <div class="form-check">
                     <input class="form-check-input" type="checkbox" id="remember-me" />
                     <label class="form-check-label" for="remember-me"> Remember Me </label>
-                  </div> -->
-                </div>
+                  </div>
+                </div> -->
+
+                <% if (loginErr) { %>
+                  <h2 class="error">Invalid Email or password </h2> 
+                <% } %>
+
                 <div class="mb-3">
-                  <button type="submit" class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
+                  <button type="submit" onclick="fieldvalidation()" class="btn btn-primary d-grid w-100" type="submit">Sign in</button>
                 </div>
               </form>
 
@@ -191,15 +201,6 @@
     </div>
 
     <!-- / Content -->
-
-    <div class="buy-now">
-      <a
-        href="https://themeselection.com/products/sneat-bootstrap-html-admin-template/"
-        target="_blank"
-        class="btn btn-danger btn-buy-now"
-        >Upgrade to Pro</a
-      >
-    </div>
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
@@ -222,3 +223,18 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
+
+
+
+<script>
+  function fieldvalidation() {
+      if (document.getElementById('password').value =="") {
+          document.getElementById('passwordErr').innerHTML="Enter password "
+      }
+      
+      if(document.getElementById('email').value ==""){
+          document.getElementById('emailErr').innerHTML='Enter Email '
+      }
+       
+  }
+</script>

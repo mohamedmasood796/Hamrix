@@ -17,7 +17,6 @@ module.exports={
         const email=req.body.email
         const password=req.body.password
         admin.findOne({adminEmail:email},(err,data)=>{
-            console.log(data)
             if (data){
                 if(password==data.password){
                     res.redirect('/admin/')
@@ -35,6 +34,7 @@ module.exports={
 
     //add product by admin
     getAdminAllProduct:(req,res)=>{
+        
         res.render('admin/admin-allproduct')
     },
     //add product by admin
@@ -67,7 +67,8 @@ module.exports={
             console.log(err)
         }
         
-    }
+    },
+
 
 }
 

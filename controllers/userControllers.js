@@ -20,7 +20,8 @@ module.exports={
             let user=req.session.user
         res.render('user/user-home',{user})
         }else{
-            res.render('user/user-login')
+            res.render('user/user-login',{loginErr:req.session.loginErr})
+            req.session.loginErr=false
         }
 
        
@@ -31,6 +32,7 @@ module.exports={
             res.redirect('/')
         }else{
             res.render('user/user-signup')
+            
         }
  
     },
@@ -46,6 +48,7 @@ module.exports={
                     req.session.user=user
                     res.redirect('/')
                 }else{
+                    req.session.loginErr=true
                     res.redirect('/user-login')
                 }
             })
