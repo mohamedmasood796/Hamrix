@@ -2,20 +2,37 @@ const userModel= require ('../models/user')
 const bcrypt = require('bcrypt')
 const { USER_COLLECTION } = require('../config/collection')
 
+// const userSession=(req,res,next)=>{
+//     if (req.session.userloggedIn) {
+//         next()
+//     } else {
+//         res.render('user/user-')
+//     }
+// }
 
 module.exports={
     getUserHome :(req,res)=>{
-        let user=req.session.user
-        res.render('user/user-home',{user})
+        res.render('user/user-home',{user:req.session.user})
     },
 
     getUserLogin:(req,res)=>{
-        let user=req.session.user
-        res.render('user/user-login',{user})
+        if(req.session.userloggedIn){
+            let user=req.session.user
+        res.render('user/user-home',{user})
+        }else{
+            res.render('user/user-login')
+        }
+
+       
     },
 
     getUserSignup:(req,res)=>{
-        res.render('user/user-signup')
+        if(req.session.userloggedIn){
+            res.redirect('/')
+        }else{
+            res.render('user/user-signup')
+        }
+ 
     },
 //--------------------user login post --------------------
 
@@ -49,10 +66,7 @@ module.exports={
                 const confirmpasswordka=req.body.ConfirmPassword 
                 let passwordka=req.body.password
                 //passwordka=await bcrypt.hash(passwordka,10)
-                
-
-
-                
+            
                 if(passwordka==confirmpasswordka){
                 passwordka=await bcrypt.hash(passwordka,10)
                 const user =new userModel ({

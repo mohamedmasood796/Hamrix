@@ -5,12 +5,14 @@ const path = require('path')
 const mongoose=require('./config/connection')
 const app = express();
 var session = require('express-session')
+const nocache = require("nocache");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
+app.use(nocache());
 
 
 const userRouter=require('./router/user');
