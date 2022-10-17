@@ -1,5 +1,6 @@
 const userModel= require ('../models/user')
 const bcrypt = require('bcrypt')
+const product =require('../models/productSchema')
 const { USER_COLLECTION } = require('../config/collection')
 
 // const userSession=(req,res,next)=>{
@@ -12,7 +13,15 @@ const { USER_COLLECTION } = require('../config/collection')
 
 module.exports={
     getUserHome :(req,res)=>{
-        res.render('user/user-home',{user:req.session.user})
+        product.find({}, function (err, result) {
+            if (err) {
+                res.send(err);
+            } else {
+                res.render('user/user-home',{user:req.session.user,result})
+                
+            }
+        });
+        //res.render('user/user-home',{user:req.session.user})
     },
 
     getUserLogin:(req,res)=>{
