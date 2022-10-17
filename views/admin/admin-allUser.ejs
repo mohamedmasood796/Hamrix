@@ -1,0 +1,28 @@
+<%- include('./include/admin-headlink'); %>
+<%- include('./include/admin-navside'); %>
+<%- include('./include/admin-header'); %>
+
+
+<table class="table">
+    <thead>
+      <tr>
+        
+        <th scope="col">User Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Phone</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% result.forEach(function(result) { %>
+            <tr>
+            
+             <th><%= result.userName %> </th>
+             <th><%= result.userEmail %></th>
+             <th><%= result. phone %></th>
+             <td>
+              <a href="/admin/delete-user/{{this._id}}" class="btn btn-danger" >Delete</a>
+            </td>
+            </tr>
+          <% }); %>
+    </tbody>
+  </table>

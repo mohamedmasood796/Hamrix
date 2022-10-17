@@ -19,6 +19,10 @@ let userSchema = new Schema({
         type:String,
         required:true
     },
+    access:{
+      type:Boolean,
+      required:true
+    }
 
   });
 

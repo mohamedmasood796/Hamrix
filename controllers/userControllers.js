@@ -68,6 +68,7 @@ module.exports={
                 const phoneka = req.body.phone
                 const confirmpasswordka=req.body.ConfirmPassword 
                 let passwordka=req.body.password
+                
                 //passwordka=await bcrypt.hash(passwordka,10)
             
                 if(passwordka==confirmpasswordka){
@@ -76,7 +77,8 @@ module.exports={
                     userName:userNameka, 
                     userEmail:userEmailka,
                     phone:phoneka,
-                    password:passwordka
+                    password:passwordka,
+                    access:true
                 })
                 
                 console.log(user)

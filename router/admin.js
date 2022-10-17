@@ -23,6 +23,9 @@ router.get('/add-product',adminControllers.getAdminAddProduct)
 //admin add product post
 router.post('/add-product',store.array("image",3),adminControllers.getAdminAddProductPost)
 
+//admin show all user
+router.get('/all-user',adminControllers.getAdminAllUser)
+
 
 
 module.exports = router;
