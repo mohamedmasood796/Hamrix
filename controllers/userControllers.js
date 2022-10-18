@@ -13,15 +13,23 @@ const { USER_COLLECTION } = require('../config/collection')
 
 module.exports={
     getUserHome :(req,res)=>{
-        product.find({}, function (err, result) {
-            if (err) {
-                res.send(err);
-            } else {
-                res.render('user/user-home',{user:req.session.user,result})
+        // product.find({}, function (err, result) {
+        //     if (err) {
+        //         res.send(err);
+        //     } else {
+        //         res.render('user/user-home',{user:req.session.user,result})
                 
-            }
-        });
-        //res.render('user/user-home',{user:req.session.user})
+        //     }
+        // });
+
+        return new Promise(async(resolve,reject)=>{
+            await product.find().then((result)=>{
+                resolve(result)
+            })
+        }).then((result)=>{
+            res.render('user/user-home',{user:req.session.user,result})
+
+        })
     },
 
     getUserLogin:(req,res)=>{
@@ -32,8 +40,6 @@ module.exports={
             res.render('user/user-login',{loginErr:req.session.loginErr})
             req.session.loginErr=false
         }
-
-       
     },
 
     getUserSignup:(req,res)=>{

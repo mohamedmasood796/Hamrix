@@ -5,6 +5,8 @@ var router = express.Router();
 // const store = multer({ dest: '/product-images' })
 const {store} = require('./../middleware/multer')
 
+
+
 //admin home render
 router.get('/', adminControllers.getAdminHome)
 
@@ -25,6 +27,13 @@ router.post('/add-product',store.array("image",3),adminControllers.getAdminAddPr
 
 //admin show all user
 router.get('/all-user',adminControllers.getAdminAllUser)
+
+//admin edit product
+router.get('/edit-product/:id',adminControllers.getAdminEditProduct)
+
+//admin product updat post methord
+router.post('/update-product/:id',adminControllers.getAdminProductUpdate)
+
 
 
 
