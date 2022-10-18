@@ -34,6 +34,12 @@ router.get('/edit-product/:id',adminControllers.getAdminEditProduct)
 //admin product updat post methord
 router.post('/update-product/:id',adminControllers.getAdminProductUpdate)
 
+//admin user block
+router.get('/block-user/:id',adminControllers.getAdminBlockUser)
+
+//admin user unblock
+router.get('/unblock-user/:id',adminControllers.getAdminUnblockAllUser)
+
 
 
 

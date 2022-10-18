@@ -6,6 +6,7 @@
     <thead>
       <tr>
         
+        <th scope="col">NO</th>
         <th scope="col">product name</th>
         <th scope="col">category</th>
         <th scope="col">description</th>
@@ -17,8 +18,9 @@
 
 
       
-        <% result.forEach(function(result) { %>
+        <% result.forEach(function(result,index) { %>
           <tr>
+            <th><%= index+1 %></th>
            <th><%= result.name %> </th>
            <th><%= result.category %></th>
            <th><%= result. description %></th>

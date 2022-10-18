@@ -3,10 +3,16 @@ const product = require('../models/productSchema')
 const User = require("../models/user")
 
 const collection = require('../config/collection')
+const user = require('../models/user')
 
 module.exports = {
     getAdminHome: (req, res) => {
-        res.render('admin/admin-home')
+        if(req.session.adminloggedIn){
+            res.render('admin/admin-home')
+        }else{
+            res.redirect('/admin/admin-login')
+        }
+        
     },
 
     getAdminLogin: (req, res) => {
@@ -22,8 +28,11 @@ module.exports = {
         admin.findOne({ adminEmail: email }, (err, data) => {
             if (data) {
                 if (password == data.password) {
+                    req.session.adminloggedIn=true
+                    req.session.user=data
                     res.redirect('/admin/')
                 } else {
+                    req.session.loginErr=true
                     console.log("password incorrect")
                     res.redirect('/admin/admin-login')
                 }
@@ -132,13 +141,32 @@ module.exports = {
 
     getAdminProductUpdate:async(req,res)=>{
         proId=req.params.id
-        productde= await product.findOne({_id:(proId)})
+        let productde= await product.findOne({_id:(proId)})
         productde.name= req.body.name,
         productde.description= req.body.description,
         productde.price= req.body.price,                
         productde.category= req.body.category
         await productde.save()
         res.redirect('/admin/all-product')
+    },
+
+
+    //==================user block
+    getAdminBlockUser:async(req,res)=>{
+        let userId=req.params.id
+        useril=await user.findOne({_id:(userId)})
+        useril.access=false
+        await useril.save()
+        res.redirect('/admin/all-user')
+    },
+
+
+    getAdminUnblockAllUser:async(req,res)=>{
+        let userId=req.params.id
+        userun=await user.findOne({_id:(userId)})
+        userun.access=true
+        await userun.save()
+        res.redirect('/admin/all-user')
     }
 
 

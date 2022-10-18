@@ -54,28 +54,31 @@ module.exports={
 //--------------------user login post --------------------
 
     getUserLoginPost:async(req,res)=>{
-        console.log(req.body)
         let user= await userModel.findOne({userEmail:req.body.email})
-        if(user){
-            bcrypt.compare(req.body.password,user.password).then((data)=>{
-                if(data){
-                    req.session.userloggedIn=true
-                    req.session.user=user
-                    res.redirect('/')
-                }else{
-                    req.session.loginErr=true
-                    res.redirect('/user-login')
-                }
-            })
+        if(user.access){
+            if(user){
+                bcrypt.compare(req.body.password,user.password).then((data)=>{
+                    if(data){
+                        req.session.userloggedIn=true
+                        req.session.user=user
+                        res.redirect('/')
+                    }else{
+                        req.session.loginErr=true
+                        res.redirect('/user-login')
+                    }
+                })
+            }else{
+                console.log("4if")
+                res.redirect('/user-login')
+            }
         }else{
-            console.log("3 if")
+        loginErr="YOU ARE BLODED BY ADMIN"
         res.redirect('/user-login')
         }
     },
 //---------------------usre signup post methord
 
     getUserSignupPost:(req,res)=>{
-        console.log(req.body.password)
         userModel.find({userEmail:req.body.email},async(err,data)=>{
             if(data.length==0){
                 const userNameka = req.body.username

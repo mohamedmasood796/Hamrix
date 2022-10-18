@@ -6,20 +6,29 @@
 <table class="table">
     <thead>
       <tr>
-        
+        <th scope="col">NO</th>
         <th scope="col">User Name</th>
         <th scope="col">Email</th>
         <th scope="col">Phone</th>
+        <th scope="col">Status</th>
       </tr>
     </thead>
     <tbody>
-        <% result.forEach(function(result) { %>
+        <% result.forEach(function(result,index) { %>
             <tr>
-             <th><%= result.userName %> </th>
-             <th><%= result.userEmail %></th>
-             <th><%= result. phone %></th>
-             <td>
-              <a href="/admin/delete-user/{{this._id}}" class="btn btn-danger" >Delete</a>
+              <th><%= index+1 %></th>
+              <th><%= result.userName %> </th>
+              <th><%= result.userEmail %></th>
+              <th><%= result. phone %></th>
+
+
+              <td>
+              <% if (result.access) { %>
+                <a href="/admin/block-user/<%=result._id%>" class="btn btn-danger" >blocked</a>
+                <%} else { %>
+                  <a href="/admin/unblock-user/<%=result._id%>" class="btn btn-success" >unblock</a>
+                <% } %>
+ 
             </td>
             </tr>
           <% }); %>
