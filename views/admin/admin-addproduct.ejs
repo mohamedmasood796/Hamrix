@@ -12,7 +12,14 @@
                     <input type="text" name="name" class="form-control"><br>
 
                     <label for="">Category</label>
-                    <input type="text" name="category" class="form-control"><br>
+                    <!-- <input type="text" name="category" class="form-control"><br> -->
+                    <select type="text" name="category" class="form-control" id="select1">
+                        <% data.forEach(function(data) { %>
+                        <option value="">select...</option>
+                        <option value="sea food"><%=data.name %></option>
+
+                        <% }); %> 
+                    </select><br>
 
                     <label for="">Description</label>
                     <input type="text" name="description" class="form-control"><br>

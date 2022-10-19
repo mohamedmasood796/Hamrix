@@ -1,7 +1,7 @@
 const admin = require('../models/admin')
 const product = require('../models/productSchema')
 const User = require("../models/user")
-const category= require('../models/categorySchema')
+const category = require('../models/categorySchema')
 
 const collection = require('../config/collection')
 const user = require('../models/user')
@@ -10,12 +10,12 @@ const categorySchema = require('../models/categorySchema')
 
 module.exports = {
     getAdminHome: (req, res) => {
-        if(req.session.adminloggedIn){
+        if (req.session.adminloggedIn) {
             res.render('admin/admin-home')
-        }else{
+        } else {
             res.redirect('/admin/admin-login')
         }
-        
+
     },
 
     getAdminLogin: (req, res) => {
@@ -31,11 +31,11 @@ module.exports = {
         admin.findOne({ adminEmail: email }, (err, data) => {
             if (data) {
                 if (password == data.password) {
-                    req.session.adminloggedIn=true
-                    req.session.user=data
+                    req.session.adminloggedIn = true
+                    req.session.user = data
                     res.redirect('/admin/')
                 } else {
-                    req.session.loginErr=true
+                    req.session.loginErr = true
                     console.log("password incorrect")
                     res.redirect('/admin/admin-login')
                 }
@@ -66,7 +66,14 @@ module.exports = {
     },
     //add product by admin
     getAdminAddProduct: (req, res) => {
-        res.render('admin/admin-addproduct')
+        category.find({},(err,data)=>{
+            if(err){
+                console.log(err)
+            }else{
+                res.render('admin/admin-addproduct',{data})
+            }
+        })
+        
     },
 
     //add product post methord
@@ -142,47 +149,71 @@ module.exports = {
     // },
 
 
-    getAdminProductUpdate:async(req,res)=>{
-        proId=req.params.id
-        let productde= await product.findOne({_id:(proId)})
-        productde.name= req.body.name,
-        productde.description= req.body.description,
-        productde.price= req.body.price,                
-        productde.category= req.body.category
+    getAdminProductUpdate: async (req, res) => {
+        proId = req.params.id
+        let productde = await product.findOne({ _id: (proId) })
+        productde.name = req.body.name,
+            productde.description = req.body.description,
+            productde.price = req.body.price,
+            productde.category = req.body.category
         await productde.save()
         res.redirect('/admin/all-product')
     },
 
 
     //==================user block
-    getAdminBlockUser:async(req,res)=>{
-        let userId=req.params.id
-        useril=await user.findOne({_id:(userId)})
-        useril.access=false
+    getAdminBlockUser: async (req, res) => {
+        let userId = req.params.id
+        useril = await user.findOne({ _id: (userId) })
+        useril.access = false
         await useril.save()
         res.redirect('/admin/all-user')
     },
 
 
-    getAdminUnblockAllUser:async(req,res)=>{
-        let userId=req.params.id
-        let userun=await user.findOne({_id:(userId)})
-        userun.access=true
+    getAdminUnblockAllUser: async (req, res) => {
+        let userId = req.params.id
+        let userun = await user.findOne({ _id: (userId) })
+        userun.access = true
         await userun.save()
         res.redirect('/admin/all-user')
     },
 
-    getAdminAddCategoryPage:(req,res)=>{
-        res.render('admin/admin-addCategory')
+    getAdminAddCategoryPage: (req, res) => {
+        category.find({}, (err, ans) => {
+            if(err){
+                console.log(err)
+                res.render('admin/admin-addCategory',{ans:[]})        //what is the porpose
+            }else{
+                console.log(ans);
+                res.render('admin/admin-addCategory',{ans})
+            }
+        })
+        // ,function(err,ans){
+        //     if(err){
+        //         console.log(err)
+        //         res.render('admin/admin-addCategory',{ans:[]})
+        //     }else{
+        //         console.log(ans);
+        //         res.render('admin/admin-addCategory',{ans})
+        //     }
+        // }
+        
     },
 
-    getAdminAddCategory:(req,res)=>{
-        const newcategory= new category({
-            name:req.body.name
+    //-------------------add category and send catogory name to that page in .then
+    getAdminAddCategory: (req, res) => {
+        console.log(req.body.name)
+        const newcategory = new category({
+            name: req.body.name
         })
-            
+
         newcategory.save()
-        res.redirect('/admin/categoryPage')
+            .then(data => {
+                console.log(data)
+                res.redirect('/admin/categoryPage')
+            })
+
     }
 
 

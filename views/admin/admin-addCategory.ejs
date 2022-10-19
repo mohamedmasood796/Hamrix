@@ -30,12 +30,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>
-                        <th scope="row">1</th>
-                        <td> </td>
-                        <td>Otto</td>
-                        <td>@mdo</td>
-                      </tr>
+
+                        <% ans.forEach(function(ans,index) { %>
+                            <tr>
+                                <th><%= index+1 %></th>
+                                <th><%= ans.name %> </th>
+                                <td><a href="/admin/edit-product/<%= ans.id %>" class="btn btn-primary">view product</a></td>
+                                <td><a href="/admin/edit-product/<%= ans.id %>" class="btn btn-danger">Delete category</a></td>
+                            </tr>
+                          <% }); %> 
                     </tbody>
                   </table>
 
