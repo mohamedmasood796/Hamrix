@@ -27,7 +27,11 @@ module.exports={
                 resolve(result)
             })
         }).then((result)=>{
-            res.render('user/user-home',{user:req.session.user,result})
+            if(result) {
+                res.render('user/user-home',{user:req.session.user,result})
+            } else {
+                res.redirect("/")
+            }
 
         })
     },
@@ -35,7 +39,7 @@ module.exports={
     getUserLogin:(req,res)=>{
         if(req.session.userloggedIn){
             let user=req.session.user
-        res.render('user/user-home',{user})
+        res.redirect('/')
         }else{
             res.render('user/user-login',{loginErr:req.session.loginErr})
             req.session.loginErr=false

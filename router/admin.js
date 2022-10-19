@@ -1,5 +1,6 @@
 var express = require('express');
-const adminControllers=require('../controllers/adminControllers')
+const adminControllers=require('../controllers/adminControllers');
+const admin = require('../models/admin');
 var router = express.Router();
 // const multer= require('multer') 
 // const store = multer({ dest: '/product-images' })
@@ -40,6 +41,11 @@ router.get('/block-user/:id',adminControllers.getAdminBlockUser)
 //admin user unblock
 router.get('/unblock-user/:id',adminControllers.getAdminUnblockAllUser)
 
+//admin render category page
+router.get('/categoryPage',adminControllers.getAdminAddCategoryPage)
+
+// admin add catecory post methord 
+router.post('/add-category',adminControllers.getAdminAddCategory)
 
 
 

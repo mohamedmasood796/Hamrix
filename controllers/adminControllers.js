@@ -1,9 +1,12 @@
 const admin = require('../models/admin')
 const product = require('../models/productSchema')
 const User = require("../models/user")
+const category= require('../models/categorySchema')
 
 const collection = require('../config/collection')
 const user = require('../models/user')
+const { render } = require('ejs')
+const categorySchema = require('../models/categorySchema')
 
 module.exports = {
     getAdminHome: (req, res) => {
@@ -163,10 +166,23 @@ module.exports = {
 
     getAdminUnblockAllUser:async(req,res)=>{
         let userId=req.params.id
-        userun=await user.findOne({_id:(userId)})
+        let userun=await user.findOne({_id:(userId)})
         userun.access=true
         await userun.save()
         res.redirect('/admin/all-user')
+    },
+
+    getAdminAddCategoryPage:(req,res)=>{
+        res.render('admin/admin-addCategory')
+    },
+
+    getAdminAddCategory:(req,res)=>{
+        const newcategory= new category({
+            name:req.body.name
+        })
+            
+        newcategory.save()
+        res.redirect('/admin/categoryPage')
     }
 
 
