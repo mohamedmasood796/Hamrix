@@ -26,5 +26,10 @@ router.get('/user-logout',userControllers.getUserLogout)
 //user home profile
 router.get('/user-profile',userControllers.getUserProfileshow)
 
+//user post methord in edit profile
+router.post('/home',userControllers.getUserEditProfile)
+
+
+
 
 module.exports=router

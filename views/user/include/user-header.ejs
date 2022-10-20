@@ -14,11 +14,11 @@
 						Help & FAQs
 					</a> -->
 
-					<a href="/user/user-profile" class="flex-c-m trans-04 p-lr-25">
+					<!-- <a href="" class="flex-c-m trans-04 p-lr-25"> -->
 						<% if(user){ %>
-							<%=user.userName%>
+							<a href="/user-profile" class="flex-c-m trans-04 p-lr-25" ><%=user.userName%></a>
 							<% } else { %>
-							My Account
+								<a href="" class="flex-c-m trans-04 p-lr-25" >My Account</a>
 							<% } %>
 					</a>
 					

@@ -150,15 +150,15 @@ module.exports = {
 
     getAdminProductUpdate: async (req, res) => {
         proId = req.params.id
-        let productde = await product.findOne({ _id: (proId) })
-        productde.name = req.body.name,
+        let productde = await product.findOne({ _id: (proId) })  //productde =_id ulla full document
+            productde.name = req.body.name,
             productde.description = req.body.description,
             productde.price = req.body.price,
             productde.category = req.body.category
         await productde.save()
         res.redirect('/admin/all-product')
     },
-
+//====================================================================================================
 
     //==================user block
     getAdminBlockUser: async (req, res) => {

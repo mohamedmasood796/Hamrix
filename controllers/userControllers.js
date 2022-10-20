@@ -2,6 +2,7 @@ const userModel= require ('../models/user')
 const bcrypt = require('bcrypt')
 const product =require('../models/productSchema')
 const { USER_COLLECTION } = require('../config/collection')
+const user = require('../models/user')
 
 // const userSession=(req,res,next)=>{
 //     if (req.session.userloggedIn) {
@@ -59,16 +60,20 @@ module.exports={
 
     getUserLoginPost:async(req,res)=>{
         let user= await userModel.findOne({userEmail:req.body.email})
-        if(user.access){
+        
             if(user){
+                if(user.access){
+                    console.log('acdess')
                 bcrypt.compare(req.body.password,user.password).then((data)=>{
                     if(data){
                         req.session.userloggedIn=true
                         req.session.user=user
                         res.redirect('/')
+                        console.log("3 if")
                     }else{
                         req.session.loginErr=true
                         res.redirect('/user-login')
+                        console.log('3 else')
                     }
                 })
             }else{
@@ -76,7 +81,8 @@ module.exports={
                 res.redirect('/user-login')
             }
         }else{
-        loginErr="YOU ARE BLODED BY ADMIN"
+        loginErr="YOU ARE BLOKED BY ADMIN"
+        console.log('last else')
         res.redirect('/user-login')
         }
     },
@@ -129,7 +135,30 @@ module.exports={
     },
 
     getUserProfileshow:(req,res)=>{
-        res.render('user/user-profile')
+        let user= req.session.user
+        console.log(user)
+        res.render('user/user-profile',{user})
+
+    },
+
+    getUserEditProfile:async(req,res)=>{
+        let userId =req.session.user._id
+        let userww=req.session.user
+        let kkkk=await user.findByIdAndUpdate({_id: userId},{
+            
+            userName: req.body.userName,
+            lastName:req.body.lastName,
+            userEmail:req.body.email,
+            address: {
+                address:req.body.address,
+                state:req.body.state,
+                zipCode:req.body.zipCode,
+                country:req.body.country,
+            },
+            phone:req.body.phone,
+        })
+        console.log(kkkk)
+        res.redirect('/')
     }
 
 

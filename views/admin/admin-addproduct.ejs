@@ -9,7 +9,7 @@
                 <h2 class="text-center">Add Product</h2>
                 <form action="/admin/add-product" method="post"  enctype="multipart/form-data">
                     <label for=""> Product Name</label>
-                    <input type="text" name="name" class="form-control"><br>
+                    <input type="text" name="name" class="form-control" required><br>
 
                     <label for="">Category</label>
                     <!-- <input type="text" name="category" class="form-control"><br> -->
@@ -23,13 +23,13 @@
                     </select><br>
 
                     <label for="">Description</label>
-                    <input type="text" name="description" class="form-control"><br>
+                    <input type="text" name="description" class="form-control" required><br>
 
                     <label for="">Price</label>
-                    <input type="text" name="price" class="form-control"><br>
+                    <input type="text" name="price" class="form-control" required><br>
 
                     <label for="">Image</label>
-                    <input type="file" name="image" class="form-control" multiple><br>
+                    <input type="file" name="image" class="form-control" multiple required><br>
 
                     <button type="submit" class="btn btn-success mt-4">submit</button>
                 </form>
