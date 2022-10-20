@@ -35,8 +35,8 @@
                             <tr>
                                 <th><%= index+1 %></th>
                                 <th><%= ans.name %> </th>
-                                <td><a href="/admin/edit-product/<%= ans.id %>" class="btn btn-primary">view product</a></td>
-                                <td><a href="/admin/edit-product/<%= ans.id %>" class="btn btn-danger">Delete category</a></td>
+                                <td><a href="/admin/view-productCategory/<%= ans.id %>" class="btn btn-primary">view product</a></td>
+                                <td><a href="/admin/delete-category/<%= ans.id %>" class="btn btn-danger">Delete category</a></td>
                             </tr>
                           <% }); %> 
                     </tbody>

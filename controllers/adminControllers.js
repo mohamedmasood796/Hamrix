@@ -6,7 +6,6 @@ const category = require('../models/categorySchema')
 const collection = require('../config/collection')
 const user = require('../models/user')
 const { render } = require('ejs')
-const categorySchema = require('../models/categorySchema')
 
 module.exports = {
     getAdminHome: (req, res) => {
@@ -185,7 +184,7 @@ module.exports = {
                 console.log(err)
                 res.render('admin/admin-addCategory',{ans:[]})        //what is the porpose
             }else{
-                console.log(ans);
+                
                 res.render('admin/admin-addCategory',{ans})
             }
         })
@@ -203,19 +202,40 @@ module.exports = {
 
     //-------------------add category and send catogory name to that page in .then
     getAdminAddCategory: (req, res) => {
-        console.log(req.body.name)
         const newcategory = new category({
             name: req.body.name
         })
 
         newcategory.save()
-            .then(data => {
-                console.log(data)
+            .then(data => { 
                 res.redirect('/admin/categoryPage')
             })
 
-    }
+    },
 
+    getAdminDeleteCategory:(req,res)=>{
+        let deleteId=req.params.id
+         category.deleteOne({_id:(deleteId)},(err,data)=>{
+            if(err){
+                console.log(err)
+            }else{
+                res.redirect('/admin/categoryPage')
+            }
+        })
+    },
+
+     getAdminViewCategorey:(req,res)=>{
+        let viewprod=req.params.id
+        product.find({category:viewprod},(err,data)=>{
+            if(err){
+                console.log(err)
+            }else{
+                //console.log(data)
+                res.render('admin/admin-viewProductbycar',{data})
+            }
+        })
+        
+    }
 
 
 

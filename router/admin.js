@@ -47,9 +47,11 @@ router.get('/categoryPage',adminControllers.getAdminAddCategoryPage)
 // admin add catecory post methord 
 router.post('/add-category',adminControllers.getAdminAddCategory)
 
-//admin show category
-//router.post('/')
+//admin delete catergory
+router.get('/delete-category/:id',adminControllers.getAdminDeleteCategory)
 
+//admin view product by catecory
+router.get('/view-productCategory/:id',adminControllers.getAdminViewCategorey)
 
 
 

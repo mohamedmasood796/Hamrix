@@ -119,11 +119,17 @@ module.exports={
         }})   
     },
 
+
+
     //--------------------------secssion distroy
 
     getUserLogout:(req,res)=>{
         req.session.destroy()
         res.redirect('/')
+    },
+
+    getUserProfileshow:(req,res)=>{
+        res.render('user/user-profile')
     }
 
 

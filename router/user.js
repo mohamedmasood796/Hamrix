@@ -23,5 +23,8 @@ router.get('/user-logout',userControllers.getUserLogout)
 //user home login button kittitilla
 //router.get('/uesr-login',userControllers.getUserLoginhome)
 
+//user home profile
+router.get('/user-profile',userControllers.getUserProfileshow)
+
 
 module.exports=router
