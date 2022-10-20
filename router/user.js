@@ -29,6 +29,9 @@ router.get('/user-profile',userControllers.getUserProfileshow)
 //user post methord in edit profile
 router.post('/home',userControllers.getUserEditProfile)
 
+//to show user profile
+router.get('/user-profilePage',userControllers.getUserProfilePage)
+
 
 
 

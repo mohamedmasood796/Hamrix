@@ -159,8 +159,12 @@ module.exports={
         })
         console.log(kkkk)
         res.redirect('/')
-    }
+    },
 
+    getUserProfilePage:(req,res)=>{
+        let user=req.session.user
+        res.render('user/user-profilePage',{user})
+    }
 
     // getUserLoginhome:(req,res)=>{
     //     console.log("userlog")

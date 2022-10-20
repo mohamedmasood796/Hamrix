@@ -157,6 +157,7 @@ module.exports = {
             productde.category = req.body.category
         await productde.save()
         res.redirect('/admin/all-product')
+        
     },
 //====================================================================================================
 

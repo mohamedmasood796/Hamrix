@@ -21,8 +21,9 @@
                     <input type="text" name="price" class="form-control" value="<%=result.price %>"><br>
 
                     <label for="">Image</label>
-                    <img src="/product-images/<%=result.id %>.ext" alt="">
-                    <input type="file" name="image" class="form-control" multiple ><br>
+                    <!-- <img src="/product-images/<%=result.id %>.ext" alt=""> -->
+                    <img style="width:50px; height: 50px" src="/product-images/<%= result.image[0] %>" alt="" id="imgView">
+                    <input type="file" name="image" class="form-control" multiple onchange="viewImage(event)" ><br>
 
                     <button type="submit" class="btn btn-success mt-4">submit</button>
                 </form>
@@ -30,3 +31,9 @@
         </div>
     </div>
 </section>
+
+<script>
+    function viewImage(event){
+        document.getElementById('imgView').src=URL.createObjectURL(event.target.files[0])
+    }
+</script>
