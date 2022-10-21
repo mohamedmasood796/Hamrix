@@ -136,11 +136,15 @@ module.exports={
 
     getUserProfileshow:(req,res)=>{
         let user= req.session.user
-        console.log(user)
-        res.render('user/user-profile',{user})
+       
+        res.render('user/user-profileEdit',{user})
 
     },
 
+    getUserProfilePage:(req,res)=>{
+        let user=req.session.user
+        res.render('user/user-profilePage',{user})
+    },
     getUserEditProfile:async(req,res)=>{
         let userId =req.session.user._id
         let userww=req.session.user
@@ -158,13 +162,9 @@ module.exports={
             phone:req.body.phone,
         })
         console.log(kkkk)
+        req.session.user=await user.findOne({_id: userId})
         res.redirect('/')
     },
-
-    getUserProfilePage:(req,res)=>{
-        let user=req.session.user
-        res.render('user/user-profilePage',{user})
-    }
 
     // getUserLoginhome:(req,res)=>{
     //     console.log("userlog")

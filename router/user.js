@@ -24,14 +24,13 @@ router.get('/user-logout',userControllers.getUserLogout)
 //router.get('/uesr-login',userControllers.getUserLoginhome)
 
 //user home profile
-router.get('/user-profile',userControllers.getUserProfileshow)
-
-//user post methord in edit profile
-router.post('/home',userControllers.getUserEditProfile)
+router.get('/user-profileEdit',userControllers.getUserProfileshow)
 
 //to show user profile
 router.get('/user-profilePage',userControllers.getUserProfilePage)
 
+//user post methord in edit profile
+router.post('/user/user-profile',userControllers.getUserEditProfile)
 
 
 
