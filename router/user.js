@@ -32,6 +32,9 @@ router.get('/user-profilePage',userControllers.getUserProfilePage)
 //user post methord in edit profile
 router.post('/user/user-profile',userControllers.getUserEditProfile)
 
+//user cart page shew 
+router.get('/user-cart',userControllers.getUserCart)
+
 
 
 module.exports=router

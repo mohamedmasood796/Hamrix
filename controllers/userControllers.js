@@ -166,6 +166,12 @@ module.exports={
         res.redirect('/')
     },
 
+
+    getUserCart:(req,res)=>{
+        let user=req.session.user
+
+        res.render('user/user-cart',{user})
+    }
     // getUserLoginhome:(req,res)=>{
     //     console.log("userlog")
     //     res.redirect('/user-login')
