@@ -3,6 +3,8 @@ const bcrypt = require('bcrypt')
 const product =require('../models/productSchema')
 const { USER_COLLECTION } = require('../config/collection')
 const user = require('../models/user')
+const cart = require('../models/cartSchema')
+
 
 // const userSession=(req,res,next)=>{
 //     if (req.session.userloggedIn) {
@@ -11,6 +13,8 @@ const user = require('../models/user')
 //         res.render('user/user-')
 //     }
 // }
+
+let loginErr;
 
 module.exports={
     getUserHome :(req,res)=>{
@@ -42,8 +46,8 @@ module.exports={
             let user=req.session.user
         res.redirect('/')
         }else{
-            res.render('user/user-login',{loginErr:req.session.loginErr})
-            req.session.loginErr=false
+            res.render('user/user-login',{loginErr})
+            loginErr=null
         }
     },
 
@@ -71,17 +75,18 @@ module.exports={
                         res.redirect('/')
                         console.log("3 if")
                     }else{
-                        req.session.loginErr=true
+                        loginErr = "Invalid Password"
                         res.redirect('/user-login')
                         console.log('3 else')
                     }
                 })
             }else{
+                loginErr = "You are blocked by admin"
                 console.log("4if")
                 res.redirect('/user-login')
             }
         }else{
-        loginErr="YOU ARE BLOKED BY ADMIN"
+        loginErr="Invalid Email"
         console.log('last else')
         res.redirect('/user-login')
         }
@@ -166,12 +171,64 @@ module.exports={
         res.redirect('/')
     },
 
+    getOnePageProduct:async(req,res)=>{
+        let user = req.session.user
+        const proId=req.params.id
+        // console.log(user)
+        console.log(proId)
+        let products = await product.findById(proId)
+        console.log(products)
 
-    getUserCart:(req,res)=>{
-        let user=req.session.user
-
-        res.render('user/user-cart',{user})
+        res.render('user/user-productOnePage',{ products,user })
     }
+
+
+
+
+
+
+
+
+    // getUserCart:(req,res)=>{
+    //     let user=req.session.user
+    //     res.render('user/user-cart',{user})
+    // },
+
+
+
+    // getproductAddToCart:async(req,res)=>{
+    //     const proId=req.params.id
+    //     const newUserId=req.session.user.id
+
+    //     return new Promise(async(resolve,reject)=>{
+    //         let usercart=await cart.findOne({userId:newUserId})
+    //         if(usercart){
+
+    //         }else{
+    //             let cartobj={
+    //                 user:newUserId,
+                    
+    //             }
+    //         }
+    //     })
+
+
+
+        // let usercart= await cart.findOne({userId:newUserId})
+        // if(usercart){
+
+        // }else{
+        //     let cartobj={
+        //         user:newUserId,
+        //         products:[proId]
+        //     }
+        //     cart.insertOne(cartobj )
+        // }
+    // }
+
+
+
+
     // getUserLoginhome:(req,res)=>{
     //     console.log("userlog")
     //     res.redirect('/user-login')

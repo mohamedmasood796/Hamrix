@@ -6,6 +6,7 @@ const category = require('../models/categorySchema')
 const collection = require('../config/collection')
 const user = require('../models/user')
 const { render } = require('ejs')
+const { findById } = require('../models/admin')
 
 module.exports = {
     getAdminHome: (req, res) => {
@@ -91,7 +92,7 @@ module.exports = {
                 Images[i] = files[i].filename
             }
             req.body.image = Images
-            const addProduct = new product({ name: name, price: price, description: description, category: category, image: Images })
+            const addProduct = new product({ name: name, price: price, description: description, category: category, image: Images,access:true })
             console.log(addProduct)
             addProduct.save().then((result) => {
                 res.redirect('/admin/add-product')
@@ -127,6 +128,27 @@ module.exports = {
 
     },
 
+    //----------------------------delect product by admin
+    getAdminDeleteProduct:async(req,res)=>{
+        const prodId=req.params.id
+        console.log(prodId)
+        prod= await product.findById(prodId)
+        prod.access=false,
+        await prod.save()
+        res.redirect('/admin/all-product')
+    },
+    
+    getAdminUndelectProduct:async(req,res)=>{
+        const prodId=req.params.id
+        console.log(prodId)
+        const undelect=await product.findById(prodId)
+        console.log(undelect)
+        undelect.access=true,
+        await undelect.save()
+        res.redirect('/admin/all-product')
+    },
+
+
     //--------------------------update product post methord
 
     // getAdminProductUpdate:(req, res) => {
@@ -156,9 +178,7 @@ module.exports = {
             productde.price = req.body.price,
             productde.category = req.body.category
         await productde.save()
-        res.redirect('/admin/all-product')
-        
-        
+        res.redirect('/admin/all-product')        
     },
 //====================================================================================================
 
@@ -181,6 +201,7 @@ module.exports = {
     },
 
     getAdminAddCategoryPage: (req, res) => {
+
         category.find({}, (err, ans) => {
             if(err){
                 console.log(err)
@@ -228,16 +249,19 @@ module.exports = {
 
      getAdminViewCategorey:(req,res)=>{
         let viewprod=req.params.id
+        console.log(viewprod)
         product.find({category:viewprod},(err,data)=>{
             if(err){
                 console.log(err)
             }else{
-                //console.log(data)
+                console.log(data)
                 res.render('admin/admin-viewProductbycar',{data})
             }
-        })
-        
-    }
+        })  
+    },
+
+
+
 
 
 

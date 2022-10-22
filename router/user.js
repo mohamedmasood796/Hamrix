@@ -32,8 +32,18 @@ router.get('/user-profilePage',userControllers.getUserProfilePage)
 //user post methord in edit profile
 router.post('/user/user-profile',userControllers.getUserEditProfile)
 
+//to show product one page delect
+router.get('/show-onePageProduct/:id',userControllers.getOnePageProduct)
+
+
+
+
+
 //user cart page shew 
-router.get('/user-cart',userControllers.getUserCart)
+//router.get('/user-cart',userControllers.getUserCart)
+
+//product add to cart
+//router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
 
 
 

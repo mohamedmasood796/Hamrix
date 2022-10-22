@@ -30,6 +30,14 @@
             <a href="/admin/edit-product/<%= result.id %>" class="btn btn-primary">Edit</a>
             <!-- <a href="/admin/delete-user/<%= result.id %>" class="btn btn-danger" >Delete</a> -->
           </td>
+          <td>
+            <% if (result.access) { %>
+              <a href="/admin/delete-Product/<%=result.id%>" class="btn btn-success" >kanan</a>
+              <%} else { %>
+                <a href="/admin/undelete-Product/<%=result.id%>" class="btn btn-danger" >kanula</a>
+              <% } %>
+
+          </td>
           </tr>
         <% }); %> 
 

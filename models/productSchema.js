@@ -20,6 +20,11 @@ const productSchema=new Schema({
     image:{
         type:Array,
         required:true
-    }
+    },
+    access:{
+        type:Boolean,
+        required:true
+      }
+      
 })
 module.exports=mongoose.model('products',productSchema)

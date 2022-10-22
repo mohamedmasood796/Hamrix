@@ -32,6 +32,12 @@ router.get('/all-user',adminControllers.getAdminAllUser)
 //admin edit product
 router.get('/edit-product/:id',adminControllers.getAdminEditProduct)
 
+//admin delect product by admin
+router.get('/delete-Product/:id',adminControllers.getAdminDeleteProduct)
+
+//admin undelect product by admin
+router.get('/undelete-Product/:id',adminControllers.getAdminUndelectProduct)
+
 //admin product updat post methord
 router.post('/update-product/:id',adminControllers.getAdminProductUpdate)
 
