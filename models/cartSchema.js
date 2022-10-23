@@ -1,6 +1,6 @@
 // const mongoose = require("mongoose");
 
-const { default: mongoose } = require("mongoose");
+// const { default: mongoose } = require("mongoose");
 
 // const { default: mongoose } = require("mongoose");
 
@@ -46,26 +46,59 @@ const { default: mongoose } = require("mongoose");
 
 
 
-const cartSchema=new mongoose.Schema({
-    userId:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"user"
+// const cartSchema=new mongoose.Schema({
+//     userId:{
+//         type:mongoose.Schema.Types.ObjectId,
+//         ref:"user"
+//     },
+//     products:[
+//         {
+//             productId:{
+//                 type:mongoose.Schema.Types.ObjectId,
+//                 ref:"product"
+//             },
+//             quantity:Number,
+//             name:String,
+//             price:Number,
+//         }
+//     ],
+//     total:{
+//         type:Number,
+//         default:0,
+//     }
+
+// })
+// module.exports=mongoose.model("cart",cartSchema);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const { default: mongoose } = require('mongoose')
+// const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const cartSchema = new Schema({
+
+    user: {
+        type: String,
+        required: true
     },
-    products:[
-        {
-            productId:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"product"
-            },
-            quantity:Number,
-            name:String,
-            price:Number,
-        }
-    ],
-    total:{
-        type:Number,
-        default:0,
-    }
+    products: {
+        type: Array,
+        required: true
+    },
+
 
 })
-module.exports=mongoose.model("cart",cartSchema);
+
+module.exports = mongoose.model('cart', cartSchema)

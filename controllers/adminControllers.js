@@ -8,6 +8,10 @@ const user = require('../models/user')
 const { render } = require('ejs')
 const { findById } = require('../models/admin')
 
+let categoryErr;
+
+
+
 module.exports = {
     getAdminHome: (req, res) => {
         if (req.session.adminloggedIn) {
@@ -111,6 +115,7 @@ module.exports = {
                 res.send(err);
             } else {
                 console.log(result)
+
                 res.render('admin/admin-alluser', { result })
             }
         });
@@ -225,26 +230,86 @@ module.exports = {
 
     //-------------------add category and send catogory name to that page in .then
     getAdminAddCategory: (req, res) => {
-        const newcategory = new category({
-            name: req.body.name
+        category.find({name:req.body.name},(err,data)=>{
+            
+            if(data.length==0){
+                const newcategory=new category({
+                    name:req.body.name
+                    
+                })
+                newcategory.save()
+                    .then(data=>{
+                        console.log('38')
+                        console.log(data);
+
+                        res.redirect('/admin/categoryPage')
+                    })
+                    .catch(err=>{
+                        console.log(err)
+                        console.log('246')
+                    })
+            }else{
+                console.log("249")
+                categoryErr="category already added"
+                res.redirect('/admin/categoryPage')
+            }
+            
+
         })
 
-        newcategory.save()
-            .then(data => { 
-                res.redirect('/admin/categoryPage')
-            })
+
+
+        // const newcategory = new category({
+        //     name: req.body.name
+        // })
+
+        // newcategory.save()
+        //     .then(data => { 
+        //         res.redirect('/admin/categoryPage')
+        //     })
 
     },
 
     getAdminDeleteCategory:(req,res)=>{
-        let deleteId=req.params.id
-         category.deleteOne({_id:(deleteId)},(err,data)=>{
-            if(err){
-                console.log(err)
-            }else{
+
+        product.find({category:req.params.name}).then((products)=>{
+            console.log(products)
+            if(products.length==0){
+                console.log(products.length)
+             const cartId=req.params._id
+                console.log(cartId)
+                category.deleteOne({name:req.params.name}).then((result)=>{
+                    console.log("findbyid remove")
+                    console.log(result)
+                    
+                }).catch((err)=>{
+                    console.log(err)
+                })
+                res.redirect('/admin/categoryPage')
+            }
+            else{
                 res.redirect('/admin/categoryPage')
             }
         })
+
+
+
+        // product.find({category:req.params.name}).then((productList)=>{
+        //     if(productList.length == 0){
+        //         let deleteId=req.params.id
+        //  category.deleteOne({_id:(deleteId)},(err,data)=>{
+        //     if(err){
+        //         console.log(err)
+        //     }else{
+        //         res.redirect('/admin/categoryPage')
+        //     }
+        // })
+
+
+        //     }
+
+        //})
+        
     },
 
      getAdminViewCategorey:(req,res)=>{

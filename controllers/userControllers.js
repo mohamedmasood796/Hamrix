@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const product =require('../models/productSchema')
 const { USER_COLLECTION } = require('../config/collection')
 const user = require('../models/user')
-const cart = require('../models/cartSchema')
+const cartSchema = require('../models/cartSchema')
 
 
 // const userSession=(req,res,next)=>{
@@ -28,11 +28,12 @@ module.exports={
         // });
 
         return new Promise(async(resolve,reject)=>{
-            await product.find().then((result)=>{
+            await product.find({access:true}).limit(8).then((result)=>{
                 resolve(result)
             })
         }).then((result)=>{
             if(result) {
+                
                 res.render('user/user-home',{user:req.session.user,result})
             } else {
                 res.redirect("/")
@@ -180,37 +181,104 @@ module.exports={
         console.log(products)
 
         res.render('user/user-productOnePage',{ products,user })
-    }
+    },
+
+    getUserOtpPage:(req,res)=>{
+        res.render('user/user-otp')
+    },
+
+    otpToHome:(req,res)=>{
+        res.redirect('/')
+    },
+
+    getUserAllProduct:(req,res)=>{
+        let user=req.session.user
+        product.find({},(err,result)=>{
+            if(err){
+                console.log(err)
+            }else{
+                res.render('user/user-shop',{user,result})
+            }
+        })
+        
+    },
 
 
-
-
-
-
-
-
-    // getUserCart:(req,res)=>{
-    //     let user=req.session.user
-    //     res.render('user/user-cart',{user})
+    // getUserCart : async (req,res) => {
+    //     if(req.session.user){
+    //        const getUserId = req.session.user._id 
+    //         proId = req.params.proId
+    //         const userCart = await cartSchema.findOne({user :getUserId}).lean()
+    //         if(userCart){
+    //             cartSchema.findOneAndUpdate(
+    //                 { user: getUserId }, 
+    //                 { $push: { products: proId } }
+                    
+    //             ) 
+    //         }else{
+    //             const newCart = new cartSchema({
+    //                 user :getUserId,
+    //                 products : proId
+    //             })
+    //             newCart.save()
+    //         }
+    //     }else{
+    //         res.redirect('/user-login')
+    //     }
+      
     // },
 
 
 
-    // getproductAddToCart:async(req,res)=>{
-    //     const proId=req.params.id
-    //     const newUserId=req.session.user.id
 
-    //     return new Promise(async(resolve,reject)=>{
-    //         let usercart=await cart.findOne({userId:newUserId})
-    //         if(usercart){
+    getUserCart:async(req,res)=>{
+        
+        if(req.session.user){
 
-    //         }else{
-    //             let cartobj={
-    //                 user:newUserId,
+            const getUserId=req.session.user._id
+            let proId=req.params.id
+            const userCart=await cartSchema.findOne({user:getUserId}).lean()
+            let arr = [...userCart.products]
+            if(userCart){
+                arr.push(proId);
+                cartSchema.updateOne(
+                    {user:getUserId},
+                    {$set: {"products": arr}}
+                )
+                .then(data => {
+                    console.log(data)
+                })
+
+            }else{
+                const newCart = new cartSchema({
+                    user:getUserId,
+                    products:proId
+                })
+                newCart.save()
+            }
+        }else{
+            res.redirect('/user-login')
+        }
+        
+    },
+
+
+
+    getproductAddToCart:async(req,res)=>{
+        const proId=req.params.id
+        const newUserId=req.session.user.id
+
+        return new Promise(async(resolve,reject)=>{
+            let usercart=await cart.findOne({userId:newUserId})
+            if(usercart){
+
+            }else{
+                let cartobj={
+                    user:newUserId,
                     
-    //             }
-    //         }
-    //     })
+                }
+            }
+        })
 
 
 
@@ -224,7 +292,8 @@ module.exports={
         //     }
         //     cart.insertOne(cartobj )
         // }
-    // }
+
+    }
 
 
 

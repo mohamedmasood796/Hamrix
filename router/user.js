@@ -35,15 +35,20 @@ router.post('/user/user-profile',userControllers.getUserEditProfile)
 //to show product one page delect
 router.get('/show-onePageProduct/:id',userControllers.getOnePageProduct)
 
+//to show otp page and post of signup
+router.post('/user-otp',userControllers.getUserOtpPage)
 
+//user otp page to home
+router.post('/to-home',userControllers.otpToHome)
 
-
+//user show all product 
+router.get('/user-all-product',userControllers.getUserAllProduct)
 
 //user cart page shew 
-//router.get('/user-cart',userControllers.getUserCart)
+router.get('/userCart/:id',userControllers.getUserCart)
 
 //product add to cart
-//router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
+router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
 
 
 
