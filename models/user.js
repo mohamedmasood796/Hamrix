@@ -39,10 +39,7 @@ let userSchema = new Schema({
       type: String,
       required:true
     },
-    address: {
-      type: addressSchema,
-      required: false
-    },
+    address: [addressSchema],
     password:{
       type:String,
       required:true

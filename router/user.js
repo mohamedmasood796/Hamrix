@@ -15,7 +15,7 @@ router.get('/user-signup',userControllers.getUserSignup)
 router.post('/user-login',userControllers.getUserLoginPost)
 
 //get user signup post
-router.post('/user-signup',userControllers.getUserSignupPost)
+//router.post('/user-signup',userControllers.getUserSignupPost)
 
 //get user session distroy 
 router.get('/user-logout',userControllers.getUserLogout)
@@ -36,7 +36,7 @@ router.post('/user/user-profile',userControllers.getUserEditProfile)
 router.get('/show-onePageProduct/:id',userControllers.getOnePageProduct)
 
 //to show otp page and post of signup
-router.post('/user-otp',userControllers.getUserOtpPage)
+router.post('/user-otp',userControllers.getUserSiginupPage)
 
 //user otp page to home
 router.post('/to-home',userControllers.otpToHome)
@@ -48,7 +48,10 @@ router.get('/user-all-product',userControllers.getUserAllProduct)
 router.get('/userCart/:id',userControllers.getUserCart)
 
 //product add to cart
-router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
+//router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
+
+//user cart page get
+router.get('/view-cartPage',userControllers.getCartPage)
 
 
 

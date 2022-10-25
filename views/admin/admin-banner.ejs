@@ -7,13 +7,15 @@
         <div class="row">
             <div class="col-md-6 mt-4">
                 <h2 class="text-center">Add Banner</h2>
-                <form action="/admin/add-product" method="post"  enctype="multipart/form-data">
+                <form action="/admin/banner" method="post"  enctype="multipart/form-data">
                     <label for=""> Product Name</label>
                     <input type="text" name="name" class="form-control" required><br>
 
                     <label for="">Image</label>
+                    <img style="width:50px; height: 50px" src="/product-images/" alt="" id="imgView">
                     <input type="file" name="image" class="form-control" multiple required><br>
 
+                    
                     <button type="submit" class="btn btn-success mt-4">submit</button>
                 </form>
             </div>

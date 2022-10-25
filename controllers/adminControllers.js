@@ -9,20 +9,24 @@ const { render } = require('ejs')
 const { findById } = require('../models/admin')
 
 let categoryErr;
+let adminloginErr;
 
 
 
 module.exports = {
     getAdminHome: (req, res) => {
         if (req.session.adminloggedIn) {
-            res.render('admin/admin-home')
+            let admin = req.session.user
+            res.render('admin/admin-home', { admin })
         } else {
-            res.redirect('/admin/admin-login')
+            res.render('admin/admin-login', { adminloginErr })
+            adminloginErr = null
         }
 
     },
 
     getAdminLogin: (req, res) => {
+
         res.render('admin/admin-login')
     },
 
@@ -41,11 +45,13 @@ module.exports = {
                 } else {
                     req.session.loginErr = true
                     console.log("password incorrect")
-                    res.redirect('/admin/admin-login')
+                    adminloginErr = "invalid password"
+                    res.redirect('/admin/')
                 }
             } else {
                 console.log("data not found")
-                res.redirect('/admin/admin-login')
+                adminloginErr = "invalid email"
+                res.redirect('/admin/')
             }
         })
 
@@ -70,14 +76,14 @@ module.exports = {
     },
     //add product by admin
     getAdminAddProduct: (req, res) => {
-        category.find({},(err,data)=>{
-            if(err){
+        category.find({}, (err, data) => {
+            if (err) {
                 console.log(err)
-            }else{
-                res.render('admin/admin-addproduct',{data})
+            } else {
+                res.render('admin/admin-addproduct', { data })
             }
         })
-        
+
     },
 
     //add product post methord
@@ -96,7 +102,7 @@ module.exports = {
                 Images[i] = files[i].filename
             }
             req.body.image = Images
-            const addProduct = new product({ name: name, price: price, description: description, category: category, image: Images,access:true })
+            const addProduct = new product({ name: name, price: price, description: description, category: category, image: Images, access: true })
             console.log(addProduct)
             addProduct.save().then((result) => {
                 res.redirect('/admin/add-product')
@@ -134,22 +140,22 @@ module.exports = {
     },
 
     //----------------------------delect product by admin
-    getAdminDeleteProduct:async(req,res)=>{
-        const prodId=req.params.id
+    getAdminDeleteProduct: async (req, res) => {
+        const prodId = req.params.id
         console.log(prodId)
-        prod= await product.findById(prodId)
-        prod.access=false,
-        await prod.save()
+        prod = await product.findById(prodId)
+        prod.access = false,
+            await prod.save()
         res.redirect('/admin/all-product')
     },
-    
-    getAdminUndelectProduct:async(req,res)=>{
-        const prodId=req.params.id
+
+    getAdminUndelectProduct: async (req, res) => {
+        const prodId = req.params.id
         console.log(prodId)
-        const undelect=await product.findById(prodId)
+        const undelect = await product.findById(prodId)
         console.log(undelect)
-        undelect.access=true,
-        await undelect.save()
+        undelect.access = true,
+            await undelect.save()
         res.redirect('/admin/all-product')
     },
 
@@ -175,17 +181,43 @@ module.exports = {
     // },
 
 
-    getAdminProductUpdate: async (req, res) => {
-        proId = req.params.id
-        let productde = await product.findOne({ _id: (proId) })  //productde =_id ulla full document
-            productde.name = req.body.name,
-            productde.description = req.body.description,
-            productde.price = req.body.price,
-            productde.category = req.body.category
-        await productde.save()
-        res.redirect('/admin/all-product')        
+    getAdminProductUpdate:  (req, res) => {
+        console.log(req.files)
+        console.log(req.file)
+         const imagename = []
+        for (file of req.files) {
+            imagename.push(file.filename)
+        }
+        // proId = req.params.id
+        // let productde = await product.findOne({ _id: (proId) })  //productde =_id ulla full document
+        //     productde.name = req.body.name,
+        //     productde.description = req.body.description,
+        //     productde.price = req.body.price,
+        //     productde.category = req.body.category
+        //     productde.image=image
+        // await productde.save()
+        // res.redirect('/admin/all-product')   
+
+        
+
+        product.find({ _id: req.params.id }, (err, data) => {
+            product.updateOne({ _id: req.params.id }, {
+                $set: {
+                    name : req.body.name,
+                    description : req.body.description,
+                    price : req.body.price,
+                    category : req.body.category,
+                    image:imagename
+                }
+            }).then((data)=>{
+                console.log(data);
+            })
+            res.redirect('/admin/all-product')  
+        })
+
+
     },
-//====================================================================================================
+    //====================================================================================================
 
     //==================user block
     getAdminBlockUser: async (req, res) => {
@@ -208,12 +240,12 @@ module.exports = {
     getAdminAddCategoryPage: (req, res) => {
 
         category.find({}, (err, ans) => {
-            if(err){
+            if (err) {
                 console.log(err)
-                res.render('admin/admin-addCategory',{ans:[]})        //what is the porpose
-            }else{
-                
-                res.render('admin/admin-addCategory',{ans})
+                res.render('admin/admin-addCategory', { ans: [] })        //what is the porpose
+            } else {
+
+                res.render('admin/admin-addCategory', { ans })
             }
         })
         // ,function(err,ans){
@@ -225,35 +257,35 @@ module.exports = {
         //         res.render('admin/admin-addCategory',{ans})
         //     }
         // }
-        
+
     },
 
     //-------------------add category and send catogory name to that page in .then
     getAdminAddCategory: (req, res) => {
-        category.find({name:req.body.name},(err,data)=>{
-            
-            if(data.length==0){
-                const newcategory=new category({
-                    name:req.body.name
-                    
+        category.find({ name: req.body.name }, (err, data) => {
+
+            if (data.length == 0) {
+                const newcategory = new category({
+                    name: req.body.name
+
                 })
                 newcategory.save()
-                    .then(data=>{
+                    .then(data => {
                         console.log('38')
                         console.log(data);
 
                         res.redirect('/admin/categoryPage')
                     })
-                    .catch(err=>{
+                    .catch(err => {
                         console.log(err)
                         console.log('246')
                     })
-            }else{
+            } else {
                 console.log("249")
-                categoryErr="category already added"
+                categoryErr = "category already added"
                 res.redirect('/admin/categoryPage')
             }
-            
+
 
         })
 
@@ -270,24 +302,24 @@ module.exports = {
 
     },
 
-    getAdminDeleteCategory:(req,res)=>{
+    getAdminDeleteCategory: (req, res) => {
 
-        product.find({category:req.params.name}).then((products)=>{
+        product.find({ category: req.params.name }).then((products) => {
             console.log(products)
-            if(products.length==0){
+            if (products.length == 0) {
                 console.log(products.length)
-             const cartId=req.params._id
+                const cartId = req.params._id
                 console.log(cartId)
-                category.deleteOne({name:req.params.name}).then((result)=>{
+                category.deleteOne({ name: req.params.name }).then((result) => {
                     console.log("findbyid remove")
                     console.log(result)
-                    
-                }).catch((err)=>{
+
+                }).catch((err) => {
                     console.log(err)
                 })
                 res.redirect('/admin/categoryPage')
             }
-            else{
+            else {
                 res.redirect('/admin/categoryPage')
             }
         })
@@ -309,21 +341,25 @@ module.exports = {
         //     }
 
         //})
-        
+
     },
 
-     getAdminViewCategorey:(req,res)=>{
-        let viewprod=req.params.id
+    getAdminViewCategorey: (req, res) => {
+        let viewprod = req.params.id
         console.log(viewprod)
-        product.find({category:viewprod},(err,data)=>{
-            if(err){
+        product.find({ category: viewprod }, (err, data) => {
+            if (err) {
                 console.log(err)
-            }else{
+            } else {
                 console.log(data)
-                res.render('admin/admin-viewProductbycar',{data})
+                res.render('admin/admin-viewProductbycar', { data })
             }
-        })  
+        })
     },
+
+    getAdminBanner:(req,res)=>{
+        res.render('admin/admin-banner')
+    }
 
 
 

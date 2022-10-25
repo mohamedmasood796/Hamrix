@@ -32,14 +32,14 @@ router.get('/all-user',adminControllers.getAdminAllUser)
 //admin edit product
 router.get('/edit-product/:id',adminControllers.getAdminEditProduct)
 
-//admin delect product by admin
+//admin delete product by admin
 router.get('/delete-Product/:id',adminControllers.getAdminDeleteProduct)
 
 //admin undelect product by admin
 router.get('/undelete-Product/:id',adminControllers.getAdminUndelectProduct)
 
 //admin product updat post methord
-router.post('/update-product/:id',adminControllers.getAdminProductUpdate)
+router.post('/update-product/:id',store.array("image",3),adminControllers.getAdminProductUpdate)
 
 //admin user block
 router.get('/block-user/:id',adminControllers.getAdminBlockUser)
@@ -58,6 +58,9 @@ router.get('/delete-category/:name',adminControllers.getAdminDeleteCategory)
 
 //admin view product by catecory
 router.get('/view-productCategory/:id',adminControllers.getAdminViewCategorey)
+
+//admin banner mangment
+router.get('/banner',adminControllers.getAdminBanner)
 
 
 
