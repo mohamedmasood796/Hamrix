@@ -51,7 +51,7 @@ router.get('/userCart/:id',userControllers.getUserCart)
 //router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
 
 //user cart page get
-router.get('/view-cartPage',userControllers.getCartPage)
+// router.get('/view-cartPage',userControllers.getCartPage)
 
 
 

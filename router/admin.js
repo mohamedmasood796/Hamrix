@@ -54,7 +54,7 @@ router.get('/categoryPage',adminControllers.getAdminAddCategoryPage)
 router.post('/add-category',adminControllers.getAdminAddCategory)
 
 //admin delete catergory
-router.get('/delete-category/:name',adminControllers.getAdminDeleteCategory)
+router.post('/delete-category/:name',adminControllers.getAdminDeleteCategory)
 
 //admin view product by catecory
 router.get('/view-productCategory/:id',adminControllers.getAdminViewCategorey)

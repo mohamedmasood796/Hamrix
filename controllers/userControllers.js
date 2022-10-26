@@ -324,66 +324,46 @@ module.exports = {
 
 
     //=================add to cart first step================
-    getUserCart: async (req, res) => {
-        if (req.session.user) {
-            const getUserId = req.session.user._id
-            console.log("heyheyhey" + getUserId);
-            proId = req.params.id
-            console.log("madood" + proId)
-            const userCart = await cartSchema.findOne({ user: getUserId }).lean()
-            console.log(userCart + "mom")
-            if (userCart) {
-                console.log(proId);
-                const newCart = await cartSchema.updateOne(
-                    { user: getUserId }, //find chayyan
-                    { $push: { products: proId } }//set chayyanulla data
+    // getUserCart: async (req, res) => {
+    //     if (req.session.user) {
+    //         const getUserId = req.session.user._id
+    //         console.log("heyheyhey" + getUserId);
+    //         proId = req.params.id
+    //         console.log("madood" + proId)
+    //         const userCart = await cartSchema.findOne({ user: getUserId }).lean()
+    //         console.log(userCart + "mom")
+    //         if (userCart) {
+    //             console.log(proId);
+    //             const newCart = await cartSchema.updateOne(
+    //                 { user: getUserId }, //find chayyan
+    //                 { $push: { products: proId } }//set chayyanulla data
 
-                )
+    //             )
 
-                res.redirect('/')
-            } else {
-                const newCart = new cartSchema({
-                    user: getUserId,
-                    products: proId
-                })
-                newCart.save()
-                res.redirect('/')
-            }
-        } else {
-            res.redirect('user/user-cart')
+    //             res.redirect('/')
+    //         } else {
+    //             const newCart = new cartSchema({
+    //                 user: getUserId,
+    //                 products: proId
+    //             })
+    //             newCart.save()
+    //             res.redirect('/')
+    //         }
+    //     } else {
+    //         res.redirect('user/user-cart')
+    //     }
+    // },
+
+
+
+    getUserCart:(req,res)=>{
+        if(req.session.user){
+
+        }else{
+            res.redirect('/user-login')
         }
-    },
+    }
 
-
-    getCartPage: async (req, res) => {
-        if (req.session.user) {
-            getUserId = req.session.user._id
-            const prod = await cartSchema.aggregate([
-                {
-                    $match: { getUserId }
-                },
-                {
-                    $lookup: {
-                        from: 'products',
-                        let: { proList: '$products' },  //$products=mongodb products ,it is from cart scheema
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $in: ['$_id', '$proList']
-                                    }
-                                }
-                            }
-                        ],
-                        as: 'cartItems'
-                    }
-                }
-            ]).toArray()
-        } else {
-            res.render('user/user-cart', { user })
-        }
-
-    },
 
 
 

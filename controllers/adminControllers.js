@@ -211,9 +211,7 @@ module.exports = {
         //     productde.image=image
         // await productde.save()
         // res.redirect('/admin/all-product')   
-
         
-
         product.find({ _id: req.params.id }, (err, data) => {
             product.updateOne({ _id: req.params.id }, {
                 $set: {
@@ -319,22 +317,23 @@ module.exports = {
 
     getAdminDeleteCategory: (req, res) => {
         console.log(req.params.name)
+        console.log('lllllllllllllllllllll');
 
         product.find({ category: req.params.name }).then((productsList) => {
             console.log("masood")
             console.log(productsList,55555555)
             if (productsList.length <1) {
                 console.log(productsList.length,8888)
-                const catId = req.params.id
-                console.log(catId)
+                // const catId = req.params.id
+                // console.log(catId)
                 category.deleteOne({ name: req.params.name }).then((result) => {
                     console.log("findbyid remove")
                     console.log(result)
+                    res.json({status:true})
 
                 }).catch((err) => {
                     console.log(err)
                 })
-                res.redirect('/admin/categoryPage')
             }
             else {
                 res.redirect('/admin/categoryPage')

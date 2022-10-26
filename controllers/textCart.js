@@ -120,4 +120,62 @@
 
 
 
+// addToCart: async (req, res) => {
+//     if (req.session.user) {
+//         let quantity = req.params.quantity
+//         const userId = req.session.user._id
+//         cartProductQuantity = 1 ;
+//         // console.log("heyheyhey" + userId);
+//         if (quantity > 0) {
+//             productId = req.params.proId
+//             const findProduct = await productCollection.findById(productId)
+//             // console.log(findProduct);
+//             const price = findProduct.Price
+//             const name = findProduct.Name
+//             const userCart = await cartSchema.findOne({ userId })
+//             // if user already has a cart
+//             if (userCart) {
+//                 let itemIndex = userCart.products.findIndex(p => p.productId == productId);
+//                 console.log(itemIndex + "indexxxxxxxx");
+//                 if (itemIndex > -1) {
+//                     //  then the product already exist
+//                     let productItem = userCart.products[itemIndex]
+//                     productItem.quantity++;
+//                     console.log(productItem.quantity);
+                    
+//                     // let qtyproduct = await cartSchema.findOneAndUpdate({
+//                     //     userId :userId}, {$inc : {'products.quantity' : 1}}).exec();
+//                     //     qtyproduct.save()
+//                     res.redirect('/')
+//                 } else {
+//                     // product is not in cart
+//                     console.log(userCart.products);
+//                     userCart.products.push({ productId,quantity :1, name, price });
+//                     await userCart.save()
+//                     res.redirect('/')
+//                 }
+//              userCart.total = userCart.products.reduce((acc,curr) => {
+//                 return acc + curr.quantity * curr.price;
+//              },0)
+                
 
+//                 await userCart.save()
+//             } else {
+//                 const newCart = new cartSchema({
+//                     userId: userId,
+//                     products: [{ productId,quantity :1, name, price }],
+//                     total : cartProductQuantity * price
+//                 })
+//                 await newCart.save()
+//                 res.redirect('/')
+//             }
+//             //      
+//         } else {
+//             console.log("OUT OF STOCK");
+//         }
+//     } else {
+//         res.redirect('/login')
+//     }
+
+
+// },
