@@ -10,21 +10,24 @@
                 <form action="/admin/update-product/<%=result.id%>" method="post" enctype="multipart/form-data" >
                     <%console.log(result)%>
                     <label for=""> Product Name</label>
-                    <input type="text" name="name" class="form-control" value="<%=result.name %>"><br>
+                    <input type="text" name="name" class="form-control" value="<%=result.name %>"required><br>
 
                     <label for="">Category</label>
-                    <input type="text" name="category" class="form-control" value="<%=result.category %>"><br>
+                    <input type="text" name="category" class="form-control" value="<%=result.category %>"required><br>
 
                     <label for="">Description</label>
-                    <input type="text" name="description" class="form-control" value="<%=result.description %>"><br>
+                    <input type="text" name="description" class="form-control" value="<%=result.description %>"required><br>
 
                     <label for="">Price</label>
-                    <input type="text" name="price" class="form-control" value="<%=result.price %>"><br>
+                    <input type="text" name="price" class="form-control" value="<%=result.price %> "required><br>
+
+                    <label for="">Quantity</label>
+                    <input type="text" name="quantity" class="form-control" value="<%=result.quantity %>" required><br>
 
                     <label for="">Image</label>
                     <!-- <img src="/product-images/<%=result.id %>.ext" alt=""> -->
                     <img style="width:50px; height: 50px" src="/product-images/<%= result.image[0] %>" alt="" id="imgView">
-                    <input type="file" name="image" class="form-control" multiple onchange="viewImage(event)" ><br>
+                    <input type="file" name="image" class="form-control" multiple onchange="viewImage(event)" required><br>
 
                     <button type="submit" class="btn btn-success mt-4">submit</button>
                 </form>

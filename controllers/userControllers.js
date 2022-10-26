@@ -6,6 +6,7 @@ const user = require('../models/user')
 const cartSchema = require('../models/cartSchema')
 const { aggregate } = require('../models/user')
 const otpverification = require('../utils/otp-generator')
+const bannerSchema = require('../models/bannerSchema')
 let loggedIn;
 
 // const userSession=(req,res,next)=>{
@@ -19,52 +20,66 @@ let loggedIn;
 let loginErr;
 
 module.exports = {
-    getUserHome: (req, res) => {
-        // product.find({}, function (err, result) {
-        //     if (err) {
-        //         res.send(err);
-        //     } else {
-        //         res.render('user/user-home',{user:req.session.user,result})
+    getUserHome:(req,res)=>{
+         bannerSchema.find({access:true}, function (err, ans) {
+            product.find({access:true},function(err,result){
+                if (err) {
+                    res.send(err);
+                } else {
+                    console.log('masood')
+                    console.log(result)
+                    res.render('user/user-home',{user:req.session.user,result,ans})
+    
+                }
 
-        //     }
-        // });
-        //=============================================================
-        return new Promise(async (resolve, reject) => {
-            await product.find({ access: true }).limit(8).then((result) => {
-                resolve(result)
-            })
-        }).then((result) => {
-            if (result) {
-                // console.log(result);
-                console.log(req.session.user)
-                res.render('user/user-home', { user: req.session.user, result })
-            } else {
-                res.render("user/user-home")
-            }
+            }).limit(8)
+            
+            
+        });
 
-        })
-
-
-        //========================================
-        // if(loggedIn){
-        //     let user=req.session.user
-        //     product.find({},(err,result)=>{
-        //         if(err){
-        //             console.log(err)
-        //         }else{
-        //             res.render('user/user-home',{user,result})
-        //         }
-        //     })
-        // }else{
-        //     product.find({},(err,result)=>{
-        //         if(err){
-        //             console.log(err)
-        //         }else{
-        //             res.render('user/user-home',{user,result})
-        //         }
-        //     })
-        // }
     },
+
+
+    // getUserHome: (req, res) => {
+    //     //=============================================================
+    //     return new Promise(async (resolve, reject) => {
+    //         //  await bannerScema.find({access:true})
+    //         await product.find({ access: true }).limit(8).then((result) => {
+    //             resolve(result)
+    //         })
+    //     }).then((result) => {
+            
+    //         if (result) {
+    //             // console.log(result);
+    //             console.log(req.session.user)
+    //             res.render('user/user-home', { user: req.session.user, result })
+    //         } else {
+    //             res.render("user/user-home")
+    //         }
+
+    //     })
+
+
+    //     //========================================
+    //     // if(loggedIn){
+    //     //     let user=req.session.user
+    //     //     product.find({},(err,result)=>{
+    //     //         if(err){
+    //     //             console.log(err)
+    //     //         }else{
+    //     //             res.render('user/user-home',{user,result})
+    //     //         }
+    //     //     })
+    //     // }else{
+    //     //     product.find({},(err,result)=>{
+    //     //         if(err){
+    //     //             console.log(err)
+    //     //         }else{
+    //     //             res.render('user/user-home',{user,result})
+    //     //         }
+    //     //     })
+    //     // }
+    // },
 
     getUserLogin: (req, res) => {
         if (req.session.userloggedIn) {
@@ -180,14 +195,14 @@ module.exports = {
 
     getUserProfilePage: (req, res) => {
         let user = req.session.user
-        console.log('get :',user.address[0]);
+        //console.log('get :',user.address[0]);
         res.render('user/user-profilePage', { user })
     },
     getUserEditProfile: async (req, res) => {
         let userId = req.session.user._id
-        console.log(userId + "kuta")
+        //console.log(userId + "kuta")
         let userutut = req.session.user
-        console.log(req.body)
+        //console.log(req.body)
         let kkkk = await user.updateOne({ _id: userId }, {
             $set: {
                 userName: req.body.firstName,
@@ -296,7 +311,7 @@ module.exports = {
 
     getUserAllProduct: (req, res) => {
         let user = req.session.user
-        product.find({}, (err, result) => {
+        product.find({access: true}, (err, result) => {
             if (err) {
                 console.log(err)
             } else {

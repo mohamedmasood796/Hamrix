@@ -59,8 +59,20 @@ router.get('/delete-category/:name',adminControllers.getAdminDeleteCategory)
 //admin view product by catecory
 router.get('/view-productCategory/:id',adminControllers.getAdminViewCategorey)
 
-//admin banner mangment
-router.get('/banner',adminControllers.getAdminBanner)
+//admin banner managment page get
+router.get('/banneraddpage',adminControllers.getAdminBanner)
+
+//admin banner page post
+router.post('/addbanner',store.array("image",3),adminControllers.getAdminBannerPost)
+
+//admin can block banner
+router.get('/block-banner/:id',adminControllers.getBannerBlock)
+
+//admin can unblock banner
+router.get('/unblock-banner/:id',adminControllers.getAdminUnblockBanner)
+
+
+
 
 
 

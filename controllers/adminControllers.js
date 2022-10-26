@@ -7,6 +7,8 @@ const collection = require('../config/collection')
 const user = require('../models/user')
 const { render } = require('ejs')
 const { findById } = require('../models/admin')
+const bannerSchema=require("../models/bannerSchema")
+
 
 let categoryErr;
 let adminloginErr;
@@ -92,6 +94,7 @@ module.exports = {
         const name = req.body.name
         const description = req.body.description
         const price = req.body.price
+        const quantity= req.body.quantity
         const category = req.body.category
         const image = req.body.image
 
@@ -102,9 +105,19 @@ module.exports = {
                 Images[i] = files[i].filename
             }
             req.body.image = Images
-            const addProduct = new product({ name: name, price: price, description: description, category: category, image: Images, access: true })
+            const addProduct = new product({
+                 name: name, 
+                 price: price,
+                  description: description, 
+                  category: category, 
+                  quantity:quantity,
+                  image: Images, 
+                  access: true
+                 })
+
             console.log(addProduct)
-            addProduct.save().then((result) => {
+            addProduct.save()
+            .then((result) => {
                 res.redirect('/admin/add-product')
             }
             )
@@ -184,7 +197,8 @@ module.exports = {
     getAdminProductUpdate:  (req, res) => {
         console.log(req.files)
         console.log(req.file)
-         const imagename = []
+
+        const imagename = []
         for (file of req.files) {
             imagename.push(file.filename)
         }
@@ -206,6 +220,7 @@ module.exports = {
                     name : req.body.name,
                     description : req.body.description,
                     price : req.body.price,
+                    quantity:req.body.quantity,
                     category : req.body.category,
                     image:imagename
                 }
@@ -303,13 +318,15 @@ module.exports = {
     },
 
     getAdminDeleteCategory: (req, res) => {
+        console.log(req.params.name)
 
-        product.find({ category: req.params.name }).then((products) => {
-            console.log(products)
-            if (products.length == 0) {
-                console.log(products.length)
-                const cartId = req.params._id
-                console.log(cartId)
+        product.find({ category: req.params.name }).then((productsList) => {
+            console.log("masood")
+            console.log(productsList,55555555)
+            if (productsList.length <1) {
+                console.log(productsList.length,8888)
+                const catId = req.params.id
+                console.log(catId)
                 category.deleteOne({ name: req.params.name }).then((result) => {
                     console.log("findbyid remove")
                     console.log(result)
@@ -358,7 +375,50 @@ module.exports = {
     },
 
     getAdminBanner:(req,res)=>{
-        res.render('admin/admin-banner')
+        bannerSchema.find({},(err,ans)=>{
+            if(err){
+                console.log(err)
+            }else{
+                console.log(ans)
+                res.render('admin/admin-banner',{ans})
+            }
+        }) 
+    },
+
+    getAdminBannerPost:(req,res)=>{
+        const imagename = []
+        for (file of req.files) {
+            imagename.push(file.filename)
+        }
+
+        const banner=new bannerSchema({
+
+            name:req.body.name,
+            image:imagename,
+            access: true,
+
+        })
+        console.log(banner)
+        banner.save()
+        res.redirect('/admin/banneraddpage')
+    },
+
+    getBannerBlock:async(req,res)=>{
+        prodId=req.params.id
+        let newbanner= await bannerSchema.findOne({_id:(prodId)})
+        newbanner.access=false
+        await newbanner.save()
+        
+        res.redirect('/admin/banneraddpage')
+
+    },
+
+    getAdminUnblockBanner:async(req,res)=>{
+        prodId=req.params.id
+        let edbanner=await bannerSchema.findOne({_id:(prodId)})
+        edbanner.access=true
+        await edbanner.save()
+        res.redirect('/admin/banneraddpage')
     }
 
 

@@ -1,8 +1,10 @@
 const otpgenerator = require('otp-generator')
 
-const accountSid ='ACe4503322fe45a5e9c31d0854c5668928'
-const authToken ='70d2d899c0f431868bbe0762357820de'
-const servieId ='MG43ce09544b7c6f8e9ecd645c4cbb5a49'
+const otpKeys = require("../utils/otp-keys");
+
+const accountSid = otpKeys.accountSid;
+const authToken = otpKeys.authToken;
+const servieId = otpKeys.servieId;
 const client=require('twilio')(accountSid,authToken)
 
 module.exports={
@@ -20,8 +22,8 @@ module.exports={
             client.messages
                 .create({
                     body:`sent from your Hamrix food account : ${otp}`,
-                    messagingServiceSid:'MG43ce09544b7c6f8e9ecd645c4cbb5a49',
-                    to:`+917510260135`
+                    messagingServiceSid: otpKeys.servieId,
+                    to: otpKeys.number
                 })
                 .then(message=>{
                     resolve(message)

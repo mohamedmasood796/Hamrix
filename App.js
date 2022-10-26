@@ -6,6 +6,7 @@ const mongoose=require('./config/connection')
 const app = express();
 var session = require('express-session')
 const nocache = require("nocache");
+const Swal = require('sweetalert2')
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))

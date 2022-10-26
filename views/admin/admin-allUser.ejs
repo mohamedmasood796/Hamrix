@@ -1,36 +1,59 @@
 <%- include('./include/admin-headlink'); %>
-<%- include('./include/admin-navside'); %>
-<%- include('./include/admin-header'); %>
+  <%- include('./include/admin-navside'); %>
+    <%- include('./include/admin-header'); %>
 
 
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">NO</th>
-        <th scope="col">User Name</th>
-        <th scope="col">Email</th>
-        <th scope="col">Phone</th>
-        <th scope="col">Status</th>
-      </tr>
-    </thead>
-    <tbody>
-        <% result.forEach(function(result,index) { %>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">NO</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Email</th>
+            <th scope="col">Phone</th>
+            <th scope="col">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% result.forEach(function(result,index) { %>
             <tr>
-              <th><%= index+1 %></th>
-              <th><%= result.userName %> </th>
-              <th><%= result.userEmail %></th>
-              <th><%= result. phone %></th>
+              <th>
+                <%= index+1 %>
+              </th>
+              <th>
+                <%= result.userName %>
+              </th>
+              <th>
+                <%= result.userEmail %>
+              </th>
+              <th>
+                <%= result. phone %>
+              </th>
 
 
               <td>
-              <% if (result.access) { %>
-                <a href="/admin/block-user/<%=result._id%>" class="btn btn-danger" >blocked</a>
-                <%} else { %>
-                  <a href="/admin/unblock-user/<%=result._id%>" class="btn btn-success" >unblock</a>
-                <% } %>
- 
-            </td>
+                <% if (result.access) { %>
+                  <a href="/admin/block-user/<%=result._id%>"  onclick="submit()" class="btn btn-danger">blocked</a>
+                  <%} else { %>
+                    <a href="/admin/unblock-user/<%=result._id%>" onclick="submit()" class="btn btn-success">unblock</a>
+                    
+                    <% } %>
+
+              </td>
             </tr>
-          <% }); %>
-    </tbody>
-  </table>
+            <% }); %>
+        </tbody>
+      </table>
+
+      <script>
+        function submit() {
+          Swal.fire({
+          
+            icon: 'success',
+            title: 'Your work has been saved',
+            showConfirmButton: true,
+          
+            timer: 1500
+          })
+
+        }
+      </script>
