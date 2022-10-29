@@ -45,7 +45,13 @@ router.post('/to-home',userControllers.otpToHome)
 router.get('/user-all-product',userControllers.getUserAllProduct)
 
 //user cart page shew 
-router.get('/userCart/:id',userControllers.getUserCart)
+router.get('/userCart/:id/:quantity',userControllers.getUserCart)
+
+//show cart page
+router.get('/viewUserCart',userControllers.getCartPage)
+
+
+
 
 //product add to cart
 //router.get('/add-to-cart/:id',userControllers.getproductAddToCart)

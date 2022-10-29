@@ -20,21 +20,21 @@ let loggedIn;
 let loginErr;
 
 module.exports = {
-    getUserHome:(req,res)=>{
-         bannerSchema.find({access:true}, function (err, ans) {
-            product.find({access:true},function(err,result){
+    getUserHome: (req, res) => {
+        bannerSchema.find({ access: true }, function (err, ans) {
+            product.find({ access: true }, function (err, result) {
                 if (err) {
                     res.send(err);
                 } else {
-                    console.log('masood')
-                    console.log(result)
-                    res.render('user/user-home',{user:req.session.user,result,ans})
-    
+                    //console.log('masood')
+                    //console.log(result)
+                    res.render('user/user-home', { user: req.session.user, result, ans })
+
                 }
 
             }).limit(8)
-            
-            
+
+
         });
 
     },
@@ -48,7 +48,7 @@ module.exports = {
     //             resolve(result)
     //         })
     //     }).then((result) => {
-            
+
     //         if (result) {
     //             // console.log(result);
     //             console.log(req.session.user)
@@ -107,7 +107,7 @@ module.exports = {
 
         if (user) {
             if (user.access) {
-                console.log('acdess')
+               // console.log('acdess')
                 bcrypt.compare(req.body.password, user.password).then((data) => {
                     if (data) {
                         req.session.userloggedIn = true
@@ -188,7 +188,6 @@ module.exports = {
 
     getUserProfileshow: (req, res) => {
         let user = req.session.user
-        console.log(user + 'amir')
         res.render('user/user-profileEdit', { user })
 
     },
@@ -217,7 +216,7 @@ module.exports = {
                 phone: req.body.phoneNumber,
             }
 
-        }).then((data)=>{
+        }).then((data) => {
             console.log(data);
         }
         )
@@ -247,7 +246,7 @@ module.exports = {
             console.log(nna + "a;ljfhjfa")
             // console.log(userEmail)
             console.log("email")
-            console.log(data)
+            //console.log(data)
             if (data.length == 0) {
                 if (req.body.password === req.body.ConfirmPassword) {
                     const user = new userModel({
@@ -284,18 +283,18 @@ module.exports = {
 
     //==================otp page home
 
-    otpToHome:async (req, res) => {
+    otpToHome: async (req, res) => {
         console.log(req.session.otpgenerator + "hari")
 
         if (req.session.otpgenerator === req.body.otp) {
             console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
             console.log(req.session.otp)
             let user = await userModel.create(req.session.otp)
-            console.log(user+"ksdhfasbldagalhkgfalhk")
+            console.log(user + "ksdhfasbldagalhkgfalhk")
             req.session.user = user
-            
-            req.session.otp=null
-                req.session.otpgenerator = null,
+
+            req.session.otp = null
+            req.session.otpgenerator = null,
                 loggedIn = true
             // req.session.userloggedIn = true
             // console.log(req.session.otp + "abu")
@@ -311,7 +310,7 @@ module.exports = {
 
     getUserAllProduct: (req, res) => {
         let user = req.session.user
-        product.find({access: true}, (err, result) => {
+        product.find({ access: true }, (err, result) => {
             if (err) {
                 console.log(err)
             } else {
@@ -356,12 +355,99 @@ module.exports = {
 
 
 
-    getUserCart:(req,res)=>{
-        if(req.session.user){
+    //================add to cart============
 
-        }else{
-            res.redirect('/user-login')
+    getUserCart: async(req, res) => {
+        let user= req.session.user
+        const productId=req.params.id
+        const quantity=parseInt(req.params.quantity)
+        // console.log("user details")
+        // console.log(user)
+        // console.log("productId")
+        // console.log(productId)
+        // console.log("quantity")
+        // console.log(quantity)
+
+        try{
+            const findProduct=await product.findById(productId)
+            console.log(findProduct)
+            //console.log(user)
+            const userId=req.session.user._id
+            const price=findProduct.price
+            const name= findProduct.name
+            // console.log(name)
+            // console.log("qut")
+            // console.log(findProduct.quantity)
+
+            // console.log("abu pottan")
+            // console.log(userId)
+
+            if(findProduct.quantity >= quantity){
+                findProduct.quantity-=quantity
+                const userId=req.session.user._id
+                //console.log(user)
+                // console.log("masood")
+                // console.log(userId)
+                let cart=await cartSchema.findOne({userId})
+
+                console.log(cart)
+                if(cart){
+                    console.log("if cart")
+                console.log(cart)
+
+                    //cart is exists for user
+                    let itemIndex = cart.products.findIndex(p=>p.productId==productId)
+                    if(itemIndex >-1){
+                        console.log("399")
+                        let productItem=cart.products[itemIndex]
+                        productItem.quantity+=quantity
+                    }else{
+                        //product does not exist in cart, add new item 
+                        console.log("404")
+                        cart.products.push({ productId, quantity, name, price })
+                        console.log('worked')
+                    }
+                    //product add chayyan
+                    cart.total=cart.products.reduce((acc,curr)=>{
+                        console.log("409")
+                        return acc+ curr.quantity*curr.price
+                    },0)
+                    console.log(cart.total)
+                    await cart.save()
+
+                }else{
+                    const total=quantity*price
+                    cart = new cartSchema({
+                        
+                        userId:userId,
+                        products:[{productId,quantity,name,price}],
+                        total:total
+                    })
+                    console.log("masood 422")
+                    await cart.save()
+                }
+
+            }else{
+
+            }
+            
+
+
+        }catch (err){
+
         }
+        
+        res.render('user/user-cart', { user })
+
+
+    },
+    
+
+    getCartPage:(req,res)=>{
+        let user= req.session.user
+        
+        res.render('user/user-cart', { user })
+
     }
 
 
@@ -369,8 +455,7 @@ module.exports = {
 
 
 
-
-    //============abu code=========
+    //============a code=========
 
     // getUserCart:async(req,res)=>{
 
@@ -445,8 +530,6 @@ module.exports = {
 
 
 
-    // getUserLoginhome:(req,res)=>{
-    //     console.log("userlog")
-    //     res.redirect('/user-login')
-    // }
+
+
 }
