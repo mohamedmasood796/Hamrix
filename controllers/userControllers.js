@@ -7,6 +7,8 @@ const cartSchema = require('../models/cartSchema')
 const { aggregate } = require('../models/user')
 const otpverification = require('../utils/otp-generator')
 const bannerSchema = require('../models/bannerSchema')
+
+const wishlistSchema = require('../models/wishlistSchema')
 let loggedIn;
 
 // const userSession=(req,res,next)=>{
@@ -393,11 +395,10 @@ module.exports = {
                 console.log(cart)
                 if(cart){
                     console.log("if cart")
-                console.log(cart)
 
                     //cart is exists for user
                     let itemIndex = cart.products.findIndex(p=>p.productId==productId)
-                    if(itemIndex >-1){
+                    if(itemIndex >-1){//product und
                         console.log("399")
                         let productItem=cart.products[itemIndex]
                         productItem.quantity+=quantity
@@ -442,12 +443,65 @@ module.exports = {
 
     },
     
+    //================show cart page===========
 
-    getCartPage:(req,res)=>{
-        let user= req.session.user
+    getCartPage:async(req,res)=>{
         
-        res.render('user/user-cart', { user })
+        let user= req.session.user
+        const userId=req.session.user._id
+        const viewCart= await cartSchema.findOne({userId:userId}).populate("products.productId").exec()
+    
+        req.session.cartNum=viewCart.products.length
+        cartNum=req.session.cartNum
+        console.log('ms000000oo')
 
+        console.log(viewCart)
+        res.render('user/user-cart', { user,cartProduct: viewCart,cartNum })
+
+    },
+
+    getUserWishlist:async(req,res)=>{
+        let user=req.session.user
+        const productId=req.params.proId
+
+        try{
+            let userId=req.session.user._id
+            const wish=await wishlistSchema.findOne({userId:userId})
+
+            if(wish){
+                let itemIndex= wish.myWish.findIndex(c=>c.productId==productId)
+                if(itemIndex>-1){
+                    console.log('first if')
+                    wish.myWish.splice(itemIndex,1)
+                    await wish.save()
+                }else{
+                    console.log('else')
+                    wish.myWish.push({productId})
+                }
+                await wish.save()
+
+            }else{
+                console.log('masood')
+                let list=new wishlistSchema({
+                    userId:userId,
+                    myWish:[{productId}],
+                })
+                await list.save()
+            }
+
+        }catch{
+
+        }
+
+        res.render('user/user-wishlist',{user})
+    },
+
+
+    getShowWishlist:async(req,res)=>{
+        let user=req.session.user
+        const userId=req.session.user._id
+        const wishli=await wishlistSchema.findOne({userId:userId}).populate("myWish.productId").exec()
+        res.render('user/user-wishlist',{user,wishlist:wishli})
     }
 
 

@@ -50,6 +50,14 @@ router.get('/userCart/:id/:quantity',userControllers.getUserCart)
 //show cart page
 router.get('/viewUserCart',userControllers.getCartPage)
 
+//add to in product wishlist
+router.get('/user-wishlist/:proId',userControllers.getUserWishlist)
+
+//show wishlist
+router.get('/user-showWishlist',userControllers.getShowWishlist)
+
+
+
 
 
 
