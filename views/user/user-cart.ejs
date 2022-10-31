@@ -35,20 +35,22 @@
 												<td class="column-4">
 													<div class="wrap-num-product flex-w m-l-auto m-r-0">
 														<div
-															class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+															onclick="negProduct('<%=cartProduct.productId.id%>')"	class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
 															<i class="fs-16 zmdi zmdi-minus"></i>
 														</div>
 
 														<input class="mtext-104 cl3 txt-center num-product"
 															type="number" name="num-product2" value="<%= cartProduct.quantity%>">
 
-														<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+														<div
+														
+															onclick="posProduct('<%=cartProduct.productId.id%>')" class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 															<i class="fs-16 zmdi zmdi-plus"></i>
 														</div>
 													</div>
 												</td>
 												<td class="column-5"><%= cartProduct.price*cartProduct.quantity%></td>
-												<td><button type="button" style="color: black;" class="btn btn-link"><span class="bi bi-trash"></span></button></td>
+												<td><a href="/deleteCartProduct/<%=cartProduct.productId._id%>" type="button" style="color: black;" class="btn btn-link"><span class="bi bi-trash"></span></a></td>
 												
 											</tr>
 										<% }); %>
@@ -167,6 +169,46 @@
 			</form>
 
 		</section>
+
+
+
+		<script>
+
+			function negProduct(proId){
+				console.log('aaaaaaaaaaaaaaa')
+				$.ajax({
+					url:'/negProduct/'+proId,
+					method:'post',
+					success:(Response)=>{
+						
+					}
+				})
+			}
+
+			function posProduct(proId){
+				console.log("bbbbbbbbbbbbk")
+				$.ajax({
+					url:'/posProduct/'+proId,
+					method:'post',
+					success:(Response)=>{
+						
+					}
+				})
+			}
+
+			function addToCart(proId){
+			console.log("kkkkkkkkkkkk")
+			console.log(qty);
+			$.ajax({
+	
+				url:'/degrProduct/'+ proId,
+				method:'get',
+				success:(Response)=>{
+				
+				}
+			})
+		}
+		</script>
 
 
 

@@ -50,12 +50,26 @@ router.get('/userCart/:id/:quantity',userControllers.getUserCart)
 //show cart page
 router.get('/viewUserCart',userControllers.getCartPage)
 
+//delect product in cart page
+router.get('/deleteCartProduct/:id',userControllers.getdeleteCartProduct)
+
+//ingreas product quandity
+router.post('/posProduct/:proId',userControllers.getIngressProduct)
+
+//degremont product quandity
+router.post('/negProduct/:proId',userControllers.getdegreasProduct)
+
+
+
+
 //add to in product wishlist
 router.get('/user-wishlist/:proId',userControllers.getUserWishlist)
 
 //show wishlist
 router.get('/user-showWishlist',userControllers.getShowWishlist)
 
+//delect product form cart page
+router.get('/deleteWishlist/:id',userControllers.getdeletewishlistProducts)
 
 
 

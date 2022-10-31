@@ -431,9 +431,6 @@ module.exports = {
             }else{
 
             }
-            
-
-
         }catch (err){
 
         }
@@ -460,6 +457,69 @@ module.exports = {
 
     },
 
+    getdeleteCartProduct:async(req,res)=>{
+        let prodId=req.params.id
+        let UserId=req.session.user._id
+
+        const cartProduct=await cartSchema.findOne({userId:UserId})
+        if(cartProduct){
+            let itemIndex=cartProduct.products.findIndex(c=>c.productId==prodId)
+            if(itemIndex>-1){
+                cartProduct.products.splice(itemIndex,1)
+                cartProduct.save()
+                res.redirect('/viewUserCart')
+            }else{
+                res.redirect('/viewUserCart')
+            }
+        }else{
+        res.redirect('/viewUserCart')
+
+        }
+
+    },
+
+    getIngressProduct:async(req,res)=>{
+        console.log('11111111111111')
+        let UserId=req.session.user._id
+        let prodId=req.params.proId
+        console.log(UserId)
+        console.log(prodId)
+
+        const incCout=await cartSchema.findOne({userId:UserId})
+        console.log(incCout+'ray')
+            let itemIndex=incCout.products.findIndex(c=>c.productId==prodId)
+            
+            let productItem = incCout.products[itemIndex]
+            productItem.quantity++;
+
+            incCout.save()
+            res.redirect('/viewUserCart')
+    },
+
+    getdegreasProduct:async(req,res)=>{
+        let UserId=req.session.user._id
+        let prodId=req.params.proId
+
+        console.log(UserId)
+        console.log(prodId)
+
+        const decCout=await cartSchema.findOne({userId:UserId})
+
+            let itemIndex= decCout.products.findIndex(c=>c.productId==prodId)
+
+            let productItem= decCout.products[itemIndex]
+            productItem.quantity--;
+            decCout.save()
+
+        res.redirect('/viewUserCart')
+    },
+
+
+
+
+
+
+
     getUserWishlist:async(req,res)=>{
         let user=req.session.user
         const productId=req.params.proId
@@ -479,7 +539,6 @@ module.exports = {
                     wish.myWish.push({productId})
                 }
                 await wish.save()
-
             }else{
                 console.log('masood')
                 let list=new wishlistSchema({
@@ -488,11 +547,8 @@ module.exports = {
                 })
                 await list.save()
             }
-
         }catch{
-
         }
-
         res.render('user/user-wishlist',{user})
     },
 
@@ -502,7 +558,26 @@ module.exports = {
         const userId=req.session.user._id
         const wishli=await wishlistSchema.findOne({userId:userId}).populate("myWish.productId").exec()
         res.render('user/user-wishlist',{user,wishlist:wishli})
-    }
+    },
+
+
+    getdeletewishlistProducts:async(req,res)=>{
+        let prodId=req.params.id
+        let userId=req.session.user._id
+        const deleteWishlist= await wishlistSchema.findOne({userId:userId})
+        if(deleteWishlist){
+            let itemIndex=deleteWishlist.myWish.findIndex(c=>c.productId==prodId)
+            if(itemIndex>-1){
+                deleteWishlist.myWish.splice(itemIndex,1)
+                deleteWishlist.save()
+                res.redirect('/user-showWishlist')
+            }else{
+                res.redirect('/user-showWishlist')
+            }
+        }else{
+            res.redirect('/user-showWishlist')
+        }
+    },
 
 
 
