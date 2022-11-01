@@ -9,6 +9,7 @@ const otpverification = require('../utils/otp-generator')
 const bannerSchema = require('../models/bannerSchema')
 
 const wishlistSchema = require('../models/wishlistSchema')
+const addressSchema=require('../models/addressSchema')
 let loggedIn;
 
 // const userSession=(req,res,next)=>{
@@ -604,6 +605,52 @@ module.exports = {
             res.redirect('/user-showWishlist')
         }
     },
+
+    getAddAddresstoPay:async(req,res)=>{
+        let user=req.session.user
+        const userId=req.session.user._id
+
+        const prod=await cartSchema.findOne({userId:userId})
+        console.log(prod)
+        res.render('user/user-checkout',{user,prod})
+    },
+
+    getpaymentAddress:async(req,res)=>{
+        console.log(req.body)
+        let userId= req.session.user._id
+        console.log(userId)
+        const findAddress=await addressSchema.findOne({userId:userId})
+
+        if(findAddress==null){
+            const newAddress=new addressSchema({
+                userId,
+                address:[{
+                    name:req.body.name,
+                    phoneNo:req.body.phoneNo,
+                    city:req.body.city,
+                    state:req.body.state,
+                    country:req.body.country,
+                    zip:req.body.zip,
+                    payment:req.body.payment
+                }]
+            })
+            await newAddress.save()
+            res.render('user/user-orderConform')
+        }else{
+            findAddress.address.push({
+                name:req.body.name,
+                phoneNo:req.body.phoneNo,
+                city:req.body.city,
+                state:req.body.state,
+                country:req.body.country,
+                zip:req.body.zip,
+                payment:req.body.payment
+            })
+            await findAddress.save()
+            res.redirect('/')
+        }
+        
+    }
 
 
 

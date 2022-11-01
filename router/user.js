@@ -71,6 +71,12 @@ router.get('/user-showWishlist',userControllers.getShowWishlist)
 //delect product form cart page
 router.get('/deleteWishlist/:id',userControllers.getdeletewishlistProducts)
 
+//chek out page addd address
+router.get('/checkout',userControllers.getAddAddresstoPay)
+
+//payment address post 
+router.post('/payment',userControllers.getpaymentAddress)
+
 
 
 
