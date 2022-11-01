@@ -109,7 +109,7 @@ module.exports = {
 
         if (user) {
             if (user.access) {
-               // console.log('acdess')
+                // console.log('acdess')
                 bcrypt.compare(req.body.password, user.password).then((data) => {
                     if (data) {
                         req.session.userloggedIn = true
@@ -359,10 +359,10 @@ module.exports = {
 
     //================add to cart============
 
-    getUserCart: async(req, res) => {
-        let user= req.session.user
-        const productId=req.params.id
-        const quantity=parseInt(req.params.quantity)
+    getUserCart: async (req, res) => {
+        let user = req.session.user
+        const productId = req.params.id
+        const quantity = parseInt(req.params.quantity)
         // console.log("user details")
         // console.log(user)
         // console.log("productId")
@@ -370,13 +370,13 @@ module.exports = {
         // console.log("quantity")
         // console.log(quantity)
 
-        try{
-            const findProduct=await product.findById(productId)
+        try {
+            const findProduct = await product.findById(productId)
             console.log(findProduct)
             //console.log(user)
-            const userId=req.session.user._id
-            const price=findProduct.price
-            const name= findProduct.name
+            const userId = req.session.user._id
+            const price = findProduct.price
+            const name = findProduct.name
             // console.log(name)
             // console.log("qut")
             // console.log(findProduct.quantity)
@@ -384,197 +384,223 @@ module.exports = {
             // console.log("abu pottan")
             // console.log(userId)
 
-            if(findProduct.quantity >= quantity){
-                findProduct.quantity-=quantity
-                const userId=req.session.user._id
+            if (findProduct.quantity >= quantity) {
+                findProduct.quantity -= quantity
+                const userId = req.session.user._id
                 //console.log(user)
                 // console.log("masood")
                 // console.log(userId)
-                let cart=await cartSchema.findOne({userId})
+                let cart = await cartSchema.findOne({ userId })
 
                 console.log(cart)
-                if(cart){
+                if (cart) {
                     console.log("if cart")
 
                     //cart is exists for user
-                    let itemIndex = cart.products.findIndex(p=>p.productId==productId)
-                    if(itemIndex >-1){//product und
+                    let itemIndex = cart.products.findIndex(p => p.productId == productId)
+                    if (itemIndex > -1) {//product und
                         console.log("399")
-                        let productItem=cart.products[itemIndex]
-                        productItem.quantity+=quantity
-                    }else{
+                        let productItem = cart.products[itemIndex]
+                        productItem.quantity += quantity
+                    } else {
                         //product does not exist in cart, add new item 
                         console.log("404")
                         cart.products.push({ productId, quantity, name, price })
                         console.log('worked')
                     }
                     //product add chayyan
-                    cart.total=cart.products.reduce((acc,curr)=>{
+                    cart.total = cart.products.reduce((acc, curr) => {
                         console.log("409")
-                        return acc+ curr.quantity*curr.price
-                    },0)
+                        return acc + curr.quantity * curr.price
+                    }, 0)
                     console.log(cart.total)
                     await cart.save()
 
-                }else{
-                    const total=quantity*price
+                } else {
+                    const total = quantity * price
                     cart = new cartSchema({
-                        
-                        userId:userId,
-                        products:[{productId,quantity,name,price}],
-                        total:total
+
+                        userId: userId,
+                        products: [{ productId, quantity, name, price }],
+                        total: total
                     })
                     console.log("masood 422")
                     await cart.save()
                 }
 
-            }else{
+            } else {
 
             }
-        }catch (err){
+        } catch (err) {
 
         }
-        
+
         res.render('user/user-cart', { user })
 
 
     },
-    
+
     //================show cart page===========
 
-    getCartPage:async(req,res)=>{
-        
-        let user= req.session.user
-        const userId=req.session.user._id
-        const viewCart= await cartSchema.findOne({userId:userId}).populate("products.productId").exec()
-    
-        req.session.cartNum=viewCart.products.length
-        cartNum=req.session.cartNum
-        console.log('ms000000oo')
+    getCartPage: async (req, res) => {
 
-        console.log(viewCart)
-        res.render('user/user-cart', { user,cartProduct: viewCart,cartNum })
+        let user = req.session.user
+        const userId = req.session.user._id
+        const viewCart = await cartSchema.findOne({ userId: userId }).populate("products.productId").exec()
+
+        if (viewCart) {
+            req.session.cartNum = viewCart.products.length
+            cartNum = req.session.cartNum
+            console.log('ms000000oo')
+            if (viewCart.products.length) {
+
+                console.log(viewCart)
+                res.render('user/user-cart', { user, cartProduct: viewCart, cartNum })
+
+            } else {
+                res.render('user/user-cartEmpty', { user })
+            }
+
+
+        } else {
+            res.render('user/user-cartEmpty', { user })
+
+        }
+
 
     },
 
-    getdeleteCartProduct:async(req,res)=>{
-        let prodId=req.params.id
-        let UserId=req.session.user._id
+    getdeleteCartProduct: async (req, res) => {
+        let prodId = req.params.id
+        let UserId = req.session.user._id
 
-        const cartProduct=await cartSchema.findOne({userId:UserId})
-        if(cartProduct){
-            let itemIndex=cartProduct.products.findIndex(c=>c.productId==prodId)
-            if(itemIndex>-1){
-                cartProduct.products.splice(itemIndex,1)
+        const cartProduct = await cartSchema.findOne({ userId: UserId })
+        if (cartProduct) {
+            let itemIndex = cartProduct.products.findIndex(c => c.productId == prodId)
+            if (itemIndex > -1) {
+                cartProduct.products.splice(itemIndex, 1)
                 cartProduct.save()
                 res.redirect('/viewUserCart')
-            }else{
+            } else {
                 res.redirect('/viewUserCart')
             }
-        }else{
-        res.redirect('/viewUserCart')
+        } else {
+            res.redirect('/viewUserCart')
 
         }
 
     },
 
-    getIngressProduct:async(req,res)=>{
+    getIngressProduct: async (req, res) => {
         console.log('11111111111111')
-        let UserId=req.session.user._id
-        let prodId=req.params.proId
+        let UserId = req.session.user._id
+        let prodId = req.params.proId
         console.log(UserId)
         console.log(prodId)
 
-        const incCout=await cartSchema.findOne({userId:UserId})
-        console.log(incCout+'ray')
-            let itemIndex=incCout.products.findIndex(c=>c.productId==prodId)
-            
-            let productItem = incCout.products[itemIndex]
-            productItem.quantity++;
+        const incCout = await cartSchema.findOne({ userId: UserId })
+        console.log(incCout + 'ray')
+        let itemIndex = incCout.products.findIndex(c => c.productId == prodId)
 
-            incCout.save()
-            res.redirect('/viewUserCart')
+        let productItem = incCout.products[itemIndex]
+        productItem.quantity++;
+
+        incCout.total = incCout.total + productItem.price
+
+        incCout.save()
+        res.redirect('/viewUserCart')
     },
 
-    getdegreasProduct:async(req,res)=>{
-        let UserId=req.session.user._id
-        let prodId=req.params.proId
+    getdegreasProduct: async (req, res) => {
+        let UserId = req.session.user._id
+        let prodId = req.params.proId
 
         console.log(UserId)
         console.log(prodId)
 
-        const decCout=await cartSchema.findOne({userId:UserId})
+        const decCout = await cartSchema.findOne({ userId: UserId })
 
-            let itemIndex= decCout.products.findIndex(c=>c.productId==prodId)
+        let itemIndex = decCout.products.findIndex(c => c.productId == prodId)
 
-            let productItem= decCout.products[itemIndex]
-            productItem.quantity--;
-            decCout.save()
+        let productItem = decCout.products[itemIndex]
+        productItem.quantity--;
+        console.log(decCout.total + "priceeeeeeeeeeeeeeeeeeeeeee");
+        decCout.total = decCout.total - productItem.price
+
+        decCout.save()
 
         res.redirect('/viewUserCart')
     },
 
 
+    getUserWishlist: async (req, res) => {
+        let user = req.session.user
+        const productId = req.params.proId
 
+        try {
+            let userId = req.session.user._id
+            const wish = await wishlistSchema.findOne({ userId: userId })
 
-
-
-
-    getUserWishlist:async(req,res)=>{
-        let user=req.session.user
-        const productId=req.params.proId
-
-        try{
-            let userId=req.session.user._id
-            const wish=await wishlistSchema.findOne({userId:userId})
-
-            if(wish){
-                let itemIndex= wish.myWish.findIndex(c=>c.productId==productId)
-                if(itemIndex>-1){
+            if (wish) {
+                let itemIndex = wish.myWish.findIndex(c => c.productId == productId)
+                if (itemIndex > -1) {
                     console.log('first if')
-                    wish.myWish.splice(itemIndex,1)
+                    wish.myWish.splice(itemIndex, 1)
                     await wish.save()
-                }else{
+                } else {
                     console.log('else')
-                    wish.myWish.push({productId})
+                    wish.myWish.push({ productId })
                 }
                 await wish.save()
-            }else{
+            } else {
                 console.log('masood')
-                let list=new wishlistSchema({
-                    userId:userId,
-                    myWish:[{productId}],
+                let list = new wishlistSchema({
+                    userId: userId,
+                    myWish: [{ productId }],
                 })
                 await list.save()
             }
-        }catch{
+        } catch {
         }
-        res.render('user/user-wishlist',{user})
+        res.render('user/user-wishlist', { user })
     },
 
 
-    getShowWishlist:async(req,res)=>{
-        let user=req.session.user
-        const userId=req.session.user._id
-        const wishli=await wishlistSchema.findOne({userId:userId}).populate("myWish.productId").exec()
-        res.render('user/user-wishlist',{user,wishlist:wishli})
+    getShowWishlist: async (req, res) => {
+        let user = req.session.user
+        const userId = req.session.user._id
+        const wishli = await wishlistSchema.findOne({ userId: userId }).populate("myWish.productId").exec()
+
+        if (wishli) {
+            req.session.wishNum = wishli.myWish.length
+            if (wishli.myWish.length) {
+                res.render('user/user-wishlist', { user, wishlist: wishli })
+
+            } else {
+                res.render('user/user-emptyWish', { user })
+            }
+        } else {
+            res.render('user/user-emptyWish', { user })
+
+        }
+
     },
 
 
-    getdeletewishlistProducts:async(req,res)=>{
-        let prodId=req.params.id
-        let userId=req.session.user._id
-        const deleteWishlist= await wishlistSchema.findOne({userId:userId})
-        if(deleteWishlist){
-            let itemIndex=deleteWishlist.myWish.findIndex(c=>c.productId==prodId)
-            if(itemIndex>-1){
-                deleteWishlist.myWish.splice(itemIndex,1)
+    getdeletewishlistProducts: async (req, res) => {
+        let prodId = req.params.id
+        let userId = req.session.user._id
+        const deleteWishlist = await wishlistSchema.findOne({ userId: userId })
+        if (deleteWishlist) {
+            let itemIndex = deleteWishlist.myWish.findIndex(c => c.productId == prodId)
+            if (itemIndex > -1) {
+                deleteWishlist.myWish.splice(itemIndex, 1)
                 deleteWishlist.save()
                 res.redirect('/user-showWishlist')
-            }else{
+            } else {
                 res.redirect('/user-showWishlist')
             }
-        }else{
+        } else {
             res.redirect('/user-showWishlist')
         }
     },
