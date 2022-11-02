@@ -4,12 +4,13 @@ const product = require('../models/productSchema')
 const { USER_COLLECTION } = require('../config/collection')
 const user = require('../models/user')
 const cartSchema = require('../models/cartSchema')
-const { aggregate } = require('../models/user')
+const { aggregate, findOne } = require('../models/user')
 const otpverification = require('../utils/otp-generator')
 const bannerSchema = require('../models/bannerSchema')
 
 const wishlistSchema = require('../models/wishlistSchema')
 const addressSchema=require('../models/addressSchema')
+const orderSchema=require('../models/orderSchema')
 let loggedIn;
 
 // const userSession=(req,res,next)=>{
@@ -378,6 +379,7 @@ module.exports = {
             const userId = req.session.user._id
             const price = findProduct.price
             const name = findProduct.name
+            
             // console.log(name)
             // console.log("qut")
             // console.log(findProduct.quantity)
@@ -571,6 +573,7 @@ module.exports = {
         let user = req.session.user
         const userId = req.session.user._id
         const wishli = await wishlistSchema.findOne({ userId: userId }).populate("myWish.productId").exec()
+        console.log(wishli)
 
         if (wishli) {
             req.session.wishNum = wishli.myWish.length
@@ -622,6 +625,7 @@ module.exports = {
         const findAddress=await addressSchema.findOne({userId:userId})
 
         if(findAddress==null){
+            //new order address add
             const newAddress=new addressSchema({
                 userId,
                 address:[{
@@ -635,8 +639,9 @@ module.exports = {
                 }]
             })
             await newAddress.save()
-            res.render('user/user-orderConform')
+            //res.render('user/user-orderConform')
         }else{
+            //address veendum add chayyan
             findAddress.address.push({
                 name:req.body.name,
                 phoneNo:req.body.phoneNo,
@@ -647,9 +652,47 @@ module.exports = {
                 payment:req.body.payment
             })
             await findAddress.save()
-            res.redirect('/')
+            //res.redirect('user/userConform')
         }
+        //adding order schema
+        let cart= await cartSchema.findOne({userId:userId})
+        console.log(cart)
+        let newdate = new Date().toJSON().slice(0, 10);
+    const newOder = new orderSchema({
+        userId,
+        deliveryAddress:[{
+            name:req.body.name,
+            phoneNo:req.body.phoneNo,
+            city:req.body.city,
+            state:req.body.state,
+            country:req.body.country,
+            zip:req.body.zip,
+            
+        }],
+        paymentType:req.body.payment,
+        date:newdate,
+        products:cart.products,
+        total:cart.total, 
+
+    })
+    await cart.remove()
+    await newOder.save()
+    res.render('user/user-orderConform',{newOder})
         
+    },
+
+    
+    getUserOrder:async(req,res)=>{
+        let userId=req.session.user._id
+        const userOrder=await orderSchema.find({userId:userId}).populate("products.productId").exec()
+        console.log(userOrder[0].products[0].productId)
+    
+        res.render('user/user-orderDetails',{userOrder})
+    },
+
+    getOrderCancel:(req,res)=>{
+        
+        res.redirect('/user-order')
     }
 
 

@@ -1,5 +1,6 @@
 const express =require('express');
 const userControllers=require('../controllers/userControllers');
+const user = require('../models/user');
 const router=express.Router();
 
 //ger user home page
@@ -76,6 +77,12 @@ router.get('/checkout',userControllers.getAddAddresstoPay)
 
 //payment address post 
 router.post('/payment',userControllers.getpaymentAddress)
+
+//user order details
+router.get('/user-order',userControllers.getUserOrder)
+
+//user order cancel 
+router.get('/orderCancel',userControllers.getOrderCancel)
 
 
 

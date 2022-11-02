@@ -23,9 +23,6 @@ const orderSchema = new mongoose.Schema({
             price: Number
         }
     ],
-    quantity : {
-        type :Number
-    },
     total : {
         type:Number
     },
@@ -44,5 +41,5 @@ const orderSchema = new mongoose.Schema({
         type:String,
         default:"pending"
     }
-},{timestamps:true})
-module.exports = mongoose.model("Order",orderSchema)
+})
+module.exports = mongoose.model("Order",orderSchema);

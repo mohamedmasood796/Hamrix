@@ -36,11 +36,12 @@
                                                 <td class="column-3">
                                                     <%= wishlist.productId.price%>
                                                 </td>
+                                                <input  id="proqty" type="number" style="color:#0a0808; display: none;" value="1">
+
                                                 <td class="column-4">
-                                                    <div
-                                                        class="flex-c-m stext-101 cl2 size-119 bg8 bor13  p-lr-15 trans-04 pointer m-tb-10">
+                                                    <button onclick="addToCart('<%=wishlist.id%>')" type="button" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
                                                         Add to Cart
-                                                    </div>
+                                                    </button>
                                                 </td>
                                                 <!-- <% console.log(wishlist.productId._id)%> -->
                                                 <!-- <td><a onclick="deleteWishlist('<%=wishlist.productId._id%>')"
@@ -215,7 +216,21 @@
 
 
         
+    <script>
+		let qty=document.getElementById('proqty').value
+		function addToCart(proId){
+		console.log("kkkkkkkkkkkk")
+		console.log(qty);
+		$.ajax({
 
+			url:'/userCart/'+ proId+'/'+qty,
+			method:'get',
+			success:(Response)=>{
+			
+			}
+		})
+	}
+	</script>
 
 
         <%- include('./include/user-footer'); %>

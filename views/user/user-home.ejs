@@ -420,9 +420,10 @@
 						<div class="block2-pic hov-img0" >
 							<img src="product-images/<%= result.image[0] %>" alt="IMG-PRODUCT" style="height:25rem ;width:20rem">
 
-							<a href="/userCart/<%=result.id%>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+							<input  id="proqty" type="number" style="color:#0a0808; display: none;" value="1">
+							<button  onclick="addToCart('<%=result.id%>')"  class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
 								Add to Cart
-							</a>
+							</button>
 						</div>
 
 						<div class="block2-txt flex-w flex-t p-t-14">
@@ -459,6 +460,23 @@
 
 	
 	<script>
+
+		let qty=document.getElementById('proqty').value
+		function addToCart(proId){
+		console.log("kkkkkkkkkkkk")
+		console.log(qty);
+		$.ajax({
+
+			url:'/userCart/'+ proId+'/'+qty,
+			method:'get',
+			success:(Response)=>{
+			
+			}
+		})
+	}
+
+
+
 		function wishlist(proId){
 		console.log("kkkkkkkkkkk")
 		$.ajax({
