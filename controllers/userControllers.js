@@ -684,14 +684,18 @@ module.exports = {
     
     getUserOrder:async(req,res)=>{
         let userId=req.session.user._id
+        let user=req.session.user
         const userOrder=await orderSchema.find({userId:userId}).populate("products.productId").exec()
         console.log(userOrder[0].products[0].productId)
     
-        res.render('user/user-orderDetails',{userOrder})
+        res.render('user/user-orderDetails',{userOrder,user})
     },
 
-    getOrderCancel:(req,res)=>{
-        
+    getOrderCancel:async(req,res)=>{
+        let orderId=req.params.id
+        const cancelOrder=await orderSchema.findOne({_id:orderId})
+        cancelOrder.status="canceled"
+        await cancelOrder.save()
         res.redirect('/user-order')
     }
 

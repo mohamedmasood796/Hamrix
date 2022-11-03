@@ -71,6 +71,14 @@ router.get('/block-banner/:id',adminControllers.getBannerBlock)
 //admin can unblock banner
 router.get('/unblock-banner/:id',adminControllers.getAdminUnblockBanner)
 
+//admin order managment 
+router.get('/orderManagment',adminControllers.getOrderManagment)
+
+//admin user order in one page
+router.get('/veiwOneProduct/:id',adminControllers.getveiwOneProduct)
+
+//admin change delivery status
+router.post('/chargeDeliveryStatus/:id',adminControllers.getchargeDeliveryStatus)
 
 
 

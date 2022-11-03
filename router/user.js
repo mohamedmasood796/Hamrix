@@ -82,7 +82,7 @@ router.post('/payment',userControllers.getpaymentAddress)
 router.get('/user-order',userControllers.getUserOrder)
 
 //user order cancel 
-router.get('/orderCancel',userControllers.getOrderCancel)
+router.get('/orderCancel/:id',userControllers.getOrderCancel)
 
 
 

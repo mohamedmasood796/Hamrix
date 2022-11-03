@@ -8,6 +8,7 @@ const user = require('../models/user')
 const { render } = require('ejs')
 const { findById } = require('../models/admin')
 const bannerSchema=require("../models/bannerSchema")
+const orderSchema = require('../models/orderSchema')
 
 
 let categoryErr;
@@ -418,6 +419,36 @@ module.exports = {
         edbanner.access=true
         await edbanner.save()
         res.redirect('/admin/banneraddpage')
+    },
+
+    getOrderManagment:async(req,res)=>{
+        // let userId=req.session.user._id
+        console.log('haeebi')
+        
+        const userOrder=await orderSchema.find({}).populate("products.productId").exec()
+        console.log(userOrder[0].products)
+        res.render('admin/admin-orderManagment',{userOrder})
+    },
+
+    getveiwOneProduct:async(req,res)=>{
+        const prodId=req.params.id
+        console.log(prodId)
+        const newOder=await orderSchema.findOne({_id:(prodId)})
+        console.log("222222222222222222222222222222222222222")
+        console.log(newOder)
+        res.render('admin/admin-oneProduct',{newOder})
+    },
+
+    getchargeDeliveryStatus:async(req,res)=>{
+
+        console.log('orderManagment')
+        const proId=req.params.id
+        const prodstatus=req.body
+        console.log(prodstatus.status)
+        const update= await orderSchema.findOne({_id:(proId)})
+        update.status=prodstatus.status
+        await update.save()
+        res.redirect('/admin/orderManagment')
     }
 
 
