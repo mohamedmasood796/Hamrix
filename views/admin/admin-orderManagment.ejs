@@ -11,9 +11,7 @@
                                 <thead>
                                     <tr>
 
-                                        <th scope="col">Product Id</th>
-                                        <th scope="col">Address</th>
-                                        <th scope="col">quantity</th>
+                                        <th scope="col">Order Id</th>
                                         <th scope="col">Total Price</th>
                                         <th scope="col">Date</th>
                                         <th scope="col">Payment</th>
@@ -23,21 +21,13 @@
                                 </thead>
                                 <tbody>
                                     <% userOrder.forEach(function(data,index) { %>
-                                        <% data.products.forEach(function(product) { %>
+            
                                             <tr>
 
                                                 <td>
-                                                    <%= product._id %>
+                                                    <%= data._id %>
                                                 </td>
-                                                <td>
-                                                    <%= data.deliveryAddress[0].name %>,<br>
-                                                        <%= data.deliveryAddress[0].city %>,<%=
-                                                                data.deliveryAddress[0].state %>,<br>
-                                                                <%= data.deliveryAddress[0].country %>,<%=data.deliveryAddress[0].zip %>
-                                                </td>
-                                                <td>
-                                                    <%= product.quantity%>
-                                                </td>
+                                            
                                                 <td>
                                                     <%= data.total %>
                                                 </td>
@@ -48,30 +38,28 @@
                                                     <%= data.paymentType%>
                                                 </td>
                                                 <td>
-                                                    <%= data.status %>
+                                                
+                                                    <% if(data.status==="cancelled"){%>
+                                                        <p class="text-danger mb-0 small"> <strong><%=data.status%></strong>  </p>
+                                                    <%} else if (data.status==="pending"){%>
+                                                        <p class="text-warning mb-0 small"> <strong><%=data.status%></strong></p>
+                                                    <%} else if (data.status==="delivered"){%>
+                                                        <p class="text-success mb-0 small"> <strong><%=data.status%></strong> </p>
+                                                    <%} else if (data.status==="shipped"){%>
+                                                        <p class="text-info mb-0 small"> <strong><%=data.status%></strong> </p>
+                                                    <%} else if (data.status==="placed"){%>
+                                                        <p class="text-primary mb-0 small"><strong><%=data.status%></strong> </p>
+                                                    <%}%>
+                                                
                                                 </td>
+                                                
                                                 <td>
-                                                    <div class="dropdown ">  
-
-                                                        <select class="form-select" aria-label="Default select example">
-                                                            <option selected>Delivery status</option>
-                                                            <option value="cancelled">Cancelled</option>
-                                                            <option value="2">Pending </option>
-                                                            <option value="3">Placed</option>
-                                                            <option value="3">Shipped</option>
-                                                            <option value="3"> Delivered</option>
-                                                          </select>
-
-                                                    </div>  
-                                                    
-                                                </td>
-                                                <td>
-                                                    <a href="/admin/veiwOneProduct/<%=data._id%>" type="button" class="btn btn-success">View</a>
+                                                    <a href="/admin/veiwOneProduct/<%=data._id%>" type="button" class="btn btn-success m-5">View</a>
                                                 </td>
                                                 
 
                                             </tr>
-                                            <% }); %>
+                                            
 
                                                 <% }); %>
                                 </tbody>

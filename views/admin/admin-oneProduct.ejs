@@ -1,3 +1,8 @@
+<%- include('./include/admin-headlink'); %>
+    <%- include('./include/admin-navside'); %>
+        <%- include('./include/admin-header'); %>
+
+
 <!DOCTYPE html>
 <html>
 
@@ -129,7 +134,18 @@
                                             width="125" height="120" style="display: block; border: 0px;" /><br>
                                         <h2
                                             style="font-size: 30px; font-weight: 800; line-height: 36px; color: #333333; margin: 0;">
-                                            <%=newOder.status%> product
+                                            <% if(newOder.status==="cancelled"){%>
+                                                <p class="text-danger mb-0 small"> <%=newOder.status%> products</p>
+                                            <%} else if (newOder.status==="pending"){%>
+                                                <p class="text-warning mb-0 small"> <%=newOder.status%>products</p>
+                                            <%} else if (newOder.status==="delivered"){%>
+                                                <p class="text-success mb-0 small"> <%=newOder.status%> products</p>
+                                            <%} else if (newOder.status==="shipped"){%>
+                                                <p class="text-info mb-0 small"> <%=newOder.status%> products</p>
+                                            <%} else if (newOder.status==="placed"){%>
+                                                <p class="text-primary mb-0 small"><%=newOder.status%> products</p>
+                                            <%}%>
+                                        
                                         </h2>
                                     </td>
                                 </tr>
@@ -225,35 +241,41 @@
                                             style="display:inline-block; max-width:50%; min-width:240px; vertical-align:top; width:100%;">
                                             <table align="left" border="0" cellpadding="0" cellspacing="0" width="100%"
                                                 style="max-width:300px;">
-                                                <form action="/admin/chargeDeliveryStatus/<%= newOder._id%>" method="post">
-                                                <tr>
-                                                    <td align="left" valign="top"
-                                                    
-                                                        style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
-                                                        <p style="font-weight: 800;">Update Delivery Status</p>
+                                                <form action="/admin/chargeDeliveryStatus/<%= newOder._id%>"
+                                                    method="post">
+                                                    <tr>
+                                                        <%if(newOder.status!="delivered"){%>
 
-                                                        <div class="dropdown ">
-                                                            <select class="form-select"
-                                                                aria-label="Default select example" name="status">
-                                                                <option selected><%=newOder.status%></option>
-                                                                <option value="cancelled">Cancelled</option>
-                                                                <option value="pending">Pending </option>
-                                                                <option value="placed">Placed</option>
-                                                                <option value="shipped">Shipped</option>
-                                                                <option value="delivered"> Delivered</option>
-                                                            </select>
-                                                            <div>
-                                                                <button type="submit" class="btn btn-danger">Danger</button>
+                                                        <td align="left" valign="top"
+                                                            style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
+                                                            <p style="font-weight: 800;">Update Delivery Status</p>
+                                                            <div class="dropdown d-flex">
+                                                                <div>
+                                                                    <select class="form-select"
+                                                                        aria-label="Default select example"
+                                                                        name="status">
+                                                                        <option selected><%=newOder.status%> </option>
+                                                                        <option value="cancelled">Cancelled</option>
+                                                                        <option value="pending">Pending </option>
+                                                                        <option value="placed">Placed</option>
+                                                                        <option value="shipped">Shipped</option>
+                                                                        <option value="delivered"> Delivered</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="submit"
+                                                                        class="btn btn-danger">Update</button>
+                                                                </div>
+
                                                             </div>
+                                                        </td>
+                                                        <%}%>
+                                                        <td>
 
-                                                        </div>
-                                                    </td>
-                                                    <td>
+                                                        </td>
+                                                    </tr>
 
-                                                    </td>
-                                                </tr>
-
-                                            </form>
+                                                </form>
                                             </table>
                                         </div>
                                     </td>

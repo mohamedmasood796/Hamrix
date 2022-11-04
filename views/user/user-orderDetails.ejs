@@ -54,7 +54,18 @@
                                         <p class="text-muted mb-0"><%=order.name%></p>
                                     </div>
                                     <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0 small">Status:<%=userOrder.status%></p>
+                                       
+                                        <% if(userOrder.status==="cancelled"){%>
+                                            <p class="text-danger mb-0 small"> <strong><%=userOrder.status%></strong> </p>
+                                        <%} if(userOrder.status==="pending"){%>
+                                            <p class="text-warning mb-0 small"> <strong><%=userOrder.status%></strong> </p>
+                                        <%} else if (userOrder.status==="delivered"){%>
+                                            <p class="text-success mb-0 small"> <strong><%=userOrder.status%></strong> </p>
+                                        <%} else if (userOrder.status==="shipped"){%>
+                                            <p class="text-info mb-0 small"> <strong><%=userOrder.status%></strong> </p>
+                                        <%} else if (userOrder.status==="placed"){%>
+                                            <p class="text-primary mb-0 small"><strong><%=userOrder.status%></strong> </p>
+                                        <%}%>
                                     </div>
                                     <!-- <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
                                         <p class="text-muted mb-0 small">Capacity: 64GB</p>
@@ -76,9 +87,12 @@
                                         <div class="col-6">
                                             <p class=""><%=userOrder.total%> </p>
                                         </div>
+
+                                        <% if(userOrder.status!="delivered"){ %>
                                         <div class="col-6 d-flex justify-content-end">
                                             <a href="/orderCancel/<%=userOrder._id%>"  type="button" class="btn btn-outline-danger ">CANCEL</a>
                                         </div>
+                                        <% } %>
                                     </div>
                                     <!-- <div class="progress" style="height: 6px; border-radius: 16px;">
                                             <div class="progress-bar" role="progressbar"

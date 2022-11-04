@@ -1,6 +1,7 @@
 const express =require('express');
 const userControllers=require('../controllers/userControllers');
 const user = require('../models/user');
+const varifySession=require('../middleware/session')
 const router=express.Router();
 
 //ger user home page
@@ -46,43 +47,43 @@ router.post('/to-home',userControllers.otpToHome)
 router.get('/user-all-product',userControllers.getUserAllProduct)
 
 //user cart page shew 
-router.get('/userCart/:id/:quantity',userControllers.getUserCart)
+router.get('/userCart/:id/:quantity',varifySession.verifyLogin,userControllers.getUserCart)
 
 //show cart page
-router.get('/viewUserCart',userControllers.getCartPage)
+router.get('/viewUserCart',varifySession.verifyLogin,userControllers.getCartPage)
 
 //delect product in cart page
-router.get('/deleteCartProduct/:id',userControllers.getdeleteCartProduct)
+router.get('/deleteCartProduct/:id',varifySession.verifyLogin,userControllers.getdeleteCartProduct)
 
 //ingreas product quandity
-router.post('/posProduct/:proId',userControllers.getIngressProduct)
+router.post('/posProduct/:proId',varifySession.verifyLogin,userControllers.getIngressProduct)
 
 //degremont product quandity
-router.post('/negProduct/:proId',userControllers.getdegreasProduct)
+router.post('/negProduct/:proId',varifySession.verifyLogin,userControllers.getdegreasProduct)
 
 
 
 
 //add to in product wishlist
-router.get('/user-wishlist/:proId',userControllers.getUserWishlist)
+router.get('/user-wishlist/:proId',varifySession.verifyLogin,userControllers.getUserWishlist)
 
 //show wishlist
-router.get('/user-showWishlist',userControllers.getShowWishlist)
+router.get('/user-showWishlist',varifySession.verifyLogin,userControllers.getShowWishlist)
 
 //delect product form cart page
-router.get('/deleteWishlist/:id',userControllers.getdeletewishlistProducts)
+router.get('/deleteWishlist/:id',varifySession.verifyLogin,userControllers.getdeletewishlistProducts)
 
 //chek out page addd address
-router.get('/checkout',userControllers.getAddAddresstoPay)
+router.get('/checkout',varifySession.verifyLogin,userControllers.getAddAddresstoPay)
 
 //payment address post 
-router.post('/payment',userControllers.getpaymentAddress)
+router.post('/payment',varifySession.verifyLogin,userControllers.getpaymentAddress)
 
 //user order details
-router.get('/user-order',userControllers.getUserOrder)
+router.get('/user-order',varifySession.verifyLogin,userControllers.getUserOrder)
 
 //user order cancel 
-router.get('/orderCancel/:id',userControllers.getOrderCancel)
+router.get('/orderCancel/:id',varifySession.verifyLogin,userControllers.getOrderCancel)
 
 
 

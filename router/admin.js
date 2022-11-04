@@ -6,10 +6,12 @@ var router = express.Router();
 // const store = multer({ dest: '/product-images' })
 const {store} = require('./../middleware/multer')
 
+const varifySession = require("../middleware/session");
+
 
 
 //admin home render
-router.get('/', adminControllers.getAdminHome)
+router.get('/',varifySession.verifyLogin, adminControllers.getAdminHome)
 
 //admin login render
 router.get('/admin-login',adminControllers.getAdminLogin)
@@ -78,7 +80,7 @@ router.get('/orderManagment',adminControllers.getOrderManagment)
 router.get('/veiwOneProduct/:id',adminControllers.getveiwOneProduct)
 
 //admin change delivery status
-router.post('/chargeDeliveryStatus/:id',adminControllers.getchargeDeliveryStatus)
+router.post('/chargeDeliveryStatus/:id',varifySession.verifyLogin,adminControllers.getchargeDeliveryStatus)
 
 
 

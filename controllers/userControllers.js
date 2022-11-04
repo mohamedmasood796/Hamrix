@@ -9,8 +9,9 @@ const otpverification = require('../utils/otp-generator')
 const bannerSchema = require('../models/bannerSchema')
 
 const wishlistSchema = require('../models/wishlistSchema')
-const addressSchema=require('../models/addressSchema')
-const orderSchema=require('../models/orderSchema')
+const addressSchema = require('../models/addressSchema')
+const orderSchema = require('../models/orderSchema')
+const verifyLogin = require('../middleware/session')
 let loggedIn;
 
 // const userSession=(req,res,next)=>{
@@ -25,21 +26,45 @@ let loginErr;
 
 module.exports = {
     getUserHome: (req, res) => {
-        bannerSchema.find({ access: true }, function (err, ans) {
-            product.find({ access: true }, function (err, result) {
-                if (err) {
-                    res.send(err);
-                } else {
-                    //console.log('masood')
-                    //console.log(result)
-                    res.render('user/user-home', { user: req.session.user, result, ans })
 
-                }
+        if(req.session.userloggedIn) {
+            const userId = req.session.user._id
+            console.log(userId+"abuq")
+            bannerSchema.find({ access: true }, function (err, ans) {
+                product.find({ access: true }, function (err, result) {
+    
+                    cartSchema.find({ userId: userId }, function (err, cartCoud) {
+                        wishlistSchema.find({ userId: userId }, function (err, wishcount) {
 
-            }).limit(8)
+                            if (err) {
+                                res.send(err);
+                            } else {
 
+                                count = cartCoud[0].products.length
+                                wcount = wishcount[0].myWish.length
 
-        });
+                                //console.log('masood')
+                                //console.log(result)
+                                
+                                res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
+                            }
+                        })
+                    })
+                }).limit(8)
+            });
+        } else {
+            bannerSchema.find({ access: true }, function (err, ans) {
+                product.find({ access: true }, function (err, result) {
+                    
+                    if(err) {
+                        console.log(err);
+                    }
+                    if(result) {
+                        res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0 })
+                    }
+                }).limit(8)
+            });
+        }
 
     },
 
@@ -379,7 +404,7 @@ module.exports = {
             const userId = req.session.user._id
             const price = findProduct.price
             const name = findProduct.name
-            
+
             // console.log(name)
             // console.log("qut")
             // console.log(findProduct.quantity)
@@ -478,9 +503,16 @@ module.exports = {
         let UserId = req.session.user._id
 
         const cartProduct = await cartSchema.findOne({ userId: UserId })
+        console.log("cartproduct")
+        console.log(cartProduct)
+        console.log("cartProductend")
         if (cartProduct) {
             let itemIndex = cartProduct.products.findIndex(c => c.productId == prodId)
             if (itemIndex > -1) {
+                //cart nn product delect chayithal total reduce chayan
+                let reducePrice = cartProduct.products[itemIndex].quantity * cartProduct.products[itemIndex].price
+                cartProduct.total = cartProduct.total - reducePrice
+
                 cartProduct.products.splice(itemIndex, 1)
                 cartProduct.save()
                 res.redirect('/viewUserCart')
@@ -609,92 +641,92 @@ module.exports = {
         }
     },
 
-    getAddAddresstoPay:async(req,res)=>{
-        let user=req.session.user
-        const userId=req.session.user._id
+    getAddAddresstoPay: async (req, res) => {
+        let user = req.session.user
+        const userId = req.session.user._id
 
-        const prod=await cartSchema.findOne({userId:userId})
+        const prod = await cartSchema.findOne({ userId: userId })
         console.log(prod)
-        res.render('user/user-checkout',{user,prod})
+        res.render('user/user-checkout', { user, prod })
     },
 
-    getpaymentAddress:async(req,res)=>{
+    getpaymentAddress: async (req, res) => {
         console.log(req.body)
-        let userId= req.session.user._id
+        let userId = req.session.user._id
         console.log(userId)
-        const findAddress=await addressSchema.findOne({userId:userId})
+        const findAddress = await addressSchema.findOne({ userId: userId })
 
-        if(findAddress==null){
+        if (findAddress == null) {
             //new order address add
-            const newAddress=new addressSchema({
+            const newAddress = new addressSchema({
                 userId,
-                address:[{
-                    name:req.body.name,
-                    phoneNo:req.body.phoneNo,
-                    city:req.body.city,
-                    state:req.body.state,
-                    country:req.body.country,
-                    zip:req.body.zip,
-                    payment:req.body.payment
+                address: [{
+                    name: req.body.name,
+                    phoneNo: req.body.phoneNo,
+                    city: req.body.city,
+                    state: req.body.state,
+                    country: req.body.country,
+                    zip: req.body.zip,
+                    payment: req.body.payment
                 }]
             })
             await newAddress.save()
             //res.render('user/user-orderConform')
-        }else{
+        } else {
             //address veendum add chayyan
             findAddress.address.push({
-                name:req.body.name,
-                phoneNo:req.body.phoneNo,
-                city:req.body.city,
-                state:req.body.state,
-                country:req.body.country,
-                zip:req.body.zip,
-                payment:req.body.payment
+                name: req.body.name,
+                phoneNo: req.body.phoneNo,
+                city: req.body.city,
+                state: req.body.state,
+                country: req.body.country,
+                zip: req.body.zip,
+                payment: req.body.payment
             })
             await findAddress.save()
             //res.redirect('user/userConform')
         }
         //adding order schema
-        let cart= await cartSchema.findOne({userId:userId})
+        let cart = await cartSchema.findOne({ userId: userId })
         console.log(cart)
         let newdate = new Date().toJSON().slice(0, 10);
-    const newOder = new orderSchema({
-        userId,
-        deliveryAddress:[{
-            name:req.body.name,
-            phoneNo:req.body.phoneNo,
-            city:req.body.city,
-            state:req.body.state,
-            country:req.body.country,
-            zip:req.body.zip,
-            
-        }],
-        paymentType:req.body.payment,
-        date:newdate,
-        products:cart.products,
-        total:cart.total, 
+        const newOder = new orderSchema({
+            userId,
+            deliveryAddress: [{
+                name: req.body.name,
+                phoneNo: req.body.phoneNo,
+                city: req.body.city,
+                state: req.body.state,
+                country: req.body.country,
+                zip: req.body.zip,
 
-    })
-    await cart.remove()
-    await newOder.save()
-    res.render('user/user-orderConform',{newOder})
-        
+            }],
+            paymentType: req.body.payment,
+            date: newdate,
+            products: cart.products,
+            total: cart.total,
+
+        })
+        await cart.remove()
+        await newOder.save()
+        res.render('user/user-orderConform', { newOder })
+
     },
 
-    
-    getUserOrder:async(req,res)=>{
-        let userId=req.session.user._id
-        let user=req.session.user
-        const userOrder=await orderSchema.find({userId:userId}).populate("products.productId").exec()
+
+    getUserOrder: async (req, res) => {
+        let userId = req.session.user._id
+        let user = req.session.user
+        const userOrder = await orderSchema.find({ userId: userId }).populate("products.productId").exec()
         console.log(userOrder[0].products[0].productId)
-    
-        res.render('user/user-orderDetails',{userOrder,user})
+
+        res.render('user/user-orderDetails', { userOrder, user })
     },
 
-    getOrderCancel:async(req,res)=>{
-        let orderId=req.params.id
-        const cancelOrder=await orderSchema.findOne({_id:orderId})
-        cancelOrder.status="canceled"
+    getOrderCancel: async (req, res) => {
+        let orderId = req.params.id
+        const cancelOrder = await orderSchema.findOne({ _id: orderId })
+        cancelOrder.status = "cancelled"
         await cancelOrder.save()
         res.redirect('/user-order')
     }
