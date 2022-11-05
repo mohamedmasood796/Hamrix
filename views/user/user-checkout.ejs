@@ -12,12 +12,41 @@
 
     <body>
       <div class="container">
-        <div class="py-5 text-center">
-          <img class="d-block mx-auto mb-4"
-            src="https://thumbs.dreamstime.com/b/check-out-stamp-round-vintage-grunge-label-sign-186946179.jpg" alt=""
-            width="150" height="150">
-          <h2>CHECKOUT</h2>
-          <!-- <p class="lead" style="color:rgb(238, 144, 81);font-weight: 600;,text-decoration:underline;">HOME/CART/CHECKOUT</p> -->
+        <div class="py-5 text-center ">
+          <div class="row">
+
+          <% address[0].address.forEach(function(adrs) { %>
+          <div class="col-md-3">
+                  
+                  
+                  
+                    
+                        <!-- <div class="col-md-12 mb-2" id=""> -->
+                            <div class="jumbotron shadow  bg-white rounded p-4">
+                            <div class="card">
+                              <div class="card-body">
+                                <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
+                                <address class="card-text">
+                                    <%=adrs.name%>  <br> <%=adrs.phoneNo%><br>
+                                    <%=adrs.city%><br><%=adrs.country%>, <%=adrs.state%> <br>,pincode : <%=adrs.zip%><br>
+                                
+                                </address>
+                                <button class="btn btn-outline-dark" onclick="fillForm(' <%#JSON.stringify(adrs)%>','<%#index%>')">Use the Address</button>
+                                <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
+                    
+                                <a href="#" onclick="deleteAdddress('<%#index%>')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="bi bi-trash ml-5" style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
+                    
+                              </div>
+                            </div>
+                          </div>
+                        <!-- </div> -->
+                    
+                  
+              
+            </div>
+          <% }); %>
+        </div>
+
         </div>
         <div class="row">
           <div class="col-md-4 order-md-2 mb-4">
@@ -40,7 +69,7 @@
                     <%= prod.price*prod.quantity%>
                   </span>
                 </li>
-                <% }); %>
+              <% }); %>
                   <li class="list-group-item d-flex justify-content-between bg-light">
                     <div class="text-success">
                       <h6 class="my-0">Promo code</h6>

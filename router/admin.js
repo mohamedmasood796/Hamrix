@@ -11,7 +11,7 @@ const varifySession = require("../middleware/session");
 
 
 //admin home render
-router.get('/',varifySession.verifyLogin, adminControllers.getAdminHome)
+router.get('/', adminControllers.getAdminHome)
 
 //admin login render
 router.get('/admin-login',adminControllers.getAdminLogin)

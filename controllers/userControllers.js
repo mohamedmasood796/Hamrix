@@ -27,32 +27,32 @@ let loginErr;
 module.exports = {
     getUserHome: (req, res) => {
 
-        if(req.session.userloggedIn) {
-            const userId = req.session.user._id
-            console.log(userId+"abuq")
-            bannerSchema.find({ access: true }, function (err, ans) {
-                product.find({ access: true }, function (err, result) {
+        // if(req.session.userloggedIn) {
+        //     const userId = req.session.user._id
+        //     console.log(userId+"abuq")
+        //     bannerSchema.find({ access: true }, function (err, ans) {
+        //         product.find({ access: true }, function (err, result) {
     
-                    cartSchema.find({ userId: userId }, function (err, cartCoud) {
-                        wishlistSchema.find({ userId: userId }, function (err, wishcount) {
+        //             cartSchema.find({ userId: userId }, function (err, cartCoud) {
+        //                 wishlistSchema.find({ userId: userId }, function (err, wishcount) {
 
-                            if (err) {
-                                res.send(err);
-                            } else {
+        //                     if (err) {
+        //                         res.send(err);
+        //                     } else {
 
-                                count = cartCoud[0].products.length
-                                wcount = wishcount[0].myWish.length
+        //                         count = cartCoud[0].products.length
+        //                         wcount = wishcount[0].myWish.length
 
-                                //console.log('masood')
-                                //console.log(result)
+        //                         //console.log('masood')
+        //                         //console.log(result)
                                 
-                                res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
-                            }
-                        })
-                    })
-                }).limit(8)
-            });
-        } else {
+        //                         res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
+        //                     }
+        //                 })
+        //             })
+        //         }).limit(8)
+        //     });
+        // } else {
             bannerSchema.find({ access: true }, function (err, ans) {
                 product.find({ access: true }, function (err, result) {
                     
@@ -64,7 +64,7 @@ module.exports = {
                     }
                 }).limit(8)
             });
-        }
+        // }
 
     },
 
@@ -646,8 +646,11 @@ module.exports = {
         const userId = req.session.user._id
 
         const prod = await cartSchema.findOne({ userId: userId })
+        const address= await addressSchema.find({userId:userId})
+
+        console.log(address[0].address)
         console.log(prod)
-        res.render('user/user-checkout', { user, prod })
+        res.render('user/user-checkout', { user, prod ,address})
     },
 
     getpaymentAddress: async (req, res) => {
