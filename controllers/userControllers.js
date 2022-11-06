@@ -27,32 +27,36 @@ let loginErr;
 module.exports = {
     getUserHome: (req, res) => {
 
-        // if(req.session.userloggedIn) {
-        //     const userId = req.session.user._id
-        //     console.log(userId+"abuq")
-        //     bannerSchema.find({ access: true }, function (err, ans) {
-        //         product.find({ access: true }, function (err, result) {
+        if(req.session.userloggedIn) {
+            const userId = req.session.user._id
+            console.log(userId+"abuq")
+            bannerSchema.find({ access: true }, function (err, ans) {
+                product.find({ access: true }, function (err, result) {
     
-        //             cartSchema.find({ userId: userId }, function (err, cartCoud) {
-        //                 wishlistSchema.find({ userId: userId }, function (err, wishcount) {
+                    cartSchema.find({ userId: userId }, function (err, cartCoud) {
+                        wishlistSchema.find({ userId: userId }, function (err, wishcount) {
 
-        //                     if (err) {
-        //                         res.send(err);
-        //                     } else {
+                            if (err) {
+                                res.send(err);
+                            } else {
+                                if(cartCoud[0]){
+                                    count = cartCoud[0].products.length
+                                    
+                                }else{
+                                    count=0 
+                                }
+                                wcount = wishcount[0].myWish.length
 
-        //                         count = cartCoud[0].products.length
-        //                         wcount = wishcount[0].myWish.length
-
-        //                         //console.log('masood')
-        //                         //console.log(result)
+                                //console.log('masood')
+                                //console.log(result)
                                 
-        //                         res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
-        //                     }
-        //                 })
-        //             })
-        //         }).limit(8)
-        //     });
-        // } else {
+                                res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
+                            }
+                        })
+                    })
+                }).limit(8)
+            });
+        } else {
             bannerSchema.find({ access: true }, function (err, ans) {
                 product.find({ access: true }, function (err, result) {
                     
@@ -64,7 +68,7 @@ module.exports = {
                     }
                 }).limit(8)
             });
-        // }
+        }
 
     },
 
@@ -138,6 +142,7 @@ module.exports = {
             if (user.access) {
                 // console.log('acdess')
                 bcrypt.compare(req.body.password, user.password).then((data) => {
+                    
                     if (data) {
                         req.session.userloggedIn = true
                         req.session.user = user

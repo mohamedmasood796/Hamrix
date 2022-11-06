@@ -2,6 +2,7 @@ const admin = require('../models/admin')
 const product = require('../models/productSchema')
 const User = require("../models/user")
 const category = require('../models/categorySchema')
+const bcrypt = require('bcrypt')
 
 const collection = require('../config/collection')
 const user = require('../models/user')
@@ -9,6 +10,7 @@ const { render } = require('ejs')
 const { findById } = require('../models/admin')
 const bannerSchema=require("../models/bannerSchema")
 const orderSchema = require('../models/orderSchema')
+const { BulkCountryUpdatePage } = require('twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate')
 
 
 let categoryErr;
@@ -40,8 +42,23 @@ module.exports = {
         const email = req.body.email
         const password = req.body.password
         admin.findOne({ adminEmail: email }, (err, data) => {
+
             if (data) {
-                if (password == data.password) {
+                console.log(data)
+                console.log(password)
+                console.log(data.password)
+
+                bcrypt.compare(password,data.password).then((datas)=>{
+                    console.log('compare')
+                    console.log(password)
+                    console.log(data.password)
+                    console.log(datas)
+
+              
+                
+                if (data) {
+                    console.log('bcript')
+                    console.log(data.password)
                     req.session.adminloggedIn = true
                     req.session.user = data
                     res.redirect('/admin/')
@@ -51,6 +68,7 @@ module.exports = {
                     adminloginErr = "invalid password"
                     res.redirect('/admin/')
                 }
+            })
             } else {
                 console.log("data not found")
                 adminloginErr = "invalid email"
