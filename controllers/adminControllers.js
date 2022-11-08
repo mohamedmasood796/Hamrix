@@ -87,9 +87,11 @@ module.exports = {
         // })
 
         product.find({}, function (err, result) {
+            
             if (err) {
                 res.send(err);
             } else {
+                
                 res.render('admin/admin-allproduct', { result })
 
             }

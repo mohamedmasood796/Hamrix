@@ -77,13 +77,19 @@ router.get('/deleteWishlist/:id',varifySession.verifyLogin,userControllers.getde
 router.get('/checkout',varifySession.verifyLogin,userControllers.getAddAddresstoPay)
 
 //payment address post 
-router.post('/payment',varifySession.verifyLogin,userControllers.getpaymentAddress)
+router.post('/cartpayment',varifySession.verifyLogin,userControllers.getpaymentAddress)
 
 //user order details
 router.get('/user-order',varifySession.verifyLogin,userControllers.getUserOrder)
 
 //user order cancel 
 router.get('/orderCancel/:id',varifySession.verifyLogin,userControllers.getOrderCancel)
+
+//order conform page
+router.get('/order-confirmed',varifySession.verifyLogin,userControllers.getSuccessPage)
+
+//order verify payment 
+router.post('/verify-payment',varifySession.verifyLogin,userControllers.getverifyPayment)
 
 
 

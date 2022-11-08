@@ -13,39 +13,12 @@
     <body>
       <div class="container">
         <div class="py-5 text-center ">
-          <div class="row">
 
-          <% address[0].address.forEach(function(adrs) { %>
-          <div class="col-md-3">
-                  
-                  
-                  
-                    
-                        <!-- <div class="col-md-12 mb-2" id=""> -->
-                            <div class="jumbotron shadow  bg-white rounded p-4">
-                            <div class="card">
-                              <div class="card-body">
-                                <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
-                                <address class="card-text">
-                                    <%=adrs.name%>  <br> <%=adrs.phoneNo%><br>
-                                    <%=adrs.city%><br><%=adrs.country%>, <%=adrs.state%> <br>,pincode : <%=adrs.zip%><br>
-                                
-                                </address>
-                                <button class="btn btn-outline-dark" onclick="fillForm(' <%#JSON.stringify(adrs)%>','<%#index%>')">Use the Address</button>
-                                <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
-                    
-                                <a href="#" onclick="deleteAdddress('<%#index%>')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="bi bi-trash ml-5" style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
-                    
-                              </div>
-                            </div>
-                          </div>
-                        <!-- </div> -->
-                    
-                  
-              
-            </div>
-          <% }); %>
-        </div>
+
+
+          <!-- two show address in checkout page -->
+
+
 
         </div>
         <div class="row">
@@ -69,7 +42,7 @@
                     <%= prod.price*prod.quantity%>
                   </span>
                 </li>
-              <% }); %>
+                <% }); %>
                   <li class="list-group-item d-flex justify-content-between bg-light">
                     <div class="text-success">
                       <h6 class="my-0">Promo code</h6>
@@ -93,7 +66,8 @@
           </div>
           <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Billing address</h4>
-            <form class="needs-validation" action="/payment" method="post" >
+            <!-- action="/payment" method="post" -->
+            <form class="needs-validation" id="checkout-form-submit">
               <div class="row">
                 <div class=" mb-3">
                   <label for="firstName">First name</label>
@@ -129,10 +103,10 @@
 
                 <div class="col-md-5 mb-3">
                   <label for="country">State</label>
-                 <input type="text" name="state" class="form-control" id="address2" placeholder="state">
+                  <input type="text" name="state" class="form-control" id="address2" placeholder="state">
                   <div class="invalid-feedback"> Please select a valid state. </div>
                 </div>
-                
+
                 <div class="col-md-3 mb-3">
                   <label for="zip">Zip</label>
                   <input type="text" name="zip" class="form-control" id="zip" placeholder="" required="">
@@ -140,19 +114,19 @@
                 </div>
               </div>
               <hr class="mb-4">
-              
+
               <hr class="mb-4">
               <h4 class="mb-3">Payment</h4>
               <div class="d-block my-3">
-                
+
                 <div class="custom-control custom-radio">
                   <!-- <input id="debit" name="paymentMethod" type="radio" class="custom-control-input" required=""> -->
-                  <input type="radio" name="payment" id="debit" value="cod">Cash on delivery<br>  
+                  <input type="radio" name="payment" id="debit" value="cod">Cash on delivery<br>
                 </div>
 
                 <div class="custom-control custom-radio">
                   <!-- <input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" required=""> -->
-                  <input type="radio" name="payment" id="paypal" value="online">online payment<br> 
+                  <input type="radio" name="payment" id="paypal" value="online">online payment<br>
                 </div>
               </div>
               <!-- <div class="row">
@@ -186,9 +160,18 @@
             </form>
           </div>
         </div>
-        
+
       </div>
     </body>
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+      integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+      crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
     <script>
       // Example starter JavaScript for disabling form submissions if there are invalid fields
       (function () {
@@ -210,6 +193,72 @@
           })
         }, false)
       }())
+    </script>
+
+    <script>
+      $("#checkout-form-submit").submit((e) => {
+        e.preventDefault()
+        console.log('heyyyyyyyyyyy')
+        $.ajax({
+          url: '/cartpayment',
+          method: "post",
+          data: $('#checkout-form-submit').serialize(),
+          success: (Response) => {
+            if (Response.codStatus) {
+              console.log("first if in cod")
+              location.href = "/order-confirmed"
+            } else {
+              razorpayPayment(Response)
+              console.log('else in payment ')
+              console.log(Response)
+              // location.href="/viewUserOrders"
+            }
+          }
+        })
+      })
+      function razorpayPayment(order) {
+        var options = {
+          "key": "rzp_test_myCywIJrMg3Vbs", // Enter the Key ID generated from the Dashboard
+          "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+          "currency": "INR",
+          "name": "Hamrix",
+          "description": "Test Transaction",
+          "image": "https://example.com/your_logo",
+          "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+          "handler": function (response) {
+            // alert(response.razorpay_payment_id);
+            // alert(response.razorpay_order_id);
+            // alert(response.razorpay_signature)
+
+            verifyPayment(response, order)
+          },
+          "prefill": {
+            "name": "Gaurav Kumar",
+            "email": "gaurav.kumar@example.com",
+            "contact": "9999999999"
+          },
+          "notes": {
+            "address": "Razorpay Corporate Office"
+          },
+          "theme": {
+            "color": "#3399cc"
+          }
+        };
+
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+      }
+
+      function verifyPayment(payment,order){
+        $.ajax({
+          url:'/verify-payment',
+          data:{
+            payment,
+            order
+          },
+          method:'post'
+        })
+      }
     </script>
 
 

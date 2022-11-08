@@ -12,7 +12,13 @@ const wishlistSchema = require('../models/wishlistSchema')
 const addressSchema = require('../models/addressSchema')
 const orderSchema = require('../models/orderSchema')
 const verifyLogin = require('../middleware/session')
+const Razorpay = require('razorpay')
 let loggedIn;
+
+const instance = new Razorpay({
+    key_id: process.env.key_id,
+    key_secret: process.env.key_secret
+})
 
 // const userSession=(req,res,next)=>{
 //     if (req.session.userloggedIn) {
@@ -27,29 +33,29 @@ let loginErr;
 module.exports = {
     getUserHome: (req, res) => {
 
-        if(req.session.userloggedIn) {
+        if (req.session.userloggedIn) {
             const userId = req.session.user._id
-            console.log(userId+"abuq")
+            console.log(userId + "abuq")
             bannerSchema.find({ access: true }, function (err, ans) {
                 product.find({ access: true }, function (err, result) {
-    
+
                     cartSchema.find({ userId: userId }, function (err, cartCoud) {
                         wishlistSchema.find({ userId: userId }, function (err, wishcount) {
 
                             if (err) {
                                 res.send(err);
                             } else {
-                                if(cartCoud[0]){
+                                if (cartCoud[0]) {
                                     count = cartCoud[0].products.length
-                                    
-                                }else{
-                                    count=0 
+
+                                } else {
+                                    count = 0
                                 }
                                 wcount = wishcount[0].myWish.length
 
                                 //console.log('masood')
                                 //console.log(result)
-                                
+
                                 res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
                             }
                         })
@@ -59,11 +65,11 @@ module.exports = {
         } else {
             bannerSchema.find({ access: true }, function (err, ans) {
                 product.find({ access: true }, function (err, result) {
-                    
-                    if(err) {
+
+                    if (err) {
                         console.log(err);
                     }
-                    if(result) {
+                    if (result) {
                         res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0 })
                     }
                 }).limit(8)
@@ -142,7 +148,7 @@ module.exports = {
             if (user.access) {
                 // console.log('acdess')
                 bcrypt.compare(req.body.password, user.password).then((data) => {
-                    
+
                     if (data) {
                         req.session.userloggedIn = true
                         req.session.user = user
@@ -651,14 +657,13 @@ module.exports = {
         const userId = req.session.user._id
 
         const prod = await cartSchema.findOne({ userId: userId })
-        const address= await addressSchema.find({userId:userId})
+        const address = await addressSchema.find({ userId: userId })
 
-        console.log(address[0].address)
-        console.log(prod)
-        res.render('user/user-checkout', { user, prod ,address})
+        res.render('user/user-checkout', { user, prod, address })
     },
 
     getpaymentAddress: async (req, res) => {
+        console.log('llllllllllllllllkkkkkkkkkkkkkkkk')
         console.log(req.body)
         let userId = req.session.user._id
         console.log(userId)
@@ -717,8 +722,76 @@ module.exports = {
         })
         await cart.remove()
         await newOder.save()
-        res.render('user/user-orderConform', { newOder })
+        req.session.orderId = newOder._id
+        console.log('arsha')
+        if (req.body.payment === "cod") {
 
+            res.json({ codStatus: true })
+        } else {
+
+            console.log('gooooooooooooooooooood')
+            var options = {
+                amount: newOder.total * 100,  // amount in the smallest currency unit
+                currency: "INR",
+                receipt: "" + newOder._id
+            };
+            instance.orders.create(options, function (err, order) {
+                console.log('maodod')
+                // console.log(order);
+                res.json(order)
+            });
+
+
+            // instance.orders.create({
+            //     amount: newOder.total,
+            //     currency: "USD",
+            //     receipt: orderId,
+            //     notes: {
+            //       key1: "value3",
+            //       key2: "value2"
+            //     }
+
+            //   })
+
+
+        }
+
+
+    },
+    getSuccessPage: async (req, res) => {
+        orderId = req.session.orderId
+        console.log('session order id ')
+        console.log(orderId)
+
+        const newOder = await orderSchema.findOne({ _id: orderId })
+        console.log(newOder)
+
+        res.render('user/user-orderConform', { newOder })
+    },
+
+    getverifyPayment:async (req, res) => {
+        let details = req.body
+        const crypto = require('crypto')
+        let hmac = crypto.createHmac('sha256', 'oYvKdh1HCvzITC5kKwUQb8Lo');
+        console.log('start form here')
+        console.log(hmac)
+        hmac.update(details['payment[razorpay_order_id]'] +'|'+details['payment[razorpay_payment_id]']);
+
+        hmac = hmac.digest('hex')
+        
+        if (hmac == details['payment[razorpay_signature]']) {
+            console.log('payment seccess')
+            orderId=req.session.orderId
+            await orderSchema.findByIdAndUpdate(orderId,{status:'palced'})
+            // const changeStatus = await orderSchema.findOne({ _id: orderId })
+            // cancelOrder.status = "cancelled"
+            // await cancelOrder.save()
+        }else{
+
+            console.log('payment fails')
+        }
+
+        console.log(req.body)
     },
 
 
@@ -737,7 +810,8 @@ module.exports = {
         cancelOrder.status = "cancelled"
         await cancelOrder.save()
         res.redirect('/user-order')
-    }
+    },
+
 
 
 
