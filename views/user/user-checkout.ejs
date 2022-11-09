@@ -14,11 +14,39 @@
       <div class="container">
         <div class="py-5 text-center ">
 
+          <div class="row">
 
-
-          <!-- two show address in checkout page -->
-
-
+            <% address[0].address.forEach(function(adrs,index) { %>
+            <div class="col-md-3">
+                    
+                    
+                    
+                      
+                          <!-- <div class="col-md-12 mb-2" id=""> -->
+                              <div class="jumbotron shadow  bg-white rounded p-4">
+                              <div class="card">
+                                <div class="card-body">
+                                  <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
+                                  <address class="card-text">
+                                      <%=adrs.name%>  <br> <%=adrs.phoneNo%><br>
+                                      <%=adrs.city%><br><%=adrs.country%>, <%=adrs.state%> <br>,pincode : <%=adrs.zip%><br>
+                                  
+                                  </address>
+                                  <button class="btn btn-outline-dark" onclick="fillForm(' <%=JSON.stringify(adrs)%>','<%=index%>')">Use the Address</button>
+                                  <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
+                      
+                                  <a href="#" onclick="deleteAdddress('<%#index%>')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="bi bi-trash ml-5" style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
+                      
+                                </div>
+                              </div>
+                            </div>
+                          <!-- </div> -->
+                      
+                    
+                
+              </div>
+            <% }); %>
+          </div>
 
         </div>
         <div class="row">
@@ -71,7 +99,7 @@
               <div class="row">
                 <div class=" mb-3">
                   <label for="firstName">First name</label>
-                  <input type="text" class="form-control" id="firstName" name="name" placeholder="" value=""
+                  <input type="text" class="form-control" id="name" name="name" placeholder="" value=""
                     required="">
                   <div class="invalid-feedback"> Valid first name is required. </div>
                 </div>
@@ -80,7 +108,7 @@
 
               <div class="mb-3">
                 <label for="email">PhoneNo </label>
-                <input type="phone" class="form-control" id="email" placeholder="9876543210" name="phoneNo">
+                <input type="phone" class="form-control" id="phoneNo" placeholder="9876543210" name="phoneNo">
                 <div class="invalid-feedback"> Please enter a valid email address for shipping updates. </div>
               </div>
               <div class="mb-3">
@@ -91,19 +119,19 @@
               </div>
               <div class="mb-3">
                 <label for="address2">City </label>
-                <input type="text" class="form-control" name="city" id="address2" placeholder="Apartment or suite">
+                <input type="text" class="form-control" name="city" id="city"  placeholder="Apartment or suite">
               </div>
 
               <div class="row">
                 <div class="col-md-4 mb-3">
                   <label for="state">country</label>
-                  <input type="text" name="country" class="form-control" id="address2" placeholder="country">
+                  <input type="text" name="country" class="form-control" id="country" placeholder="country">
                   <div class="invalid-feedback"> Please provide a valid state. </div>
                 </div>
 
                 <div class="col-md-5 mb-3">
                   <label for="country">State</label>
-                  <input type="text" name="state" class="form-control" id="address2" placeholder="state">
+                  <input type="text" name="state" class="form-control" id="state" placeholder="state">
                   <div class="invalid-feedback"> Please select a valid state. </div>
                 </div>
 
@@ -259,6 +287,59 @@
           method:'post'
         })
       }
+    </script>
+
+    <script>
+      function fillForm(responsee,index){
+        console.log('maodo')
+        console.log(responsee)
+        console.log(index)
+        let response= JSON.parse(responsee)
+        document.getElementById('name').value=response.name
+        document.getElementById('phoneNo').value=response.phoneNo
+        document.getElementById('address').value=response.address
+        document.getElementById('city').value=response.city
+        document.getElementById('state').value=response.state
+        document.getElementById('country').value=response.country
+        document.getElementById('zip').value=response.zip
+        
+      }
+      
+    </script>
+
+    <script>
+       function deleteAdddress(addressIndex) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                
+            $.ajax({
+                
+                url: '/deleteAddress/'+addressIndex,
+                method: 'post',
+                success: (response) => {
+                        Swal.fire({
+                            title: 'ok!',
+                            text: 'file has been deleted.',
+                            icon: 'success',
+                            showConfirmButton: false
+                        })
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000);
+                    }
+                })
+            }
+
+        })
+    }
     </script>
 
 

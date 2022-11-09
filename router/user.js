@@ -76,6 +76,12 @@ router.get('/deleteWishlist/:id',varifySession.verifyLogin,userControllers.getde
 //chek out page addd address
 router.get('/checkout',varifySession.verifyLogin,userControllers.getAddAddresstoPay)
 
+//delect address
+router.post('/deleteAddress/:addressIndex',varifySession.verifyLogin,userControllers.getDeleteAddress)
+
+
+
+
 //payment address post 
 router.post('/cartpayment',varifySession.verifyLogin,userControllers.getpaymentAddress)
 

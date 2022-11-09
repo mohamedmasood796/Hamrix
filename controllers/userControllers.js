@@ -662,6 +662,15 @@ module.exports = {
         res.render('user/user-checkout', { user, prod, address })
     },
 
+    getDeleteAddress:async(req,res)=>{
+        // const userId = req.session.user._id
+        // const addressIndex = req.body.addressIndex
+        // const users = await addressSchema.findById(userId)
+        // users.addressSchema.splice(addressIndex, 1)
+        // await addressSchema.save()
+        // res.json({ status: true })
+    },
+
     getpaymentAddress: async (req, res) => {
         console.log('llllllllllllllllkkkkkkkkkkkkkkkk')
         console.log(req.body)
@@ -782,7 +791,7 @@ module.exports = {
         if (hmac == details['payment[razorpay_signature]']) {
             console.log('payment seccess')
             orderId=req.session.orderId
-            await orderSchema.findByIdAndUpdate(orderId,{status:'palced'})
+            await orderSchema.findByIdAndUpdate(orderId,{status:'placed'})
             // const changeStatus = await orderSchema.findOne({ _id: orderId })
             // cancelOrder.status = "cancelled"
             // await cancelOrder.save()
