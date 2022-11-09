@@ -826,6 +826,12 @@ module.exports = {
         res.redirect('/user-order')
     },
 
+    getcheckCoupon:(req,res)=>{
+        console.log('english')
+        console.log(req.params)
+        res.redirect('/checkout')
+    }
+
 
 
 

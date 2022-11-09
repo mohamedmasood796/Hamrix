@@ -10,6 +10,7 @@ const { render } = require('ejs')
 const { findById } = require('../models/admin')
 const bannerSchema=require("../models/bannerSchema")
 const orderSchema = require('../models/orderSchema')
+const couponSchema=require('../models/couponSchema')
 const { BulkCountryUpdatePage } = require('twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate')
 
 
@@ -442,9 +443,7 @@ module.exports = {
     },
 
     getOrderManagment:async(req,res)=>{
-        // let userId=req.session.user._id
-        console.log('haeebi')
-        
+        // let userId=req.session.user._id    
         const userOrder=await orderSchema.find({}).populate("products.productId").exec()
         console.log(userOrder[0].products)
         res.render('admin/admin-orderManagment',{userOrder})
@@ -452,10 +451,9 @@ module.exports = {
 
     getveiwOneProduct:async(req,res)=>{
         const prodId=req.params.id
-        console.log(prodId)
+        
         const newOder=await orderSchema.findOne({_id:(prodId)})
-        console.log("222222222222222222222222222222222222222")
-        console.log(newOder)
+        
         res.render('admin/admin-oneProduct',{newOder})
     },
 
@@ -469,6 +467,28 @@ module.exports = {
         update.status=prodstatus.status
         await update.save()
         res.redirect('/admin/orderManagment')
+    },
+
+    getaddCouponPage:async(req,res)=>{
+        let couponpro= await couponSchema.find()
+        
+        res.render('admin/admin-coupon',{couponpro})
+    },
+
+    getAddCoupon:async(req,res)=>{
+        
+        let{name,couponCode,discount,expDate}=req.body
+        
+        const coupon=new couponSchema({
+            name,
+            couponCode,
+            discount,
+            expDate,
+            isActive:true
+
+        })
+        await coupon.save()
+        res.redirect('/admin/adminCoupon')
     }
 
 

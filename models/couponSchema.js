@@ -23,11 +23,11 @@ const couponSchema = new Schema({
     },
     maxlimit: {
         type: Number,
-        require: true
+        
     },
     minPurchase: {
         type: Number,
-        require: true
+        
     },
     expDate: {
         type: Date,
@@ -43,4 +43,4 @@ const couponSchema = new Schema({
     ]
 })
 
-module.exports = mongoose.model(collection.couponCollection, couponSchema)
+module.exports = mongoose.model('coupon', couponSchema)

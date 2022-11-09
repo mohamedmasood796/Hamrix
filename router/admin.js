@@ -82,6 +82,12 @@ router.get('/veiwOneProduct/:id',adminControllers.getveiwOneProduct)
 //admin change delivery status
 router.post('/chargeDeliveryStatus/:id',varifySession.verifyLogin,adminControllers.getchargeDeliveryStatus)
 
+//admin coupen mangement
+router.get('/adminCoupon',adminControllers.getaddCouponPage)
+
+//admin add a coupon 
+router.post('/addCoupon',adminControllers.getAddCoupon)
+
 
 
 

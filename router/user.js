@@ -97,7 +97,8 @@ router.get('/order-confirmed',varifySession.verifyLogin,userControllers.getSucce
 //order verify payment 
 router.post('/verify-payment',varifySession.verifyLogin,userControllers.getverifyPayment)
 
-
+//user use coupon
+router.post('/checkCoupon/:couponValue',userControllers.getcheckCoupon)
 
 
 
