@@ -35,7 +35,7 @@
                                   <button class="btn btn-outline-dark" onclick="fillForm(' <%=JSON.stringify(adrs)%>','<%=index%>')">Use the Address</button>
                                   <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
                       
-                                  <a href="#" onclick="deleteAdddress('<%#index%>')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="bi bi-trash ml-5" style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
+                                  <a href="#" onclick="deleteAdddress('<%=index%>')" data-toggle="tooltip" data-placement="top" title="Delete"><i class="bi bi-trash ml-5" style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
                       
                                 </div>
                               </div>
@@ -192,7 +192,7 @@
       </div>
     </body>
 
-
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"

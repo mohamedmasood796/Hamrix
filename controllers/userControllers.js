@@ -663,12 +663,17 @@ module.exports = {
     },
 
     getDeleteAddress:async(req,res)=>{
-        // const userId = req.session.user._id
-        // const addressIndex = req.body.addressIndex
-        // const users = await addressSchema.findById(userId)
-        // users.addressSchema.splice(addressIndex, 1)
-        // await addressSchema.save()
-        // res.json({ status: true })
+        console.log('ksjdffffffffffff')
+        const userId = req.session.user._id
+        console.log(userId)
+
+        const addressIndex = req.params.addressIndex
+        console.log(addressIndex)
+        const adrs = await addressSchema.findOne({ userId: userId })
+        console.log(adrs)
+        adrs.address.splice(addressIndex, 1)
+        await adrs.save()
+        res.json({ status: true })
     },
 
     getpaymentAddress: async (req, res) => {
