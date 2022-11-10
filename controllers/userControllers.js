@@ -13,6 +13,7 @@ const addressSchema = require('../models/addressSchema')
 const orderSchema = require('../models/orderSchema')
 const verifyLogin = require('../middleware/session')
 const Razorpay = require('razorpay')
+const couponSchema = require('../models/couponSchema')
 let loggedIn;
 
 const instance = new Razorpay({
@@ -826,10 +827,37 @@ module.exports = {
         res.redirect('/user-order')
     },
 
-    getcheckCoupon:(req,res)=>{
+    getcheckCoupon:async(req,res)=>{
         console.log('english')
-        console.log(req.params)
+        let code=req.params.couponValue
+        let userId=req.session.user._id
+        console.log(userId)
+        console.log(code)
+
+        let coupons=await couponSchema.findOne({couponCode:code}).lean()
+        console.log(coupons)
+        if(coupons != null){
+            let today=new Date();
+            console.log(coupons.expDate)
+            console.log(today)
+            if(coupons.expDate > today){
+                let itemIndex=coupons.usedUsers.findIndex(p=>p.userId ==userId)
+                console.log(itemIndex)
+                if(itemIndex==-1){
+                    await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
+                }
+            }else{
+                console.log("date kayijuno")
+
+            }
+
+        }else{
+            conosle.log("coupon ella")
+        }
+
+        
         res.redirect('/checkout')
+
     }
 
 

@@ -244,7 +244,7 @@
                                                 <form action="/admin/chargeDeliveryStatus/<%= newOder._id%>"
                                                     method="post">
                                                     <tr>
-                                                        <%if(newOder.status!="delivered"){%>
+                                                        <%if(newOder.status!="delivered" && newOder.status!="cancelled"){%>
 
                                                         <td align="left" valign="top"
                                                             style="font-family: Open Sans, Helvetica, Arial, sans-serif; font-size: 16px; font-weight: 400; line-height: 24px;">
