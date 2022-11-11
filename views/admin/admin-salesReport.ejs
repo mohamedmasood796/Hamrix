@@ -2,14 +2,15 @@
     <%- include('./include/admin-navside'); %>
         <%- include('./include/admin-header'); %>
 
-            <div class="m-3">
-                <a href="" class="btn btn-danger">Print</a>
+            
 
-            </div>
+            <div class="container mt-4 " id="pdf">
+                <div class="m-2" >
+                    <a href=""  onclick="printDiv('pdf','title')" class="btn btn-danger">Print</a>
+    
+                </div>
 
-            <div class="container mt-4 ">
-
-                <table class="table table-bordered">
+                <table class="table table-bordered" id="salesData" >
                     <thead>
                         <tr>
                             <th>OrderId</th>
@@ -48,3 +49,27 @@
                     </tbody>
                 </table>
             </div>
+
+            <script>
+                var doc = new jsPDF();
+          
+          
+                function printDiv(divId,
+                  title) {
+          
+                  let mywindow = window.open('', 'PRINT', 'height=650,width=900,top=100,left=150');
+          
+                  mywindow.document.write(`<html><head><title>${title}</title>`);
+                  mywindow.document.write('</head><body >');
+                  mywindow.document.write(document.getElementById(divId).innerHTML);
+                  mywindow.document.write('</body></html>');
+          
+                  mywindow.document.close(); // necessary for IE >= 10
+                  mywindow.focus(); // necessary for IE >= 10*/
+          
+                  mywindow.print();
+                  mywindow.close();
+          
+                  return true;
+                }
+             </script>
