@@ -15,7 +15,6 @@ const verifyLogin = require('../middleware/session')
 const Razorpay = require('razorpay')
 const couponSchema = require('../models/couponSchema')
 let loggedIn;
-let couponStatus = false
 
 const instance = new Razorpay({
     key_id: process.env.key_id,
@@ -716,11 +715,6 @@ module.exports = {
         //adding order schema
         let cart = await cartSchema.findOne({ userId: userId })
         console.log(cart)
-        let totalAmount = cart.total
-        if(couponStatus){
-            totalAmount =  req.session.couponPrice 
-            couponStatus = false
-        }
         let newdate = new Date().toJSON().slice(0, 10);
         const newOder = new orderSchema({
             userId,
@@ -736,7 +730,7 @@ module.exports = {
             paymentType: req.body.payment,
             date: newdate,
             products: cart.products,
-            total: totalAmount,
+            total: cart.total,
 
         })
         await cart.remove()
@@ -864,8 +858,6 @@ module.exports = {
                     console.log(couponDiscount)
 
                     let amountAfterCoupon=totalamount-couponDiscount
-                    req.session.couponPrice = amountAfterCoupon
-                    couponStatus = true
                     console.log(amountAfterCoupon)
 
                     await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
