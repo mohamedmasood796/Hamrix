@@ -1,0 +1,50 @@
+<%- include('./include/admin-headlink'); %>
+    <%- include('./include/admin-navside'); %>
+        <%- include('./include/admin-header'); %>
+
+            <div class="m-3">
+                <a href="" class="btn btn-danger">Print</a>
+
+            </div>
+
+            <div class="container mt-4 ">
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>OrderId</th>
+                            <th>Address</th>
+                            <th>Payment</th>
+                            <th>Cost</th>
+                            <th>Bill AMT</th>
+                            <th>Profit</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% salesreport.forEach(function(report){ %>
+                
+                            <tr>
+                                <td><%=report._id %></td>
+                                <td>
+                                    
+                                          <%=report.deliveryAddress[0].name%><br>
+                                        
+                                              <%=report.deliveryAddress[0].city%>,
+                                                  <%=report.deliveryAddress[0].state%><br>
+                                                    <%=report.deliveryAddress[0].zip%><br>
+                                                      <%=report.deliveryAddress[0].phoneNo%>
+                       
+                                </td>
+                                <td><%= report.paymentType%></td>
+                                <td>Mary</td>
+                                <td>Moe</td>
+                                <td>mary@example.com</td>
+                                <td>Mary</td>
+                                <td><%= report.status%></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>

@@ -15,6 +15,7 @@ const verifyLogin = require('../middleware/session')
 const Razorpay = require('razorpay')
 const couponSchema = require('../models/couponSchema')
 let loggedIn;
+let couponStatus = false
 
 const instance = new Razorpay({
     key_id: process.env.key_id,
@@ -664,7 +665,7 @@ module.exports = {
     },
 
     getDeleteAddress:async(req,res)=>{
-        console.log('ksjdffffffffffff')
+        
         const userId = req.session.user._id
         console.log(userId)
 
@@ -678,8 +679,6 @@ module.exports = {
     },
 
     getpaymentAddress: async (req, res) => {
-        console.log('llllllllllllllllkkkkkkkkkkkkkkkk')
-        console.log(req.body)
         let userId = req.session.user._id
         console.log(userId)
         const findAddress = await addressSchema.findOne({ userId: userId })
@@ -717,6 +716,11 @@ module.exports = {
         //adding order schema
         let cart = await cartSchema.findOne({ userId: userId })
         console.log(cart)
+        let totalAmount = cart.total
+        if(couponStatus){
+            totalAmount =  req.session.couponPrice 
+            couponStatus = false
+        }
         let newdate = new Date().toJSON().slice(0, 10);
         const newOder = new orderSchema({
             userId,
@@ -732,19 +736,19 @@ module.exports = {
             paymentType: req.body.payment,
             date: newdate,
             products: cart.products,
-            total: cart.total,
+            total: totalAmount,
 
         })
         await cart.remove()
         await newOder.save()
         req.session.orderId = newOder._id
-        console.log('arsha')
+        
         if (req.body.payment === "cod") {
 
             res.json({ codStatus: true })
         } else {
 
-            console.log('gooooooooooooooooooood')
+            
             var options = {
                 amount: newOder.total * 100,  // amount in the smallest currency unit
                 currency: "INR",
@@ -844,6 +848,26 @@ module.exports = {
                 let itemIndex=coupons.usedUsers.findIndex(p=>p.userId ==userId)
                 console.log(itemIndex)
                 if(itemIndex==-1){
+                    console.log('mine')
+                    let totalPrice= await cartSchema.findOne({userId:userId})
+                    console.log("%")
+                    console.log(totalPrice)
+                    let discountPercentage=coupons.discount
+                    console.log(discountPercentage)
+
+                    let totalamount=totalPrice.total
+                    
+                    let couponDiscount=totalamount*discountPercentage/100
+                    couponDiscount=Math.round(couponDiscount)
+                    
+                    console.log("msood")
+                    console.log(couponDiscount)
+
+                    let amountAfterCoupon=totalamount-couponDiscount
+                    req.session.couponPrice = amountAfterCoupon
+                    couponStatus = true
+                    console.log(amountAfterCoupon)
+
                     await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
                 }
             }else{

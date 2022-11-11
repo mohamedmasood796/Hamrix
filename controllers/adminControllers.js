@@ -3,15 +3,16 @@ const product = require('../models/productSchema')
 const User = require("../models/user")
 const category = require('../models/categorySchema')
 const bcrypt = require('bcrypt')
-
+const cartSchema=require('../models/cartSchema')
+const orderSchema=require('../models/orderSchema')
 const collection = require('../config/collection')
 const user = require('../models/user')
 const { render } = require('ejs')
 const { findById } = require('../models/admin')
 const bannerSchema=require("../models/bannerSchema")
-const orderSchema = require('../models/orderSchema')
 const couponSchema=require('../models/couponSchema')
 const { BulkCountryUpdatePage } = require('twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate')
+const { find } = require('../models/user')
 
 
 let categoryErr;
@@ -20,10 +21,21 @@ let adminloginErr;
 
 
 module.exports = {
-    getAdminHome: (req, res) => {
+    getAdminHome:async (req, res) => {
         if (req.session.adminloggedIn) {
             let admin = req.session.user
-            res.render('admin/admin-home', { admin })
+            let userCount=await user.find({}).count()
+            let productCount=await product.find({}).count()
+            let sales=await orderSchema.find({})
+            let totalorder=sales.length
+            totalsales=0
+            for(var i=0; i<totalorder;i++){
+                totalsales=totalsales+sales[i].total
+            }
+            
+
+            
+            res.render('admin/admin-home', { admin ,userCount,productCount,sales,totalsales,totalorder})
         } else {
             res.render('admin/admin-login', { adminloginErr })
             adminloginErr = null
@@ -45,18 +57,7 @@ module.exports = {
         admin.findOne({ adminEmail: email }, (err, data) => {
 
             if (data) {
-                console.log(data)
-                console.log(password)
-                console.log(data.password)
-
-                bcrypt.compare(password,data.password).then((datas)=>{
-                    console.log('compare')
-                    console.log(password)
-                    console.log(data.password)
-                    console.log(datas)
-
-              
-                
+                bcrypt.compare(password,data.password).then((datas)=>{                
                 if (data) {
                     console.log('bcript')
                     console.log(data.password)
@@ -489,6 +490,13 @@ module.exports = {
         })
         await coupon.save()
         res.redirect('/admin/adminCoupon')
+    },
+
+    getsalesReport:async(req,res)=>{
+        const salesreport=await orderSchema.find({})
+        console.log("haem")
+        console.log(salesreport)
+        res.render('admin/admin-salesReport',{salesreport})
     }
 
 

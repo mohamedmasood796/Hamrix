@@ -13,15 +13,11 @@
     <body>
       <div class="container">
         <div class="py-5 text-center ">
-
+          <% if (address[0]){%>
           <div class="row">
 
             <% address[0].address.forEach(function(adrs,index) { %>
               <div class="col-md-3">
-
-
-
-
                 <!-- <div class="col-md-12 mb-2" id=""> -->
                 <div class="jumbotron shadow  bg-white rounded p-4">
                   <div class="card">
@@ -46,13 +42,11 @@
                   </div>
                 </div>
                 <!-- </div> -->
-
-
-
               </div>
               <% }); %>
           </div>
 
+          <%}%>
         </div>
         <div class="row">
           <div class="col-md-4 order-md-2 mb-4">
