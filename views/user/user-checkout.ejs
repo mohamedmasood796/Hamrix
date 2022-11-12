@@ -48,7 +48,7 @@
 
           <%}%>
         </div>
-        <div class="row" id="coupondiv">
+        <div class="row" >
           <div class="col-md-4 order-md-2 mb-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-muted">Your cart</span>
@@ -77,19 +77,27 @@
                     </div>
                     <span id="disc" class="text-success">-$0</span>
                   </li>
+
+                  <!-- <li class="list-group-item d-flex justify-content-between">
+                    <span>Total (USD)</span>
+                    <div  class="row" id="coupondiv">
+                      <strong id="total"><%# prod.total %></strong>
+                    </div>
+                  </li> -->
+
                   <li class="list-group-item d-flex justify-content-between">
                     <span>Total (USD)</span>
-                    <div  class="row">
-                      <strong id="total"><%= prod.total %></strong>
+                    <div  class="row" id="coupondiv">
+                      <strong id="discount"><%= prod.total %></strong>
                     </div>
                   </li>
             </ul>
 
             <div class="">
 
-              <form class="card p-2 " id="coupon-form-id">
+              <form class="card p-2 " id="coupon-form-submit">
                 <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Promo code" id="coupon-input">
+                  <input type="text" class="form-control" placeholder="Promo code" id="c-code">
                   <div class="input-group-append">
                     <button type="submit" class="btn"  style="background-color:rgb(150, 180, 222)  ;">Redeem</button>
                   </div>
@@ -346,8 +354,8 @@
       }
 
 
-      $("#coupon-form-id").submit((e) => {
-        let couponValue = document.getElementById('coupon-input').value
+      $("#coupon-form-submit").submit((e) => {
+        let couponValue = document.getElementById('c-code').value
         console.log('masood')
         console.log(couponValue)
         e.preventDefault()
@@ -356,13 +364,14 @@
           method: 'post',
           success: (response) => {
             if (response.status) {
-              console.log(`descount: ${response.couponDiscount},    price: ${response.cartPrice}`)
-              
-              document.getElementById("disc").innerHTML = response.couponDiscount;
-              document.getElementById("total").innerHTML = response.cartPrice;
-              // $("#coupondiv").load(location.href+"#coupondiv");
-              // document.getElementById('disc').innerText='-$'+response.couponDiscount
-              // document.getElementById('codestate').innerText='coupon applied successfully'
+              // console.log(`descount: ${response.couponDiscount},    price: ${response.cartPrice}`)
+
+              // document.getElementById("disc").innerHTML = response.couponDiscount;
+              // document.getElementById("total").innerHTML = response.cartPrice;
+              // $("#coupondiv").load(location.href + "#coupondiv");
+              document.getElementById('disc').innerText='-$'+response.discountPrice
+              document.getElementById('discount').innerText=''+response.totalamount
+              document.getElementById('codestate').innerText='coupon applied successfully'
 
             } else if(response.used){
               document.getElementById('codestate').style.color='red'

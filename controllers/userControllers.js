@@ -851,27 +851,20 @@ module.exports = {
                 console.log(itemIndex)
                 if(itemIndex==-1){
                     console.log('mine')
-                    let totalPrice= await cartSchema.findOne({userId:userId})
-                    console.log("%")
-                    console.log(totalPrice)
-                    let discountPercentage=coupons.discount
-                    console.log(discountPercentage)
-
-                    let totalamount=totalPrice.total
+                    let userCart= await cartSchema.findOne({userId:userId})
                     
-                    let couponDiscount=totalamount*discountPercentage/100
-                    couponDiscount=Math.round(couponDiscount)
-                    
-                    console.log("msood")
-                    console.log(couponDiscount)
+                    let discount = coupons.discount
 
-                    let amountAfterCoupon=totalamount-couponDiscount
-                    console.log(amountAfterCoupon)
+                    let discountPrice= ((userCart.total/100)*discount)
+                    discountPrice =Math.round(discountPrice)
 
-                    totalPrice.save()
+                    totalamount=(userCart.total)-(discountPrice)
+                    userCart.total=totalamount
+
+                    userCart.save()
 
                     await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
-                    res.json({status:true,couponDiscount, cartPrice: amountAfterCoupon })
+                    res.json({status:true,discountPrice, totalamount})
                 }else{
                     res.json({used:true})
                     console.log("used")

@@ -39,10 +39,10 @@
                        
                                 </td>
                                 <td><%= report.paymentType%></td>
-                                <td>Mary</td>
-                                <td>Moe</td>
-                                <td>mary@example.com</td>
-                                <td>Mary</td>
+                                <td><%= report.total *75 /100%></td>
+                                <td><%= report.total%></td>
+                                <td><%= report.total *25 /100%></td>
+                                <td><%= report.date%></td>
                                 <td><%= report.status%></td>
                             </tr>
                         <% }); %>
