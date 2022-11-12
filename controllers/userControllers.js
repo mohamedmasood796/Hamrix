@@ -7,13 +7,13 @@ const cartSchema = require('../models/cartSchema')
 const { aggregate, findOne } = require('../models/user')
 const otpverification = require('../utils/otp-generator')
 const bannerSchema = require('../models/bannerSchema')
-
 const wishlistSchema = require('../models/wishlistSchema')
 const addressSchema = require('../models/addressSchema')
 const orderSchema = require('../models/orderSchema')
 const verifyLogin = require('../middleware/session')
 const Razorpay = require('razorpay')
 const couponSchema = require('../models/couponSchema')
+const categorySchema = require('../models/categorySchema')
 let loggedIn;
 
 const instance = new Razorpay({
@@ -42,23 +42,27 @@ module.exports = {
 
                     cartSchema.find({ userId: userId }, function (err, cartCoud) {
                         wishlistSchema.find({ userId: userId }, function (err, wishcount) {
+                            categorySchema.find({},function(err,category){
+                                console.log("hiba")
+                                console.log(category)
 
-                            if (err) {
-                                res.send(err);
-                            } else {
-                                if (cartCoud[0]) {
-                                    count = cartCoud[0].products.length
-
+                                if (err) {
+                                    res.send(err);
                                 } else {
-                                    count = 0
+                                    if (cartCoud[0]) {
+                                        count = cartCoud[0].products.length
+    
+                                    } else {
+                                        count = 0
+                                    }
+                                    wcount = wishcount[0].myWish.length
+    
+                                    //console.log('masood')
+                                    //console.log(result)
+    
+                                    res.render('user/user-home', { user: req.session.user, result, ans, count, wcount,category })
                                 }
-                                wcount = wishcount[0].myWish.length
-
-                                //console.log('masood')
-                                //console.log(result)
-
-                                res.render('user/user-home', { user: req.session.user, result, ans, count, wcount })
-                            }
+                            })
                         })
                     })
                 }).limit(8)
@@ -66,13 +70,17 @@ module.exports = {
         } else {
             bannerSchema.find({ access: true }, function (err, ans) {
                 product.find({ access: true }, function (err, result) {
+                    categorySchema.find({},function(err,category){
+                        if (err) {
+                            console.log(err);
+                        }
+                        if (result) {
+                            res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0,category })
+                        }
 
-                    if (err) {
-                        console.log(err);
-                    }
-                    if (result) {
-                        res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0 })
-                    }
+                    })
+
+                    
                 }).limit(8)
             });
         }
@@ -680,7 +688,7 @@ module.exports = {
     getpaymentAddress: async (req, res) => {
         let userId = req.session.user._id
         console.log(userId)
-        const findAddress = await addressSchema.findOne({ userId: userId })
+        const findAddress = await addressSchema.findOne({ userId: userId }).limit(4)
 
         if (findAddress == null) {
             //new order address add
@@ -860,21 +868,31 @@ module.exports = {
                     let amountAfterCoupon=totalamount-couponDiscount
                     console.log(amountAfterCoupon)
 
+                    totalPrice.save()
+
                     await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
+                    res.json({status:true,couponDiscount})
+                }else{
+                    res.json({used:true})
+                    console.log("used")
                 }
             }else{
                 console.log("date kayijuno")
+                res.json({expired:true})
 
             }
 
         }else{
-            conosle.log("coupon ella")
+            console.log("coupon ella")
+            res.json({noMatch:true})
         }
 
         
-        res.redirect('/checkout')
+        // res.redirect('/checkout')
 
-    }
+    },
+
+
 
 
 
