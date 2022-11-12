@@ -356,10 +356,13 @@
           method: 'post',
           success: (response) => {
             if (response.status) {
-              console.log(response.couponDiscount)
-              $("#coupondiv").load(location.href+"#coupondiv");
-              document.getElementById('disc').innerText='-$'+response.couponDiscount
-              document.getElementById('codestate').innerText='coupon applied successfully'
+              console.log(`descount: ${response.couponDiscount},    price: ${response.cartPrice}`)
+              
+              document.getElementById("disc").innerHTML = response.couponDiscount;
+              document.getElementById("total").innerHTML = response.cartPrice;
+              // $("#coupondiv").load(location.href+"#coupondiv");
+              // document.getElementById('disc').innerText='-$'+response.couponDiscount
+              // document.getElementById('codestate').innerText='coupon applied successfully'
 
             } else if(response.used){
               document.getElementById('codestate').style.color='red'

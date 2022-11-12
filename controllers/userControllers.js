@@ -871,7 +871,7 @@ module.exports = {
                     totalPrice.save()
 
                     await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
-                    res.json({status:true,couponDiscount})
+                    res.json({status:true,couponDiscount, cartPrice: amountAfterCoupon })
                 }else{
                     res.json({used:true})
                     console.log("used")
