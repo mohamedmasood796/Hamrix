@@ -38,40 +38,22 @@ app.listen(3000,()=>{
     console.log('http://localhost:3000/');
 })
 
-// module.exports = app
 
 
+// // catch 404 and forward to error handler
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
-// app.get('/',(req,res)=>{
-//     res.render('user/user-home')
-// })
-
-// app.get('/about',(req,res)=>{
-//     res.render('user/user-about')
-// })
-
-// app.get('/user-signup',(req,res)=>{
-//     res.render('user/user-signup')
-// })
-
-// app.get('/user-contact',(req,res)=>{
-//     res.render('user/user-contact')
-// })
-
-// app.get('/user-login',(req,res)=>{
-//     res.render('user/user-login')
-// })
-
-// app.get('/admin-home',(req,res)=>{
-//     res.render('admin/admin-home')
-// })
-// app.get('/admin-login',(req,res)=>{
-//     res.render('admin/admin-login')
-// })
-
-app.get('/admin-addproducts',(req,res)=>{
-  res.render('admin/admin-addproduct')
-})
+// // error handler
+// app.use(function(err, req, res, next) {
+//   // set locals, only providing error in development
+//   res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('user/user-404');
+// });
 
 
 // const PORT = process.env.PORT || 3000;

@@ -33,164 +33,145 @@ let loginErr;
 
 module.exports = {
 
-    get404Page:(req,res)=>{
-        res.render('user/user-404')
-    },
 
-
-
-    getUserHome: (req, res) => {
-        try{
-
-        }catch(error){
-            req.redirect('/404page')
-        }
-
-        if (req.session.userloggedIn) {
-            const userId = req.session.user._id
-            console.log(userId + "abuq")
-            bannerSchema.find({ access: true }, function (err, ans) {
-                product.find({ access: true }, function (err, result) {
-
-                    cartSchema.find({ userId: userId }, function (err, cartCoud) {
-                        wishlistSchema.find({ userId: userId }, function (err, wishcount) {
-                            categorySchema.find({},function(err,category){
-                                console.log("hiba")
-                                console.log(category)
-
-                                if (err) {
-                                    res.send(err);
-                                } else {
-                                    if (cartCoud[0]) {
-                                        count = cartCoud[0].products.length
-    
-                                    } else {
-                                        count = 0
-                                    }
-                                    wcount = wishcount[0].myWish.length
-    
-                                    //console.log('masood')
-                                    //console.log(result)
-    
-                                    res.render('user/user-home', { user: req.session.user, result, ans, count, wcount,category })
-                                }
-                            })
-                        })
-                    })
-                }).limit(8)
-            });
-        } else {
-            bannerSchema.find({ access: true }, function (err, ans) {
-                product.find({ access: true }, function (err, result) {
-                    categorySchema.find({},function(err,category){
-                        if (err) {
-                            console.log(err);
-                        }
-                        if (result) {
-                            res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0,category })
-                        }
-
-                    })
-
-                    
-                }).limit(8)
-            });
-        }
-
-    },
-
-
-    // getUserHome: (req, res) => {
-    //     //=============================================================
-    //     return new Promise(async (resolve, reject) => {
-    //         //  await bannerScema.find({access:true})
-    //         await product.find({ access: true }).limit(8).then((result) => {
-    //             resolve(result)
-    //         })
-    //     }).then((result) => {
-
-    //         if (result) {
-    //             // console.log(result);
-    //             console.log(req.session.user)
-    //             res.render('user/user-home', { user: req.session.user, result })
-    //         } else {
-    //             res.render("user/user-home")
-    //         }
-
-    //     })
-
-
-    //     //========================================
-    //     // if(loggedIn){
-    //     //     let user=req.session.user
-    //     //     product.find({},(err,result)=>{
-    //     //         if(err){
-    //     //             console.log(err)
-    //     //         }else{
-    //     //             res.render('user/user-home',{user,result})
-    //     //         }
-    //     //     })
-    //     // }else{
-    //     //     product.find({},(err,result)=>{
-    //     //         if(err){
-    //     //             console.log(err)
-    //     //         }else{
-    //     //             res.render('user/user-home',{user,result})
-    //     //         }
-    //     //     })
-    //     // }
+    // errpage: (req, res, next) => {
+    //     try {
+    //         res.render('user/user-404')
+    //     } catch (err) {
+    //         next(err)
+    //     }
     // },
 
-    getUserLogin: (req, res) => {
-        if (req.session.userloggedIn) {
-            let user = req.session.user
-            res.redirect('/')
-        } else {
-            res.render('user/user-login', { loginErr })
-            loginErr = null
+
+
+    getUserHome: (req, res, next) => {
+        try {
+            if (req.session.userloggedIn) {
+                const userId = req.session.user._id
+                console.log(userId + "abuq")
+                bannerSchema.find({ access: true }, function (err, ans) {
+                    product.find({ access: true }, function (err, result) {
+
+                        cartSchema.find({ userId: userId }, function (err, cartCoud) {
+                            wishlistSchema.find({ userId: userId }, function (err, wishcount) {
+                                categorySchema.find({}, function (err, category) {
+                                    console.log("hiba")
+                                    console.log(category)
+
+                                    if (err) {
+                                        res.send(err);
+                                    } else {
+                                        if (cartCoud[0]) {
+                                            count = cartCoud[0].products.length
+
+                                        } else {
+                                            count = 0
+                                        }
+                                        wcount = wishcount[0].myWish.length
+
+                                        //console.log('masood')
+                                        //console.log(result)
+
+                                        res.render('user/user-home', { user: req.session.user, result, ans, count, wcount, category })
+                                    }
+                                })
+                            })
+                        })
+                    }).limit(8)
+                });
+            } else {
+                bannerSchema.find({ access: true }, function (err, ans) {
+                    product.find({ access: true }, function (err, result) {
+                        categorySchema.find({}, function (err, category) {
+                            if (err) {
+                                console.log(err);
+                            }
+                            if (result) {
+                                res.render('user/user-home', { user: req.session.user, result, ans, count: 0, wcount: 0, category })
+                            }
+
+                        })
+
+
+                    }).limit(8)
+                });
+            }
+
+        } catch (error) {
+            next(err)
+        }
+
+
+
+    },
+
+
+    getUserLogin: (req, res, next) => {
+        try {
+            if (req.session.userloggedIn) {
+                let user = req.session.user
+                res.redirect('/')
+            } else {
+                res.render('user/user-login', { loginErr })
+                loginErr = null
+            }
+        } catch (error) {
+            next(err)
         }
     },
 
-    getUserSignup: (req, res) => {
-        if (req.session.userloggedIn) {
-            res.redirect('/')
-        } else {
-            res.render('user/user-signup')
+    getUserSignup: (req, res, next) => {
+        try {
+            if (req.session.userloggedIn) {
+                res.redirect('/')
+            } else {
+                res.render('user/user-signup')
 
+            }
+
+        } catch (error) {
+            next(err)
         }
 
     },
     //--------------------user login post --------------------
 
-    getUserLoginPost: async (req, res) => {
-        let user = await userModel.findOne({ userEmail: req.body.email })
+    getUserLoginPost: async (req, res, next) => {
 
-        if (user) {
-            if (user.access) {
-                // console.log('acdess')
-                bcrypt.compare(req.body.password, user.password).then((data) => {
+        try {
+            let user = await userModel.findOne({ userEmail: req.body.email })
 
-                    if (data) {
-                        req.session.userloggedIn = true
-                        req.session.user = user
-                        res.redirect('/')
-                        console.log("3 if")
-                    } else {
-                        loginErr = "Invalid Password"
-                        res.redirect('/user-login')
-                        console.log('3 else')
-                    }
-                })
+            if (user) {
+                if (user.access) {
+                    // console.log('acdess')
+                    bcrypt.compare(req.body.password, user.password).then((data) => {
+
+                        if (data) {
+                            req.session.userloggedIn = true
+                            req.session.user = user
+                            res.redirect('/')
+                            console.log("3 if")
+                        } else {
+                            loginErr = "Invalid Password"
+                            res.redirect('/user-login')
+                            console.log('3 else')
+                        }
+                    })
+                } else {
+                    loginErr = "You are blocked by admin"
+                    console.log("4if")
+                    res.redirect('/user-login')
+                }
             } else {
-                loginErr = "You are blocked by admin"
-                console.log("4if")
+                loginErr = "Invalid Email"
+                console.log('last else')
                 res.redirect('/user-login')
             }
-        } else {
-            loginErr = "Invalid Email"
-            console.log('last else')
-            res.redirect('/user-login')
+
+        } catch (error) {
+            next(err)
         }
+
     },
     //---------------------usre signup post methord
 
@@ -242,51 +223,80 @@ module.exports = {
 
     //--------------------------secssion distroy
 
-    getUserLogout: (req, res) => {
-        req.session.destroy()
-        res.redirect('/')
-    },
+    getUserLogout: (req, res, next) => {
+        try {
+            req.session.destroy()
+            res.redirect('/')
 
-    getUserProfileshow: (req, res) => {
-        let user = req.session.user
-        res.render('user/user-profileEdit', { user })
-
-    },
-
-    getUserProfilePage: (req, res) => {
-        let user = req.session.user
-        //console.log('get :',user.address[0]);
-        res.render('user/user-profilePage', { user })
-    },
-    getUserEditProfile: async (req, res) => {
-        let userId = req.session.user._id
-        //console.log(userId + "kuta")
-        let userutut = req.session.user
-        //console.log(req.body)
-        let kkkk = await user.updateOne({ _id: userId }, {
-            $set: {
-                userName: req.body.firstName,
-                lastName: req.body.lastName,
-                userEmail: req.body.email,
-                address: [{
-                    address: req.body.address,
-                    state: req.body.state,
-                    zipCode: req.body.zipCode,
-                    country: req.body.country,
-                }],
-                phone: req.body.phoneNumber,
-            }
-
-        }).then((data) => {
-            console.log(data);
+        } catch (error) {
+            next(err)
         }
-        )
-        // console.log(kkkk)
-        req.session.user = await user.findOne({ _id: userId })
-        res.redirect('/')
+
+    },
+
+    getUserProfileshow: (req, res, next) => {
+        try {
+            let user = req.session.user
+            res.render('user/user-profileEdit', { user })
+
+        } catch (error) {
+            next(err)
+        }
+
+
+    },
+
+    getUserProfilePage: (req, res, next) => {
+        try {
+            let user = req.session.user
+            //console.log('get :',user.address[0]);
+            res.render('user/user-profilePage', { user })
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+    getUserEditProfile: async (req, res, next) => {
+
+        try {
+            let userId = req.session.user._id
+            //console.log(userId + "kuta")
+            let userutut = req.session.user
+            //console.log(req.body)
+            let kkkk = await user.updateOne({ _id: userId }, {
+                $set: {
+                    userName: req.body.firstName,
+                    lastName: req.body.lastName,
+                    userEmail: req.body.email,
+                    address: [{
+                        address: req.body.address,
+                        state: req.body.state,
+                        zipCode: req.body.zipCode,
+                        country: req.body.country,
+                    }],
+                    phone: req.body.phoneNumber,
+                }
+
+            }).then((data) => {
+                console.log(data);
+            }
+            )
+            // console.log(kkkk)
+            req.session.user = await user.findOne({ _id: userId })
+            res.redirect('/')
+
+        } catch (error) {
+            next(err)
+        }
     },
 
     getOnePageProduct: async (req, res) => {
+        try {
+
+        } catch (error) {
+            next(err)
+        }
         let user = req.session.user
         const proId = req.params.id
         // console.log(user)
@@ -300,8 +310,11 @@ module.exports = {
 
     //user sigin up
     getUserSiginupPage: (req, res) => {
-        console.log("kkkkkkkkkkkkkkkkkk")
-        console.log(req.body.email)
+        try {
+
+        } catch (error) {
+            next(err)
+        }
 
         const nna = userModel.find({ userEmail: req.body.email }, async (err, data) => {
             console.log(nna + "a;ljfhjfa")
@@ -345,7 +358,11 @@ module.exports = {
     //==================otp page home
 
     otpToHome: async (req, res) => {
-        console.log(req.session.otpgenerator + "hari")
+        try {
+
+        } catch (error) {
+            next(err)
+        }
 
         if (req.session.otpgenerator === req.body.otp) {
             console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
@@ -370,14 +387,21 @@ module.exports = {
     },
 
     getUserAllProduct: (req, res) => {
-        let user = req.session.user
-        product.find({ access: true }, (err, result) => {
-            if (err) {
-                console.log(err)
-            } else {
-                res.render('user/user-shop', { user, result })
-            }
-        })
+
+        try {
+            let user = req.session.user
+            product.find({ access: true }, (err, result) => {
+                if (err) {
+                    console.log(err)
+                } else {
+                    res.render('user/user-shop', { user, result })
+                }
+            })
+
+        } catch (error) {
+            next(err)
+        }
+
 
     },
 
@@ -418,16 +442,11 @@ module.exports = {
 
     //================add to cart============
 
-    getUserCart: async (req, res) => {
+    getUserCart: async (req, res, next) => {
+
         let user = req.session.user
         const productId = req.params.id
         const quantity = parseInt(req.params.quantity)
-        // console.log("user details")
-        // console.log(user)
-        // console.log("productId")
-        // console.log(productId)
-        // console.log("quantity")
-        // console.log(quantity)
 
         try {
             const findProduct = await product.findById(productId)
@@ -437,19 +456,10 @@ module.exports = {
             const price = findProduct.price
             const name = findProduct.name
 
-            // console.log(name)
-            // console.log("qut")
-            // console.log(findProduct.quantity)
-
-            // console.log("abu pottan")
-            // console.log(userId)
-
             if (findProduct.quantity >= quantity) {
                 findProduct.quantity -= quantity
                 const userId = req.session.user._id
-                //console.log(user)
-                // console.log("masood")
-                // console.log(userId)
+
                 let cart = await cartSchema.findOne({ userId })
 
                 console.log(cart)
@@ -491,7 +501,8 @@ module.exports = {
             } else {
 
             }
-        } catch (err) {
+        } catch (error) {
+            next(err)
 
         }
 
@@ -502,105 +513,114 @@ module.exports = {
 
     //================show cart page===========
 
-    getCartPage: async (req, res) => {
+    getCartPage: async (req, res, next) => {
 
-        let user = req.session.user
-        const userId = req.session.user._id
-        const viewCart = await cartSchema.findOne({ userId: userId }).populate("products.productId").exec()
+        try {
+            let user = req.session.user
+            const userId = req.session.user._id
+            const viewCart = await cartSchema.findOne({ userId: userId }).populate("products.productId").exec()
 
-        if (viewCart) {
-            req.session.cartNum = viewCart.products.length
-            cartNum = req.session.cartNum
-            console.log('ms000000oo')
-            if (viewCart.products.length) {
+            if (viewCart) {
+                req.session.cartNum = viewCart.products.length
+                cartNum = req.session.cartNum
 
-                console.log(viewCart)
-                res.render('user/user-cart', { user, cartProduct: viewCart, cartNum })
+                if (viewCart.products.length) {
+                    res.render('user/user-cart', { user, cartProduct: viewCart, cartNum })
+
+                } else {
+                    res.render('user/user-cartEmpty', { user })
+                }
+
 
             } else {
                 res.render('user/user-cartEmpty', { user })
+
             }
 
-
-        } else {
-            res.render('user/user-cartEmpty', { user })
-
+        } catch (error) {
+            next(err)
         }
-
 
     },
 
-    getdeleteCartProduct: async (req, res) => {
-        let prodId = req.params.id
-        let UserId = req.session.user._id
+    getdeleteCartProduct: async (req, res, next) => {
 
-        const cartProduct = await cartSchema.findOne({ userId: UserId })
-        console.log("cartproduct")
-        console.log(cartProduct)
-        console.log("cartProductend")
-        if (cartProduct) {
-            let itemIndex = cartProduct.products.findIndex(c => c.productId == prodId)
-            if (itemIndex > -1) {
-                //cart nn product delect chayithal total reduce chayan
-                let reducePrice = cartProduct.products[itemIndex].quantity * cartProduct.products[itemIndex].price
-                cartProduct.total = cartProduct.total - reducePrice
+        try {
+            let prodId = req.params.id
+            let UserId = req.session.user._id
 
-                cartProduct.products.splice(itemIndex, 1)
-                cartProduct.save()
-                res.redirect('/viewUserCart')
+            const cartProduct = await cartSchema.findOne({ userId: UserId })
+            console.log("cartproduct")
+            console.log(cartProduct)
+            console.log("cartProductend")
+            if (cartProduct) {
+                let itemIndex = cartProduct.products.findIndex(c => c.productId == prodId)
+                if (itemIndex > -1) {
+                    //cart nn product delect chayithal total reduce chayan
+                    let reducePrice = cartProduct.products[itemIndex].quantity * cartProduct.products[itemIndex].price
+                    cartProduct.total = cartProduct.total - reducePrice
+
+                    cartProduct.products.splice(itemIndex, 1)
+                    cartProduct.save()
+                    res.redirect('/viewUserCart')
+                } else {
+                    res.redirect('/viewUserCart')
+                }
             } else {
                 res.redirect('/viewUserCart')
+
             }
-        } else {
+
+        } catch (error) {
+            next(err)
+        }
+
+
+    },
+
+    getIngressProduct: async (req, res, next) => {
+        try {
+            let UserId = req.session.user._id
+            let prodId = req.params.proId
+
+            const incCout = await cartSchema.findOne({ userId: UserId })
+
+            let itemIndex = incCout.products.findIndex(c => c.productId == prodId)
+
+            let productItem = incCout.products[itemIndex]
+            productItem.quantity++;
+
+            incCout.total = incCout.total + productItem.price
+
+            incCout.save()
             res.redirect('/viewUserCart')
 
+        } catch (error) {
+            next(err)
         }
 
     },
 
-    getIngressProduct: async (req, res) => {
-        console.log('11111111111111')
-        let UserId = req.session.user._id
-        let prodId = req.params.proId
-        console.log(UserId)
-        console.log(prodId)
+    getdegreasProduct: async (req, res, next) => {
+        try {
+            let UserId = req.session.user._id
+            let prodId = req.params.proId
+            const decCout = await cartSchema.findOne({ userId: UserId })
+            let itemIndex = decCout.products.findIndex(c => c.productId == prodId)
+            let productItem = decCout.products[itemIndex]
+            productItem.quantity--;
+            decCout.total = decCout.total - productItem.price
+            decCout.save()
+            res.redirect('/viewUserCart')
 
-        const incCout = await cartSchema.findOne({ userId: UserId })
-        console.log(incCout + 'ray')
-        let itemIndex = incCout.products.findIndex(c => c.productId == prodId)
+        } catch (error) {
+            next(err)
+        }
 
-        let productItem = incCout.products[itemIndex]
-        productItem.quantity++;
-
-        incCout.total = incCout.total + productItem.price
-
-        incCout.save()
-        res.redirect('/viewUserCart')
-    },
-
-    getdegreasProduct: async (req, res) => {
-        let UserId = req.session.user._id
-        let prodId = req.params.proId
-
-        console.log(UserId)
-        console.log(prodId)
-
-        const decCout = await cartSchema.findOne({ userId: UserId })
-
-        let itemIndex = decCout.products.findIndex(c => c.productId == prodId)
-
-        let productItem = decCout.products[itemIndex]
-        productItem.quantity--;
-        console.log(decCout.total + "priceeeeeeeeeeeeeeeeeeeeeee");
-        decCout.total = decCout.total - productItem.price
-
-        decCout.save()
-
-        res.redirect('/viewUserCart')
     },
 
 
-    getUserWishlist: async (req, res) => {
+    getUserWishlist: async (req, res, next) => {
         let user = req.session.user
         const productId = req.params.proId
 
@@ -627,86 +647,123 @@ module.exports = {
                 })
                 await list.save()
             }
-        } catch {
+        } catch (error) {
+            next(err)
         }
         res.render('user/user-wishlist', { user })
     },
 
 
-    getShowWishlist: async (req, res) => {
-        let user = req.session.user
-        const userId = req.session.user._id
-        const wishli = await wishlistSchema.findOne({ userId: userId }).populate("myWish.productId").exec()
-        console.log(wishli)
+    getShowWishlist: async (req, res, next) => {
+        try {
+            let user = req.session.user
+            const userId = req.session.user._id
+            const wishli = await wishlistSchema.findOne({ userId: userId }).populate("myWish.productId").exec()
 
-        if (wishli) {
-            req.session.wishNum = wishli.myWish.length
-            if (wishli.myWish.length) {
-                res.render('user/user-wishlist', { user, wishlist: wishli })
 
+            if (wishli) {
+                req.session.wishNum = wishli.myWish.length
+                if (wishli.myWish.length) {
+                    res.render('user/user-wishlist', { user, wishlist: wishli })
+
+                } else {
+                    res.render('user/user-emptyWish', { user })
+                }
             } else {
                 res.render('user/user-emptyWish', { user })
-            }
-        } else {
-            res.render('user/user-emptyWish', { user })
 
+            }
+
+        } catch (error) {
+            next(err)
         }
+
 
     },
 
 
-    getdeletewishlistProducts: async (req, res) => {
-        let prodId = req.params.id
-        let userId = req.session.user._id
-        const deleteWishlist = await wishlistSchema.findOne({ userId: userId })
-        if (deleteWishlist) {
-            let itemIndex = deleteWishlist.myWish.findIndex(c => c.productId == prodId)
-            if (itemIndex > -1) {
-                deleteWishlist.myWish.splice(itemIndex, 1)
-                deleteWishlist.save()
-                res.redirect('/user-showWishlist')
+    getdeletewishlistProducts: async (req, res, next) => {
+        try {
+            let prodId = req.params.id
+            let userId = req.session.user._id
+            const deleteWishlist = await wishlistSchema.findOne({ userId: userId })
+            if (deleteWishlist) {
+                let itemIndex = deleteWishlist.myWish.findIndex(c => c.productId == prodId)
+                if (itemIndex > -1) {
+                    deleteWishlist.myWish.splice(itemIndex, 1)
+                    deleteWishlist.save()
+                    res.redirect('/user-showWishlist')
+                } else {
+                    res.redirect('/user-showWishlist')
+                }
             } else {
                 res.redirect('/user-showWishlist')
             }
-        } else {
-            res.redirect('/user-showWishlist')
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+
+    getAddAddresstoPay: async (req, res, next) => {
+
+        try {
+            let user = req.session.user
+            const userId = req.session.user._id
+
+            const prod = await cartSchema.findOne({ userId: userId })
+            const address = await addressSchema.find({ userId: userId }).limit(4)
+
+            res.render('user/user-checkout', { user, prod, address })
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+
+    getDeleteAddress: async (req, res, next) => {
+        try {
+            const userId = req.session.user._id
+
+            const addressIndex = req.params.addressIndex
+
+            const adrs = await addressSchema.findOne({ userId: userId })
+            adrs.address.splice(addressIndex, 1)
+            await adrs.save()
+            res.json({ status: true })
+
+        } catch (error) {
+            next(err)
         }
     },
 
-    getAddAddresstoPay: async (req, res) => {
-        let user = req.session.user
-        const userId = req.session.user._id
+    getpaymentAddress: async (req, res, next) => {
+        try {
+            let userId = req.session.user._id
 
-        const prod = await cartSchema.findOne({ userId: userId })
-        const address = await addressSchema.find({ userId: userId }).limit(4)
+            const findAddress = await addressSchema.find({ userId: userId }).limit(4)
 
-        res.render('user/user-checkout', { user, prod, address })
-    },
-
-    getDeleteAddress:async(req,res)=>{
-        
-        const userId = req.session.user._id
-        console.log(userId)
-
-        const addressIndex = req.params.addressIndex
-        console.log(addressIndex)
-        const adrs = await addressSchema.findOne({ userId: userId })
-        console.log(adrs)
-        adrs.address.splice(addressIndex, 1)
-        await adrs.save()
-        res.json({ status: true })
-    },
-
-    getpaymentAddress: async (req, res) => {
-        let userId = req.session.user._id
-        console.log(userId)
-        const findAddress = await addressSchema.find({ userId: userId }).limit(4)
-
-        if (findAddress == null) {
-            //new order address add
-            const newAddress = new addressSchema({
-                userId,
-                address: [{
+            if (findAddress == null) {
+                //new order address add
+                const newAddress = new addressSchema({
+                    userId,
+                    address: [{
+                        name: req.body.name,
+                        phoneNo: req.body.phoneNo,
+                        city: req.body.city,
+                        state: req.body.state,
+                        country: req.body.country,
+                        zip: req.body.zip,
+                        payment: req.body.payment
+                    }]
+                })
+                await newAddress.save()
+                //res.render('user/user-orderConform')
+            } else {
+                //address veendum add chayyan
+                findAddress.address.push({
                     name: req.body.name,
                     phoneNo: req.body.phoneNo,
                     city: req.body.city,
@@ -714,187 +771,179 @@ module.exports = {
                     country: req.body.country,
                     zip: req.body.zip,
                     payment: req.body.payment
-                }]
+                })
+                await findAddress.save()
+                //res.redirect('user/userConform')
+            }
+            //adding order schema
+            let cart = await cartSchema.findOne({ userId: userId })
+            console.log(cart)
+            let newdate = new Date().toJSON().slice(0, 10);
+            const newOder = new orderSchema({
+                userId,
+                deliveryAddress: [{
+                    name: req.body.name,
+                    phoneNo: req.body.phoneNo,
+                    city: req.body.city,
+                    state: req.body.state,
+                    country: req.body.country,
+                    zip: req.body.zip,
+
+                }],
+                paymentType: req.body.payment,
+                date: newdate,
+                products: cart.products,
+                total: cart.total,
+
             })
-            await newAddress.save()
-            //res.render('user/user-orderConform')
-        } else {
-            //address veendum add chayyan
-            findAddress.address.push({
-                name: req.body.name,
-                phoneNo: req.body.phoneNo,
-                city: req.body.city,
-                state: req.body.state,
-                country: req.body.country,
-                zip: req.body.zip,
-                payment: req.body.payment
-            })
-            await findAddress.save()
-            //res.redirect('user/userConform')
-        }
-        //adding order schema
-        let cart = await cartSchema.findOne({ userId: userId })
-        console.log(cart)
-        let newdate = new Date().toJSON().slice(0, 10);
-        const newOder = new orderSchema({
-            userId,
-            deliveryAddress: [{
-                name: req.body.name,
-                phoneNo: req.body.phoneNo,
-                city: req.body.city,
-                state: req.body.state,
-                country: req.body.country,
-                zip: req.body.zip,
+            await cart.remove()
+            await newOder.save()
+            req.session.orderId = newOder._id
 
-            }],
-            paymentType: req.body.payment,
-            date: newdate,
-            products: cart.products,
-            total: cart.total,
+            if (req.body.payment === "cod") {
 
-        })
-        await cart.remove()
-        await newOder.save()
-        req.session.orderId = newOder._id
-        
-        if (req.body.payment === "cod") {
-
-            res.json({ codStatus: true })
-        } else {
-
-            
-            var options = {
-                amount: newOder.total * 100,  // amount in the smallest currency unit
-                currency: "INR",
-                receipt: "" + newOder._id
-            };
-            instance.orders.create(options, function (err, order) {
-                console.log('maodod')
-                // console.log(order);
-                res.json(order)
-            });
+                res.json({ codStatus: true })
+            } else {
 
 
-            // instance.orders.create({
-            //     amount: newOder.total,
-            //     currency: "USD",
-            //     receipt: orderId,
-            //     notes: {
-            //       key1: "value3",
-            //       key2: "value2"
-            //     }
-
-            //   })
-
-
-        }
-
-
-    },
-    getSuccessPage: async (req, res) => {
-        orderId = req.session.orderId
-        console.log('session order id ')
-        console.log(orderId)
-
-        const newOder = await orderSchema.findOne({ _id: orderId })
-        console.log(newOder)
-
-        res.render('user/user-orderConform', { newOder })
-    },
-
-    getverifyPayment:async (req, res) => {
-        let details = req.body
-        const crypto = require('crypto')
-        let hmac = crypto.createHmac('sha256', 'oYvKdh1HCvzITC5kKwUQb8Lo');
-        console.log('start form here')
-        console.log(hmac)
-        hmac.update(details['payment[razorpay_order_id]'] +'|'+details['payment[razorpay_payment_id]']);
-
-        hmac = hmac.digest('hex')
-        
-        if (hmac == details['payment[razorpay_signature]']) {
-            console.log('payment seccess')
-            orderId=req.session.orderId
-            await orderSchema.findByIdAndUpdate(orderId,{status:'placed'})
-            // const changeStatus = await orderSchema.findOne({ _id: orderId })
-            // cancelOrder.status = "cancelled"
-            // await cancelOrder.save()
-        }else{
-
-            console.log('payment fails')
-        }
-
-        console.log(req.body)
-    },
-
-
-    getUserOrder: async (req, res) => {
-        let userId = req.session.user._id
-        let user = req.session.user
-        const userOrder = await orderSchema.find({ userId: userId }).populate("products.productId").exec()
-        console.log(userOrder[0].products[0].productId)
-
-        res.render('user/user-orderDetails', { userOrder, user })
-    },
-
-    getOrderCancel: async (req, res) => {
-        let orderId = req.params.id
-        const cancelOrder = await orderSchema.findOne({ _id: orderId })
-        cancelOrder.status = "cancelled"
-        await cancelOrder.save()
-        res.redirect('/user-order')
-    },
-
-    getcheckCoupon:async(req,res)=>{
-        console.log('english')
-        let code=req.params.couponValue
-        let userId=req.session.user._id
-        console.log(userId)
-        console.log(code)
-
-        let coupons=await couponSchema.findOne({couponCode:code}).lean()
-        console.log(coupons)
-        if(coupons != null){
-            let today=new Date();
-            console.log(coupons.expDate)
-            console.log(today)
-            if(coupons.expDate > today){
-                let itemIndex=coupons.usedUsers.findIndex(p=>p.userId ==userId)
-                console.log(itemIndex)
-                if(itemIndex==-1){
-                    console.log('mine')
-                    let userCart= await cartSchema.findOne({userId:userId})
-                    
-                    let discount = coupons.discount
-
-                    let discountPrice= ((userCart.total/100)*discount)
-                    discountPrice =Math.round(discountPrice)
-
-                    totalamount=(userCart.total)-(discountPrice)
-                    userCart.total=totalamount
-
-                    userCart.save()
-
-                    await couponSchema.findOneAndUpdate({couponCode:code},{$push:{usedUsers:{userId}}})
-                    res.json({status:true,discountPrice, totalamount})
-                }else{
-                    res.json({used:true})
-                    console.log("used")
-                }
-            }else{
-                console.log("date kayijuno")
-                res.json({expired:true})
-
+                var options = {
+                    amount: newOder.total * 100,  // amount in the smallest currency unit
+                    currency: "INR",
+                    receipt: "" + newOder._id
+                };
+                instance.orders.create(options, function (err, order) {
+                    console.log('maodod')
+                    // console.log(order);
+                    res.json(order)
+                });
             }
 
-        }else{
-            console.log("coupon ella")
-            res.json({noMatch:true})
+        } catch (error) {
+            next(err)
+        }
+    },
+    getSuccessPage: async (req, res, next) => {
+        try {
+            orderId = req.session.orderId
+
+            const newOder = await orderSchema.findOne({ _id: orderId })
+            res.render('user/user-orderConform', { newOder })
+
+        } catch (error) {
+            next(err)
         }
 
-        
-        // res.redirect('/checkout')
+    },
 
+    getverifyPayment: async (req, res, next) => {
+        try {
+            let details = req.body
+            const crypto = require('crypto')
+            let hmac = crypto.createHmac('sha256', 'oYvKdh1HCvzITC5kKwUQb8Lo');
+            console.log('start form here')
+            console.log(hmac)
+            hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]']);
+
+            hmac = hmac.digest('hex')
+
+            if (hmac == details['payment[razorpay_signature]']) {
+                console.log('payment seccess')
+                orderId = req.session.orderId
+                await orderSchema.findByIdAndUpdate(orderId, { status: 'placed' })
+                // const changeStatus = await orderSchema.findOne({ _id: orderId })
+                // cancelOrder.status = "cancelled"
+                // await cancelOrder.save()
+            } else {
+
+                console.log('payment fails')
+            }
+
+            console.log(req.body)
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+
+
+    getUserOrder: async (req, res, next) => {
+        try {
+            let userId = req.session.user._id
+            let user = req.session.user
+            const userOrder = await orderSchema.find({ userId: userId }).populate("products.productId").exec()
+            console.log(userOrder[0].products[0].productId)
+
+            res.render('user/user-orderDetails', { userOrder, user })
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+
+    getOrderCancel: async (req, res, next) => {
+        try {
+            let orderId = req.params.id
+            const cancelOrder = await orderSchema.findOne({ _id: orderId })
+            cancelOrder.status = "cancelled"
+            await cancelOrder.save()
+            res.redirect('/user-order')
+
+        } catch (error) {
+            next(err)
+        }
+
+    },
+
+    getcheckCoupon: async (req, res, next) => {
+        try {
+            let code = req.params.couponValue
+            let userId = req.session.user._id
+
+            let coupons = await couponSchema.findOne({ couponCode: code }).lean()
+
+            if (coupons != null) {
+                let today = new Date();
+                console.log(coupons.expDate)
+                console.log(today)
+                if (coupons.expDate > today) {
+                    let itemIndex = coupons.usedUsers.findIndex(p => p.userId == userId)
+                    console.log(itemIndex)
+                    if (itemIndex == -1) {
+                        console.log('mine')
+                        let userCart = await cartSchema.findOne({ userId: userId })
+
+                        let discount = coupons.discount
+
+                        let discountPrice = ((userCart.total / 100) * discount)
+                        discountPrice = Math.round(discountPrice)
+
+                        totalamount = (userCart.total) - (discountPrice)
+                        userCart.total = totalamount
+
+                        userCart.save()
+
+                        await couponSchema.findOneAndUpdate({ couponCode: code }, { $push: { usedUsers: { userId } } })
+                        res.json({ status: true, discountPrice, totalamount })
+                    } else {
+                        res.json({ used: true })
+                        console.log("used")
+                    }
+                } else {
+                    console.log("date kayijuno")
+                    res.json({ expired: true })
+
+                }
+
+            } else {
+                console.log("coupon ella")
+                res.json({ noMatch: true })
+            }
+
+        } catch (error) {
+            next(err)
+        }
     },
 
 

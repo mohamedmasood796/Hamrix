@@ -100,8 +100,7 @@ router.post('/verify-payment',varifySession.verifyLogin,userControllers.getverif
 //user use coupon
 router.post('/checkCoupon/:couponValue',varifySession.verifyLogin,userControllers.getcheckCoupon)
 
-//user 404 page
-router.get('/404page',userControllers.get404Page)
+
 
 
 
@@ -111,6 +110,16 @@ router.get('/404page',userControllers.get404Page)
 //user cart page get
 // router.get('/view-cartPage',userControllers.getCartPage)
 
-
+//err page
+// router.get('/err',userControllers.errpage)         
+/* For Admin Error Page */
+router.use(function (req, res, next) {
+    next(createError(404));
+  });
+  
+  router.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('user/user-404');
+  });
 
 module.exports=router

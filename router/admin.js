@@ -95,4 +95,19 @@ router.get('/salesReport',adminControllers.getsalesReport)
 
 
 
+//err page
+// router.get('/err',adminControllers.errpage)
+/* For Admin Error Page */
+router.use(function (req, res, next) {
+    next(createError(404));
+  });
+  
+  router.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('admin/admin-404');
+  });
+
+
+
+
 module.exports = router;
