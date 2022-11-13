@@ -32,7 +32,19 @@ const instance = new Razorpay({
 let loginErr;
 
 module.exports = {
+
+    get404Page:(req,res)=>{
+        res.render('user/user-404')
+    },
+
+
+
     getUserHome: (req, res) => {
+        try{
+
+        }catch(error){
+            req.redirect('/404page')
+        }
 
         if (req.session.userloggedIn) {
             const userId = req.session.user._id
@@ -666,7 +678,7 @@ module.exports = {
         const userId = req.session.user._id
 
         const prod = await cartSchema.findOne({ userId: userId })
-        const address = await addressSchema.find({ userId: userId })
+        const address = await addressSchema.find({ userId: userId }).limit(4)
 
         res.render('user/user-checkout', { user, prod, address })
     },
@@ -688,7 +700,7 @@ module.exports = {
     getpaymentAddress: async (req, res) => {
         let userId = req.session.user._id
         console.log(userId)
-        const findAddress = await addressSchema.findOne({ userId: userId }).limit(4)
+        const findAddress = await addressSchema.find({ userId: userId }).limit(4)
 
         if (findAddress == null) {
             //new order address add
