@@ -43,7 +43,19 @@ module.exports = {
                 for (var i = 0; i < totalorder; i++) {
                     totalsales = totalsales + sales[i].total
                 }
-                res.render('admin/admin-home', { admin, userCount, productCount, sales, totalsales, totalorder })
+
+                console.log("masood")
+                const cancelOrder=await orderSchema.find({status:"cancelled"}).count()
+                const activeOrder = totalorder-cancelOrder
+                console.log(activeOrder)
+
+                const pending=await orderSchema.find({status:"pending"}).count()
+                const placed=await orderSchema.find({status:"placed"}).count()
+                const delivered=await orderSchema.find({status:"delivered"}).count()
+                const shipped= await orderSchema.find({status:"shipped"}).count()
+
+
+                res.render('admin/admin-home', {activeOrder,pending,placed,delivered,shipped, admin, userCount, productCount, sales, totalsales, totalorder ,cancelOrder})
             } else {
                 res.render('admin/admin-login', { adminloginErr })
                 adminloginErr = null
@@ -568,7 +580,7 @@ module.exports = {
 
     getOrderManagment: async (req, res, next) => {
         try {
-            const userOrder = await orderSchema.find({}).populate("products.productId").exec()
+            const userOrder = await orderSchema.find({}).sort({date: -1}).populate("products.productId").exec()
             console.log(userOrder[0].products)
             res.render('admin/admin-orderManagment', { userOrder })
 

@@ -104,22 +104,6 @@ router.post('/checkCoupon/:couponValue',varifySession.verifyLogin,userController
 
 
 
-//product add to cart
-//router.get('/add-to-cart/:id',userControllers.getproductAddToCart)
 
-//user cart page get
-// router.get('/view-cartPage',userControllers.getCartPage)
-
-//err page
-// router.get('/err',userControllers.errpage)         
-/* For Admin Error Page */
-// router.use(function (req, res, next) {
-//     next(createError(404));
-//   });
-  
-//   router.use(function (err, req, res, next) {
-//     res.status(err.status || 500);
-//     res.render('user/user-404');
-//   });
 
 module.exports=router

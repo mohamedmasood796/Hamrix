@@ -40,6 +40,17 @@ app.listen(3000,()=>{
 
 
 
+app.use(function (req, res, next) {
+    next(createError(404));
+  });
+  
+  app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+    res.render('user/user-404');
+  });
+
+
+
 // // catch 404 and forward to error handler
 // app.use(function(req, res, next) {
 //   next(createError(404));

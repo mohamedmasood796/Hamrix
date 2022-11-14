@@ -882,7 +882,7 @@ module.exports = {
         try {
             let userId = req.session.user._id
             let user = req.session.user
-            const userOrder = await orderSchema.find({ userId: userId }).populate("products.productId").exec()
+            const userOrder = await orderSchema.find({ userId: userId }).sort({date: -1}).populate("products.productId").exec()
             console.log(userOrder[0].products[0].productId)
 
             res.render('user/user-orderDetails', { userOrder, user })
