@@ -54,7 +54,7 @@ module.exports = {
         }
     },
 
-    getAdminLogin: (req, res) => {
+    getAdminLogin: (req, res,next) => {
         try {
             res.render('admin/admin-login')
 

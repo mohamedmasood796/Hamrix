@@ -104,6 +104,7 @@ router.use(function (req, res, next) {
   
   router.use(function (err, req, res, next) {
     res.status(err.status || 500);
+    console.log("kokok");
     res.render('admin/admin-404');
   });
 

@@ -113,13 +113,13 @@ router.post('/checkCoupon/:couponValue',varifySession.verifyLogin,userController
 //err page
 // router.get('/err',userControllers.errpage)         
 /* For Admin Error Page */
-router.use(function (req, res, next) {
-    next(createError(404));
-  });
+// router.use(function (req, res, next) {
+//     next(createError(404));
+//   });
   
-  router.use(function (err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('user/user-404');
-  });
+//   router.use(function (err, req, res, next) {
+//     res.status(err.status || 500);
+//     res.render('user/user-404');
+//   });
 
 module.exports=router

@@ -708,17 +708,28 @@ module.exports = {
 
     getAddAddresstoPay: async (req, res, next) => {
 
-        try {
-            let user = req.session.user
-            const userId = req.session.user._id
+        let user = req.session.user
+        const userId = req.session.user._id
 
-            const prod = await cartSchema.findOne({ userId: userId })
-            const address = await addressSchema.find({ userId: userId }).limit(4)
-
-            res.render('user/user-checkout', { user, prod, address })
-
-        } catch (error) {
-            next(err)
+        const prod = await cartSchema.findOne({ userId: userId })
+        if(prod != null){
+            let cartProduct= prod.products
+            const findAddress = await addressSchema.find({ userId: userId })
+            console.log("slice address")
+            console.log(findAddress)
+            if(findAddress != null){
+                console.log(findAddress)
+                let address=findAddress[0].address.slice(0,4)
+                console.log("2 if cheq")
+                console.log(address)
+                res.render('user/user-checkout', { user, cartProduct,prod,address })
+            }else{
+                let address=null
+                res.render('user/user-checkout', { user, cartProduct,prod,address })
+                
+            }
+        }else{
+            res.redirect('/')
         }
 
     },
@@ -743,7 +754,7 @@ module.exports = {
         try {
             let userId = req.session.user._id
 
-            const findAddress = await addressSchema.find({ userId: userId }).limit(4)
+            const findAddress = await addressSchema.findOne({ userId: userId }).limit(4)
 
             if (findAddress == null) {
                 //new order address add
