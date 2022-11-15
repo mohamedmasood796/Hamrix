@@ -13,6 +13,7 @@ const bannerSchema = require("../models/bannerSchema")
 const couponSchema = require('../models/couponSchema')
 const { BulkCountryUpdatePage } = require('twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate')
 const { find } = require('../models/user')
+const verifyadmin=require('../middleware/adminSession')
 
 
 let categoryErr;
@@ -21,14 +22,6 @@ let adminloginErr;
 
 
 module.exports = {
-
-    // errpage: (req, res, next) => {
-    //     try {
-    //         res.render('admin/admin-404')
-    //     } catch (err) {
-    //         next(err)
-    //     }
-    // },
 
 
     getAdminHome: async (req, res, next) => {
@@ -55,7 +48,40 @@ module.exports = {
                 const shipped= await orderSchema.find({status:"shipped"}).count()
 
 
-                res.render('admin/admin-home', {activeOrder,pending,placed,delivered,shipped, admin, userCount, productCount, sales, totalsales, totalorder ,cancelOrder})
+                const totalSales = await orderSchema.aggregate([
+
+                    // First Stage
+                    {
+                        $match: { "date": { $ne: null } }
+                    },
+                    // Second Stage
+                    {
+                        $group: {
+                            _id:   "$date"  ,
+                            sales: { $sum: "$total" },
+                        }
+                    },
+                    // Third Stage
+                    {
+                        $sort: { _id: -1 }
+                    },
+                    {
+                        $limit: 7
+                    }
+                ])
+                
+                console.log(totalSales)
+                const salesLabels=totalSales.map(item =>{
+                    return item._id
+                })
+                const salesData= totalSales.map(item =>{
+                    return item.sales.toFixed(2)
+                })
+                console.log("hari")
+                console.log(salesLabels)
+                console.log(salesData)
+
+                res.render('admin/admin-home', {activeOrder,pending,placed,delivered,shipped, admin, userCount, productCount, sales, totalsales, totalorder ,cancelOrder,salesLabels,salesData})
             } else {
                 res.render('admin/admin-login', { adminloginErr })
                 adminloginErr = null
@@ -117,11 +143,7 @@ module.exports = {
 
     //add product by admin
     getAdminAllProduct: (req, res, next) => {
-        // return new Promise(async(resolve,reject)=>{
-        //     let product =await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray()
-        //     console.log(product+'zfvsfxvszc')
-        //     resolve(product)
-        // })
+    
         try {
             product.find({}, function (err, result) {
 
@@ -273,26 +295,6 @@ module.exports = {
     },
 
 
-    //--------------------------update product post methord
-
-    // getAdminProductUpdate:(req, res) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         await product.findOneAndUpdate(req.params.id, {
-    //                 name: req.body.name,
-    //                 description: req.body.description,
-    //                 price: req.body.price,
-    //                 category: req.body.category
-    //             }
-    //         ).then((result) => {
-    //             resolve(result)
-    //         })
-
-    //     }).then((result) => {
-    //         // console.log(result)
-    //         res.redirect('/admin/all-product')
-    //     })
-    // },
-
 
     getAdminProductUpdate: (req, res, next) => {
         try {
@@ -300,16 +302,7 @@ module.exports = {
             for (file of req.files) {
                 imagename.push(file.filename)
             }
-            // proId = req.params.id
-            // let productde = await product.findOne({ _id: (proId) })  //productde =_id ulla full document
-            //     productde.name = req.body.name,
-            //     productde.description = req.body.description,
-            //     productde.price = req.body.price,
-            //     productde.category = req.body.category
-            //     productde.image=image
-            // await productde.save()
-            // res.redirect('/admin/all-product')   
-
+ 
             product.find({ _id: req.params.id }, (err, data) => {
                 product.updateOne({ _id: req.params.id }, {
                     $set: {
@@ -378,17 +371,6 @@ module.exports = {
             next(err)
         }
 
-
-        // ,function(err,ans){
-        //     if(err){
-        //         console.log(err)
-        //         res.render('admin/admin-addCategory',{ans:[]})
-        //     }else{
-        //         console.log(ans);
-        //         res.render('admin/admin-addCategory',{ans})
-        //     }
-        // }
-
     },
 
     //-------------------add category and send catogory name to that page in .then
@@ -425,18 +407,6 @@ module.exports = {
             next(err)
         }
 
-
-
-
-        // const newcategory = new category({
-        //     name: req.body.name
-        // })
-
-        // newcategory.save()
-        //     .then(data => { 
-        //         res.redirect('/admin/categoryPage')
-        //     })
-
     },
 
     getAdminDeleteCategory: (req, res, next) => {
@@ -467,24 +437,6 @@ module.exports = {
         }
 
 
-
-
-
-        // product.find({category:req.params.name}).then((productList)=>{
-        //     if(productList.length == 0){
-        //         let deleteId=req.params.id
-        //  category.deleteOne({_id:(deleteId)},(err,data)=>{
-        //     if(err){
-        //         console.log(err)
-        //     }else{
-        //         res.redirect('/admin/categoryPage')
-        //     }
-        // })
-
-
-        //     }
-
-        //})
 
     },
 
@@ -647,6 +599,7 @@ module.exports = {
                 isActive: true
 
             })
+            
             await coupon.save()
             res.redirect('/admin/adminCoupon')
 
@@ -668,6 +621,18 @@ module.exports = {
         }
 
     },
+
+    getdelectCoupon:async(req,res,next)=>{
+        try{
+            couponId=req.params.id
+        await couponSchema.findByIdAndDelete(couponId)
+        res.redirect('/admin/adminCoupon')
+
+        }catch(error){
+            next(err)
+        }
+        
+    }
 
 
 

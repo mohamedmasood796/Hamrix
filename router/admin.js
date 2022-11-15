@@ -6,90 +6,93 @@ var router = express.Router();
 // const store = multer({ dest: '/product-images' })
 const {store} = require('./../middleware/multer')
 
-const varifySession = require("../middleware/session");
+const varifyadmin = require("../middleware/session");
 
 
 
 //admin home render
-router.get('/', adminControllers.getAdminHome)
+router.get('/', varifyadmin.verifyLogin,adminControllers.getAdminHome)
 
 //admin login render
-router.get('/admin-login',adminControllers.getAdminLogin)
+router.get('/admin-login',varifyadmin.verifyLogin,adminControllers.getAdminLogin)
 
 //admin login post redirect
-router.post('/admin-login',adminControllers.getAdminLoginPost)
+router.post('/admin-login',varifyadmin.verifyLogin,adminControllers.getAdminLoginPost)
 
 //admin all product 
-router.get('/all-product',adminControllers.getAdminAllProduct)
+router.get('/all-product',varifyadmin.verifyLogin,adminControllers.getAdminAllProduct)
 
 //admin add product
-router.get('/add-product',adminControllers.getAdminAddProduct)
+router.get('/add-product',varifyadmin.verifyLogin,adminControllers.getAdminAddProduct)
 
 //admin add product post
-router.post('/add-product',store.array("image",3),adminControllers.getAdminAddProductPost)
+router.post('/add-product',varifyadmin.verifyLogin,store.array("image",3),adminControllers.getAdminAddProductPost)
 
 //admin show all user
-router.get('/all-user',adminControllers.getAdminAllUser)
+router.get('/all-user',varifyadmin.verifyLogin,adminControllers.getAdminAllUser)
 
 //admin edit product
-router.get('/edit-product/:id',adminControllers.getAdminEditProduct)
+router.get('/edit-product/:id',varifyadmin.verifyLogin,adminControllers.getAdminEditProduct)
 
 //admin delete product by admin
-router.get('/delete-Product/:id',adminControllers.getAdminDeleteProduct)
+router.get('/delete-Product/:id',varifyadmin.verifyLogin,adminControllers.getAdminDeleteProduct)
 
 //admin undelect product by admin
-router.get('/undelete-Product/:id',adminControllers.getAdminUndelectProduct)
+router.get('/undelete-Product/:id',varifyadmin.verifyLogin,adminControllers.getAdminUndelectProduct)
 
 //admin product updat post methord
-router.post('/update-product/:id',store.array("image",3),adminControllers.getAdminProductUpdate)
+router.post('/update-product/:id',store.array("image",3),varifyadmin.verifyLogin,adminControllers.getAdminProductUpdate)
 
 //admin user block
-router.get('/block-user/:id',adminControllers.getAdminBlockUser)
+router.get('/block-user/:id',varifyadmin.verifyLogin,adminControllers.getAdminBlockUser)
 
 //admin user unblock
-router.get('/unblock-user/:id',adminControllers.getAdminUnblockAllUser)
+router.get('/unblock-user/:id',varifyadmin.verifyLogin,adminControllers.getAdminUnblockAllUser)
 
 //admin render category page
-router.get('/categoryPage',adminControllers.getAdminAddCategoryPage)
+router.get('/categoryPage',varifyadmin.verifyLogin,adminControllers.getAdminAddCategoryPage)
 
 // admin add catecory post methord 
-router.post('/add-category',adminControllers.getAdminAddCategory)
+router.post('/add-category',varifyadmin.verifyLogin,adminControllers.getAdminAddCategory)
 
 //admin delete catergory
-router.post('/delete-category/:name',adminControllers.getAdminDeleteCategory)
+router.post('/delete-category/:name',varifyadmin.verifyLogin,adminControllers.getAdminDeleteCategory)
 
 //admin view product by catecory
-router.get('/view-productCategory/:id',adminControllers.getAdminViewCategorey)
+router.get('/view-productCategory/:id',varifyadmin.verifyLogin,adminControllers.getAdminViewCategorey)
 
 //admin banner managment page get
-router.get('/banneraddpage',adminControllers.getAdminBanner)
+router.get('/banneraddpage',varifyadmin.verifyLogin,adminControllers.getAdminBanner)
 
 //admin banner page post
-router.post('/addbanner',store.array("image",3),adminControllers.getAdminBannerPost)
+router.post('/addbanner',varifyadmin.verifyLogin,store.array("image",3),adminControllers.getAdminBannerPost)
 
 //admin can block banner
-router.get('/block-banner/:id',adminControllers.getBannerBlock)
+router.get('/block-banner/:id',varifyadmin.verifyLogin,adminControllers.getBannerBlock)
 
 //admin can unblock banner
-router.get('/unblock-banner/:id',adminControllers.getAdminUnblockBanner)
+router.get('/unblock-banner/:id',varifyadmin.verifyLogin,adminControllers.getAdminUnblockBanner)
 
 //admin order managment 
-router.get('/orderManagment',adminControllers.getOrderManagment)
+router.get('/orderManagment',varifyadmin.verifyLogin,adminControllers.getOrderManagment)
 
 //admin user order in one page
-router.get('/veiwOneProduct/:id',adminControllers.getveiwOneProduct)
+router.get('/veiwOneProduct/:id',varifyadmin.verifyLogin,adminControllers.getveiwOneProduct)
 
 //admin change delivery status
-router.post('/chargeDeliveryStatus/:id',adminControllers.getchargeDeliveryStatus)
+router.post('/chargeDeliveryStatus/:id',varifyadmin.verifyLogin,adminControllers.getchargeDeliveryStatus)
 
 //admin coupen mangement
-router.get('/adminCoupon',adminControllers.getaddCouponPage)
+router.get('/adminCoupon',varifyadmin.verifyLogin,adminControllers.getaddCouponPage)
 
 //admin add a coupon 
-router.post('/addCoupon',adminControllers.getAddCoupon)
+router.post('/addCoupon',varifyadmin.verifyLogin,adminControllers.getAddCoupon)
 
 //admin show sales report
-router.get('/salesReport',adminControllers.getsalesReport)
+router.get('/salesReport',varifyadmin.verifyLogin,adminControllers.getsalesReport)
+
+//admin delete coupon 
+router.get('/delete-coupon/:id',varifyadmin.verifyLogin,adminControllers.getdelectCoupon)
 
 
 

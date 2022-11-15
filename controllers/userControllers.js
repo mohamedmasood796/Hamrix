@@ -14,6 +14,7 @@ const verifyLogin = require('../middleware/session')
 const Razorpay = require('razorpay')
 const couponSchema = require('../models/couponSchema')
 const categorySchema = require('../models/categorySchema')
+
 let loggedIn;
 
 const instance = new Razorpay({
@@ -21,28 +22,9 @@ const instance = new Razorpay({
     key_secret: process.env.key_secret
 })
 
-// const userSession=(req,res,next)=>{
-//     if (req.session.userloggedIn) {
-//         next()
-//     } else {
-//         res.render('user/user-')
-//     }
-// }
-
 let loginErr;
 
 module.exports = {
-
-
-    // errpage: (req, res, next) => {
-    //     try {
-    //         res.render('user/user-404')
-    //     } catch (err) {
-    //         next(err)
-    //     }
-    // },
-
-
 
     getUserHome: (req, res, next) => {
         try {
@@ -173,53 +155,7 @@ module.exports = {
         }
 
     },
-    //---------------------usre signup post methord
-
-    // getUserSignupPost: (req, res) => {
-    //     userModel.find({ userEmail: req.body.email }, async (err, data) => {
-    //         if (data.length == 0) {
-    //             const userNameka = req.body.username
-    //             const userEmailka = req.body.email
-    //             const phoneka = req.body.phone
-    //             const confirmpasswordka = req.body.ConfirmPassword
-    //             let passwordka = req.body.password
-
-
-    //             console.log("ma")
-
-    //             if (passwordka == confirmpasswordka) {
-    //                 passwordka = await bcrypt.hash(passwordka, 10)
-    //                 const user = new userModel({
-
-    //                     userName: userNameka,
-    //                     userEmail: userEmailka,
-    //                     phone: phoneka,
-    //                     password: passwordka,
-    //                     access: true
-    //                 })
-
-    //                 console.log(user)
-    //                 user.save()
-    //                     .then(result => {
-    //                         console.log("mas")
-
-    //                         req.session.userloggedIn = true
-    //                         req.session.user = user
-    //                         res.redirect('/')
-    //                     })
-    //                     .catch(err => {
-    //                         console.log(err)
-    //                     })
-    //             } else {
-    //                 console.log("maoo")
-
-    //                 res.redirect('/user-signup')
-    //             }
-    //         }
-    //     })
-    // },
-
-
+  
 
     //--------------------------secssion distroy
 
@@ -291,99 +227,98 @@ module.exports = {
         }
     },
 
-    getOnePageProduct: async (req, res) => {
+    getOnePageProduct: async (req, res,next) => {
         try {
+            let user = req.session.user
+            const proId = req.params.id
+            // console.log(user)
+            console.log(proId)
+            let products = await product.findById(proId)
+            console.log(products)
+    
+            res.render('user/user-productOnePage', { products, user })
 
         } catch (error) {
             next(err)
         }
-        let user = req.session.user
-        const proId = req.params.id
-        // console.log(user)
-        console.log(proId)
-        let products = await product.findById(proId)
-        console.log(products)
-
-        res.render('user/user-productOnePage', { products, user })
+  
     },
 
 
     //user sigin up
     getUserSiginupPage: (req, res) => {
         try {
+            const nna = userModel.find({ userEmail: req.body.email }, async (err, data) => {
+                console.log(nna + "a;ljfhjfa")
+                // console.log(userEmail)
+                console.log("email")
+                //console.log(data)
+                if (data.length == 0) {
+                    if (req.body.password === req.body.ConfirmPassword) {
+                        const user = new userModel({
+                            userName: req.body.username,
+                            userEmail: req.body.email,
+                            phone: req.body.phone,
+                            password: await bcrypt.hash(req.body.password, 10),
+                            access: true
+                        })
+                        req.session.otp = user//body ulla deltails thalkalikam save chayyan
+                        console.log("started")
+                        req.session.otpgenerator = otpverification.otpgeneratorto();//otp undakkan ayakkulla
+                        console.log(req.session.otpgenerator)
+                  
+    
+                        console.log('masood1')
+                        res.render('user/user-otp')
+                    } else {
+                        console.log('msood2')
+                        Err = "password is not matched"
+                        res.redirect('/user-signup')
+                    }
+                } else {
+                    console.log('masood3')
+                    Err = "Invalied Email"
+                    res.render('user/user-otp')
+                }
+            })
 
         } catch (error) {
             next(err)
         }
 
-        const nna = userModel.find({ userEmail: req.body.email }, async (err, data) => {
-            console.log(nna + "a;ljfhjfa")
-            // console.log(userEmail)
-            console.log("email")
-            //console.log(data)
-            if (data.length == 0) {
-                if (req.body.password === req.body.ConfirmPassword) {
-                    const user = new userModel({
-                        userName: req.body.username,
-                        userEmail: req.body.email,
-                        phone: req.body.phone,
-                        password: await bcrypt.hash(req.body.password, 10),
-                        access: true
-                    })
-                    req.session.otp = user//body ulla deltails thalkalikam save chayyan
-                    console.log("started")
-                    req.session.otpgenerator = otpverification.otpgeneratorto();//otp undakkan ayakkulla
-                    console.log(req.session.otpgenerator)
-                    //message sending
-                    //otpverification.otpsender(req.session.otpgenerator)//opt message phonekk varan
-                    //.then(()=>{
-                    //   res.render('/user-otp')
-                    //})
-
-                    console.log('masood1')
-                    res.render('user/user-otp')
-                } else {
-                    console.log('msood2')
-                    Err = "password is not matched"
-                    res.redirect('/user-signup')
-                }
-            } else {
-                console.log('masood3')
-                Err = "Invalied Email"
-                res.render('user/user-otp')
-            }
-        })
+       
     },
 
     //==================otp page home
 
     otpToHome: async (req, res) => {
         try {
+            if (req.session.otpgenerator === req.body.otp) {
+                console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
+                console.log(req.session.otp)
+                let user = await userModel.create(req.session.otp)
+                console.log(user + "ksdhfasbldagalhkgfalhk")
+                req.session.user = user
+    
+                req.session.otp = null
+                req.session.otpgenerator = null,
+                    loggedIn = true
+                // req.session.userloggedIn = true
+                // console.log(req.session.otp + "abu")
+    
+                res.redirect('/')
+    
+            } else {
+                res.redirect('/user-signup')
+    
+            }
+    
 
         } catch (error) {
             next(err)
         }
 
-        if (req.session.otpgenerator === req.body.otp) {
-            console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
-            console.log(req.session.otp)
-            let user = await userModel.create(req.session.otp)
-            console.log(user + "ksdhfasbldagalhkgfalhk")
-            req.session.user = user
-
-            req.session.otp = null
-            req.session.otpgenerator = null,
-                loggedIn = true
-            // req.session.userloggedIn = true
-            // console.log(req.session.otp + "abu")
-
-            res.redirect('/')
-
-        } else {
-            res.redirect('/user-signup')
-
-        }
-
+       
     },
 
     getUserAllProduct: (req, res) => {
@@ -404,41 +339,6 @@ module.exports = {
 
 
     },
-
-
-
-    //=================add to cart first step================
-    // getUserCart: async (req, res) => {
-    //     if (req.session.user) {
-    //         const getUserId = req.session.user._id
-    //         console.log("heyheyhey" + getUserId);
-    //         proId = req.params.id
-    //         console.log("madood" + proId)
-    //         const userCart = await cartSchema.findOne({ user: getUserId }).lean()
-    //         console.log(userCart + "mom")
-    //         if (userCart) {
-    //             console.log(proId);
-    //             const newCart = await cartSchema.updateOne(
-    //                 { user: getUserId }, //find chayyan
-    //                 { $push: { products: proId } }//set chayyanulla data
-
-    //             )
-
-    //             res.redirect('/')
-    //         } else {
-    //             const newCart = new cartSchema({
-    //                 user: getUserId,
-    //                 products: proId
-    //             })
-    //             newCart.save()
-    //             res.redirect('/')
-    //         }
-    //     } else {
-    //         res.redirect('user/user-cart')
-    //     }
-    // },
-
-
 
     //================add to cart============
 
@@ -707,10 +607,11 @@ module.exports = {
     },
 
     getAddAddresstoPay: async (req, res, next) => {
-
-        let user = req.session.user
+        try{
+            let user = req.session.user
         const userId = req.session.user._id
 
+        const coupon = await couponSchema.findOne({isActive:true})
         const prod = await cartSchema.findOne({ userId: userId })
         if(prod != null){
             let cartProduct= prod.products
@@ -722,15 +623,21 @@ module.exports = {
                 let address=findAddress[0].address.slice(0,4)
                 console.log("2 if cheq")
                 console.log(address)
-                res.render('user/user-checkout', { user, cartProduct,prod,address })
+                res.render('user/user-checkout', { user, cartProduct,prod,address,coupon })
             }else{
                 let address=null
-                res.render('user/user-checkout', { user, cartProduct,prod,address })
+                res.render('user/user-checkout', { user, cartProduct,prod,address,coupon })
                 
             }
         }else{
             res.redirect('/')
         }
+
+        }catch(error){
+            next()
+        }
+
+        
 
     },
 
@@ -856,7 +763,8 @@ module.exports = {
             hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]']);
 
             hmac = hmac.digest('hex')
-
+            console.log("ooooooooooooops");
+                console.log(hmac == details['payment[razorpay_signature]']);
             if (hmac == details['payment[razorpay_signature]']) {
                 console.log('payment seccess')
                 orderId = req.session.orderId
@@ -956,87 +864,6 @@ module.exports = {
             next(err)
         }
     },
-
-
-
-
-
-
-
-
-
-    //============a code=========
-
-    // getUserCart:async(req,res)=>{
-
-    //     if(req.session.user){
-
-    //         const getUserId=req.session.user._id
-    //         let proId=req.params.id
-    //         const userCart=await cartSchema.findOne({user:getUserId}).lean()
-    //         let arr = [...userCart.products]
-    //         if(userCart){
-    //             arr.push(proId);
-    //             cartSchema.updateOne(
-    //                 {user:getUserId},
-    //                 {$set: {"products": arr}}
-    //             )
-    //             .then(data => {
-    //                 console.log(data)
-    //             })
-
-    //         }else{
-    //             const newCart = new cartSchema({
-    //                 user:getUserId,
-    //                 products:proId
-    //             })
-    //             newCart.save()
-    //         }
-    //     }else{
-    //         res.redirect('/user-login')
-    //     }
-
-    // },
-
-
-
-
-
-    // getproductAddToCart:async(req,res)=>{
-    //     const proId=req.params.id
-    //     const newUserId=req.session.user.id
-
-    //     return new Promise(async(resolve,reject)=>{
-    //         let usercart=await cart.findOne({userId:newUserId})
-    //         if(usercart){
-
-    //         }else{
-    //             let cartobj={
-    //                 user:newUserId,
-
-    //             }
-    //         }
-    //     })
-
-
-
-    // let usercart= await cart.findOne({userId:newUserId})
-    // if(usercart){
-
-    // }else{
-    //     let cartobj={
-    //         user:newUserId,
-    //         products:[proId]
-    //     }
-    //     cart.insertOne(cartobj )
-    // }
-
-
-
-
-
-    //}
-
 
 
 

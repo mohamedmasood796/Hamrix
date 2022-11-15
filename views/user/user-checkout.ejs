@@ -14,45 +14,45 @@
       <div class="container">
         <div class="py-5 text-center ">
           <% if (address){%>
-          <div class="row">
+            <div class="row">
 
-            <% address.forEach(function(adrs,index) { %>
-              <div class="col-md-3">
-                <!-- <div class="col-md-12 mb-2" id=""> -->
-                <div class="jumbotron shadow  bg-white rounded p-4">
-                  <div class="card">
-                    <div class="card-body">
-                      <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
-                      <address class="card-text">
-                        <%=adrs.name%> <br>
-                          <%=adrs.phoneNo%><br>
-                            <%=adrs.city%><br>
-                              <%=adrs.country%>, <%=adrs.state%> <br>,pincode : <%=adrs.zip%><br>
+              <% address.forEach(function(adrs,index) { %>
+                <div class="col-md-3">
+                  <!-- <div class="col-md-12 mb-2" id=""> -->
+                  <div class="jumbotron shadow  bg-white rounded p-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
+                        <address class="card-text">
+                          <%=adrs.name%> <br>
+                            <%=adrs.phoneNo%><br>
+                              <%=adrs.city%><br>
+                                <%=adrs.country%>, <%=adrs.state%> <br>,pincode : <%=adrs.zip%><br>
 
-                      </address>
-                      <button class="btn btn-outline-dark"
-                        onclick="fillForm(' <%=JSON.stringify(adrs)%>','<%=index%>')">Use the Address</button>
-                      <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
+                        </address>
+                        <button class="btn btn-outline-dark"
+                          onclick="fillForm(' <%=JSON.stringify(adrs)%>','<%=index%>')">Use the Address</button>
+                        <!-- <button data-bs-toggle="modal" data-placement="top" data-bs-target="#exampleModa"><i class="bi bi-pen"></i></button> -->
 
-                      <a href="#" onclick="deleteAdddress('<%=index%>')" data-toggle="tooltip" data-placement="top"
-                        title="Delete"><i class="bi bi-trash ml-5"
-                          style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
+                        <a href="#" onclick="deleteAdddress('<%=index%>')" data-toggle="tooltip" data-placement="top"
+                          title="Delete"><i class="bi bi-trash ml-5"
+                            style="font-size: 1.2rem; color: rgb(255, 0, 0);"></i></a>
 
+                      </div>
                     </div>
                   </div>
+                  <!-- </div> -->
                 </div>
-                <!-- </div> -->
-              </div>
-              <% }); %>
-          </div>
+                <% }); %>
+            </div>
 
-          <%}%>
+            <%}%>
         </div>
-        <div class="row" >
+        <div class="row">
           <div class="col-md-4 order-md-2 mb-4">
             <h4 class="d-flex justify-content-between align-items-center mb-3">
               <span class="text-muted">Your cart</span>
-            
+
             </h4>
             <ul class="list-group mb-3 sticky-top">
               <% prod.products.forEach(function(prod) { %>
@@ -87,8 +87,10 @@
 
                   <li class="list-group-item d-flex justify-content-between">
                     <span>Total </span>
-                    <div  class="row" id="coupondiv">
-                      <strong id="discount"><%= prod.total %></strong>
+                    <div class="row" id="coupondiv">
+                      <strong id="discount">
+                        <%= prod.total %>
+                      </strong>
                     </div>
                   </li>
             </ul>
@@ -97,16 +99,48 @@
 
               <form class="card p-2 " id="coupon-form-submit">
                 <div class="input-group">
+
                   <input type="text" class="form-control" placeholder="Promo code" id="c-code">
                   <div class="input-group-append">
-                    <button type="submit" class="btn"  style="background-color:rgb(150, 180, 222)  ;">Redeem</button>
+                    <button type="submit" class="btn" style="background-color:rgb(150, 180, 222)  ;">Redeem</button>
                   </div>
                 </div>
               </form>
 
             </div>
-            
+
+
+
+
+
+            <!-- <div class="col-md-12 mb-2" id=""> -->
+            <div class="jumbotron shadow  bg-white rounded p-4">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title"><i class="fa-solid fa-location-dot"></i></h5>
+                  <p class="card-text">
+                    <%=coupon.couponCode%>
+
+                  </p>
+                  <button id="clipboardCopy"> Copy Code </button>
+
+                </div>
+
+              </div>
+            </div>
+
+
+
           </div>
+
+
+
+
+
+
+
+
+
           <div class="col-md-8 order-md-1">
             <h4 class="mb-3">Billing address</h4>
             <!-- action="/payment" method="post" -->
@@ -115,7 +149,7 @@
                 <div class=" mb-3">
                   <label for="firstName">First name</label>
                   <input type="text" class="form-control" id="name" name="name" placeholder="" value="" required="">
-                  <div class="invalid-feedback"> Valid first name is required. </div>
+                  <!-- <div class="invalid-feedback"> Valid first name is required. </div> -->
                 </div>
 
               </div>
@@ -123,13 +157,13 @@
               <div class="mb-3">
                 <label for="email">PhoneNo </label>
                 <input type="phone" class="form-control" id="phoneNo" placeholder="9876543210" name="phoneNo">
-                <div class="invalid-feedback"> Please enter a valid email address for shipping updates. </div>
+                <!-- <div class="invalid-feedback"> Please enter a valid email address for shipping updates. </div> -->
               </div>
               <div class="mb-3">
                 <label for="address">Address</label>
                 <input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St"
                   required="">
-                <div class="invalid-feedback"> Please enter your shipping address. </div>
+                <!-- <div class="invalid-feedback"> Please enter your shipping address. </div> -->
               </div>
               <div class="mb-3">
                 <label for="address2">City </label>
@@ -140,19 +174,19 @@
                 <div class="col-md-4 mb-3">
                   <label for="state">country</label>
                   <input type="text" name="country" class="form-control" id="country" placeholder="country">
-                  <div class="invalid-feedback"> Please provide a valid state. </div>
+                  <!-- <div class="invalid-feedback"> Please provide a valid state. </div> -->
                 </div>
 
                 <div class="col-md-5 mb-3">
                   <label for="country">State</label>
                   <input type="text" name="state" class="form-control" id="state" placeholder="state">
-                  <div class="invalid-feedback"> Please select a valid state. </div>
+                  <!-- <div class="invalid-feedback"> Please select a valid state. </div> -->
                 </div>
 
                 <div class="col-md-3 mb-3">
                   <label for="zip">Zip</label>
                   <input type="text" name="zip" class="form-control" id="zip" placeholder="" required="">
-                  <div class="invalid-feedback"> Zip code required. </div>
+                  <!-- <div class="invalid-feedback"> Zip code required. </div> -->
                 </div>
               </div>
               <hr class="mb-4">
@@ -197,7 +231,7 @@
                 </div>
               </div> -->
               <hr class="mb-4">
-              <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer m-4" 
+              <button class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer m-4"
                 type="submit">Continue to checkout</button>
             </form>
           </div>
@@ -360,7 +394,7 @@
         console.log(couponValue)
         e.preventDefault()
         $.ajax({
-          url: '/checkCoupon/'+couponValue,
+          url: '/checkCoupon/' + couponValue,
           method: 'post',
           success: (response) => {
             if (response.status) {
@@ -369,24 +403,24 @@
               // document.getElementById("disc").innerHTML = response.couponDiscount;
               // document.getElementById("total").innerHTML = response.cartPrice;
               // $("#coupondiv").load(location.href + "#coupondiv");
-              document.getElementById('disc').innerText='-$'+response.discountPrice
-              document.getElementById('discount').innerText=''+response.totalamount
-              document.getElementById('codestate').innerText='coupon applied successfully'
+              document.getElementById('disc').innerText = '-$' + response.discountPrice
+              document.getElementById('discount').innerText = '' + response.totalamount
+              document.getElementById('codestate').innerText = 'coupon applied successfully'
 
-            } else if(response.used){
-              document.getElementById('codestate').style.color='red'
-              document.getElementById('codestate').innerText='coupon already used'
+            } else if (response.used) {
+              document.getElementById('codestate').style.color = 'red'
+              document.getElementById('codestate').innerText = 'coupon already used'
 
-            }else if(response.expired){
-              document.getElementById('codestate').style.color='red'
-              document.getElementById('codestate').innerText='sorry coupon is expired'
+            } else if (response.expired) {
+              document.getElementById('codestate').style.color = 'red'
+              document.getElementById('codestate').innerText = 'sorry coupon is expired'
 
-            }else if(response.noMatch){
-              document.getElementById('codestate').style.color='red'
-              document.getElementById('codestate').innerText='sorry coupon is invalied'
+            } else if (response.noMatch) {
+              document.getElementById('codestate').style.color = 'red'
+              document.getElementById('codestate').innerText = 'sorry coupon is invalied'
 
             }
-            
+
           }
         })
       })
@@ -395,6 +429,20 @@
     </script>
 
     <script>
+      // Type 1
+      // document.getElementById('execCopy').addEventListener('click', execCopy);
+      // function execCopy() {
+      //   document.querySelector("#input").select();
+      //   document.execCommand("copy");
+      // }
+
+      // Type 2
+      document.getElementById('clipboardCopy').addEventListener('click', clipboardCopy);
+      async function clipboardCopy() {
+        let text = document.querySelector("#c-code").value;
+        await navigator.clipboard.writeText(text);
+      }
+      
 
     </script>
 
