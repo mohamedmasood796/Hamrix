@@ -21,6 +21,12 @@ const instance = new Razorpay({
     key_id: process.env.key_id,
     key_secret: process.env.key_secret
 })
+const otpKeys = require("../utils/otp-keys");
+const accountSid = otpKeys.accountSid;
+const authToken = otpKeys.authToken;
+const serviseId = otpKeys.servieId;
+const client = require('twilio')(accountSid, authToken)
+
 
 let loginErr;
 
@@ -155,7 +161,7 @@ module.exports = {
         }
 
     },
-  
+
 
     //--------------------------secssion distroy
 
@@ -227,7 +233,7 @@ module.exports = {
         }
     },
 
-    getOnePageProduct: async (req, res,next) => {
+    getOnePageProduct: async (req, res, next) => {
         try {
             let user = req.session.user
             const proId = req.params.id
@@ -235,13 +241,13 @@ module.exports = {
             console.log(proId)
             let products = await product.findById(proId)
             console.log(products)
-    
+
             res.render('user/user-productOnePage', { products, user })
 
         } catch (error) {
             next(err)
         }
-  
+
     },
 
 
@@ -249,10 +255,7 @@ module.exports = {
     getUserSiginupPage: (req, res) => {
         try {
             const nna = userModel.find({ userEmail: req.body.email }, async (err, data) => {
-                console.log(nna + "a;ljfhjfa")
-                // console.log(userEmail)
-                console.log("email")
-                //console.log(data)
+                
                 if (data.length == 0) {
                     if (req.body.password === req.body.ConfirmPassword) {
                         const user = new userModel({
@@ -264,10 +267,16 @@ module.exports = {
                         })
                         req.session.otp = user//body ulla deltails thalkalikam save chayyan
                         console.log("started")
-                        req.session.otpgenerator = otpverification.otpgeneratorto();//otp undakkan ayakkulla
-                        console.log(req.session.otpgenerator)
-                  
-    
+                        // req.session.otpgenerator = otpverification.otpgeneratorto();//otp undakkan ayakkulla
+                        // console.log(req.session.otpgenerator)
+
+                        //message sending
+                        otpverification.otpsender(req.body.phone)//opt message phonekk varan
+                            .then(() => {
+                                res.render('/user-otp')
+                            })
+
+
                         console.log('masood1')
                         res.render('user/user-otp')
                     } else {
@@ -286,39 +295,47 @@ module.exports = {
             next(err)
         }
 
-       
+
     },
 
     //==================otp page home
 
     otpToHome: async (req, res) => {
         try {
-            if (req.session.otpgenerator === req.body.otp) {
-                console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
-                console.log(req.session.otp)
-                let user = await userModel.create(req.session.otp)
-                console.log(user + "ksdhfasbldagalhkgfalhk")
-                req.session.user = user
-    
-                req.session.otp = null
-                req.session.otpgenerator = null,
-                    loggedIn = true
-                // req.session.userloggedIn = true
-                // console.log(req.session.otp + "abu")
-    
-                res.redirect('/')
-    
-            } else {
-                res.redirect('/user-signup')
-    
-            }
-    
+            console.log(req.session.otp.phone);
+            client.verify.v2.services(serviseId)
+                .verificationChecks
+                .create({ to: `+91${req.session.otp.phone}`, code: req.body.otp })
+                .then(verification_check =>{
+                    console.log(verification_check.status)
+                    if (verification_check.status == 'approved') {
+                        console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
+                        console.log(req.session.otp)
+                        let user =  userModel.create(req.session.otp)
+                        console.log(user + "ksdhfasbldagalhkgfalhk")
+                        req.session.user = user
+        
+                        req.session.otp = null
+                        req.session.otpgenerator = null,
+                            loggedIn = true
+                        // req.session.userloggedIn = true
+                        // console.log(req.session.otp + "abu")
+        
+                        res.redirect('/')
+        
+                    } else {
+                        res.redirect('/user-signup')
+        
+                    }
+                });
+            
+
 
         } catch (error) {
             next(err)
         }
 
-       
+
     },
 
     getUserAllProduct: (req, res) => {
@@ -607,37 +624,37 @@ module.exports = {
     },
 
     getAddAddresstoPay: async (req, res, next) => {
-        try{
+        try {
             let user = req.session.user
-        const userId = req.session.user._id
+            const userId = req.session.user._id
 
-        const coupon = await couponSchema.findOne({isActive:true})
-        const prod = await cartSchema.findOne({ userId: userId })
-        if(prod != null){
-            let cartProduct= prod.products
-            const findAddress = await addressSchema.find({ userId: userId })
-            console.log("slice address")
-            console.log(findAddress)
-            if(findAddress != null){
+            const coupon = await couponSchema.findOne({ isActive: true })
+            const prod = await cartSchema.findOne({ userId: userId })
+            if (prod != null) {
+                let cartProduct = prod.products
+                const findAddress = await addressSchema.find({ userId: userId })
+                console.log("slice address")
                 console.log(findAddress)
-                let address=findAddress[0].address.slice(0,4)
-                console.log("2 if cheq")
-                console.log(address)
-                res.render('user/user-checkout', { user, cartProduct,prod,address,coupon })
-            }else{
-                let address=null
-                res.render('user/user-checkout', { user, cartProduct,prod,address,coupon })
-                
-            }
-        }else{
-            res.redirect('/')
-        }
+                if (findAddress != null) {
+                    console.log(findAddress)
+                    let address = findAddress[0].address.slice(0, 4)
+                    console.log("2 if cheq")
+                    console.log(address)
+                    res.render('user/user-checkout', { user, cartProduct, prod, address, coupon })
+                } else {
+                    let address = null
+                    res.render('user/user-checkout', { user, cartProduct, prod, address, coupon })
 
-        }catch(error){
+                }
+            } else {
+                res.redirect('/')
+            }
+
+        } catch (error) {
             next()
         }
 
-        
+
 
     },
 
@@ -764,7 +781,7 @@ module.exports = {
 
             hmac = hmac.digest('hex')
             console.log("ooooooooooooops");
-                console.log(hmac == details['payment[razorpay_signature]']);
+            console.log(hmac == details['payment[razorpay_signature]']);
             if (hmac == details['payment[razorpay_signature]']) {
                 console.log('payment seccess')
                 orderId = req.session.orderId
@@ -790,7 +807,7 @@ module.exports = {
         try {
             let userId = req.session.user._id
             let user = req.session.user
-            const userOrder = await orderSchema.find({ userId: userId }).sort({date: -1}).populate("products.productId").exec()
+            const userOrder = await orderSchema.find({ userId: userId }).sort({ date: -1 }).populate("products.productId").exec()
             console.log(userOrder[0].products[0].productId)
 
             res.render('user/user-orderDetails', { userOrder, user })
