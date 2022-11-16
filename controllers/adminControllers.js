@@ -37,10 +37,10 @@ module.exports = {
                     totalsales = totalsales + sales[i].total
                 }
 
-                console.log("masood")
+                
                 const cancelOrder=await orderSchema.find({status:"cancelled"}).count()
                 const activeOrder = totalorder-cancelOrder
-                console.log(activeOrder)
+                
 
                 const pending=await orderSchema.find({status:"pending"}).count()
                 const placed=await orderSchema.find({status:"placed"}).count()
@@ -70,16 +70,13 @@ module.exports = {
                     }
                 ])
                 
-                console.log(totalSales)
+                
                 const salesLabels=totalSales.map(item =>{
                     return item._id
                 })
                 const salesData= totalSales.map(item =>{
                     return item.sales.toFixed(2)
                 })
-                console.log("hari")
-                console.log(salesLabels)
-                console.log(salesData)
 
                 res.render('admin/admin-home', {activeOrder,pending,placed,delivered,shipped, admin, userCount, productCount, sales, totalsales, totalorder ,cancelOrder,salesLabels,salesData})
             } else {
@@ -94,7 +91,8 @@ module.exports = {
 
     getAdminLogin: (req, res,next) => {
         try {
-            res.render('admin/admin-login')
+            
+            res.render('admin/admin-login',{adminloginErr})
 
         } catch (error) {
             next(err)
@@ -142,19 +140,19 @@ module.exports = {
     },
 
     //add product by admin
-    getAdminAllProduct: (req, res, next) => {
+    getAdminAllProduct:async (req, res, next) => {
     
         try {
-            product.find({}, function (err, result) {
+            // const pageNum= req.query.page
+            // console.log("hamble")
+            // console.log(page)
+            // const perPage=2
 
-                if (err) {
-                    res.send(err);
-                } else {
+            
 
-                    res.render('admin/admin-allproduct', { result })
+            const result= await product.find({})
+            res.render('admin/admin-allproduct', { result })
 
-                }
-            });
 
         } catch (error) {
             next(err)
@@ -463,9 +461,9 @@ module.exports = {
         try {
             bannerSchema.find({}, (err, ans) => {
                 if (err) {
-                    console.log(err)
+                    
                 } else {
-                    console.log(ans)
+                    
                     res.render('admin/admin-banner', { ans })
                 }
             })
@@ -490,7 +488,7 @@ module.exports = {
                 access: true,
 
             })
-            console.log(banner)
+            
             banner.save()
             res.redirect('/admin/banneraddpage')
 
@@ -533,7 +531,7 @@ module.exports = {
     getOrderManagment: async (req, res, next) => {
         try {
             const userOrder = await orderSchema.find({}).sort({date: -1}).populate("products.productId").exec()
-            console.log(userOrder[0].products)
+            
             res.render('admin/admin-orderManagment', { userOrder })
 
         } catch (error) {
@@ -559,10 +557,10 @@ module.exports = {
 
     getchargeDeliveryStatus: async (req, res, next) => {
         try {
-            console.log('orderManagment')
+            
             const proId = req.params.id
             const prodstatus = req.body
-            console.log(prodstatus.status)
+            
             const update = await orderSchema.findOne({ _id: (proId) })
             update.status = prodstatus.status
             await update.save()
@@ -611,14 +609,44 @@ module.exports = {
     },
 
     getsalesReport: async (req, res, next) => {
-        try {
-            const salesreport = await orderSchema.find({})
-            console.log("haem")
-            console.log(salesreport)
-            res.render('admin/admin-salesReport', { salesreport })
-        } catch (error) {
-            next(err)
-        }
+        // try {
+            const salesreport = await orderSchema.aggregate([
+                {
+                    $match: { "date": { $ne: null } }
+                },
+                {
+                    $group:{
+                        _id: "$date",
+                        sales:{$sum: "$total"},
+                        order:{$sum: 1 }
+                    }
+                },
+                {
+                    $sort:{ _id:-1}
+                }
+            ])
+            // console.log('salesreport')
+            // console.log(salesreport)
+
+            // const salesDate= salesreport.map(item =>{
+            //     return item._id
+            // })
+            // const salesamount = salesreport.map(item =>{
+            //     return item.sales.toFixed(2)
+            // })
+            // const salesorder = salesreport.map(item =>{
+            //     return item.order
+            // })
+            // console.log("kittiyo")
+            // console.log(salesDate)
+            // console.log(salesamount)
+            // console.log(salesorder)
+
+        
+            res.render('admin/admin-salesReport', { salesreport})
+        // } catch (error) {
+        //     next(err)
+        // }
 
     },
 
@@ -632,6 +660,16 @@ module.exports = {
             next(err)
         }
         
+    },
+
+    getAdminLogout:(req,res,next)=>{
+        try{
+            req.session.adminloggedIn=null
+            res.redirect('/admin')
+        }catch(error){
+            next()
+        }
+       
     }
 
 

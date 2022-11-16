@@ -463,21 +463,50 @@
 	</section>
 
 	
+
+	<script>
+		let qty=document.getElementById('proqty').value
+		function addToCart(proId) {
+			console.log('aldjkf;')
+			console.log(qty)
+			$.ajax({
+				url:'/userCart/'+ proId+'/'+qty,
+				method: 'get',
+				success: (response) => {
+
+					console.log("lplpl ");
+					console.log(response);
+					if (response.status) {
+						console.log("kokoko");
+						swal.fire({
+							icon: 'success',
+							title: 'Added Succesfully',
+							showConfirmButton: false,
+						})
+					}
+				}
+			})
+		}
+		
+	</script>
+
+
+
 	<script>
 
-		let qty=document.getElementById('proqty').value
-		function addToCart(proId){
-		console.log("kkkkkkkkkkkk")
-		console.log(qty);
-		$.ajax({
+	// 	let qty=document.getElementById('proqty').value
+	// 	function addToCart(proId){
+	// 	console.log("kkkkkkkkkkkk")
+	// 	console.log(qty);
+	// 	$.ajax({
 
-			url:'/userCart/'+ proId+'/'+qty,
-			method:'get',
-			success:(Response)=>{
+	// 		url:'/userCart/'+ proId+'/'+qty,
+	// 		method:'get',
+	// 		success:(Response)=>{
 			
-			}
-		})
-	}
+	// 		}
+	// 	})
+	// }
 
 
 

@@ -6,18 +6,18 @@ var router = express.Router();
 // const store = multer({ dest: '/product-images' })
 const {store} = require('./../middleware/multer')
 
-const varifyadmin = require("../middleware/session");
+const varifyadmin = require("../middleware/adminSession");
 
 
 
 //admin home render
-router.get('/', varifyadmin.verifyLogin,adminControllers.getAdminHome)
+router.get('/',varifyadmin.verifyLogin,adminControllers.getAdminHome)
 
 //admin login render
-router.get('/admin-login',varifyadmin.verifyLogin,adminControllers.getAdminLogin)
+router.get('/admin-login',adminControllers.getAdminLogin)
 
 //admin login post redirect
-router.post('/admin-login',varifyadmin.verifyLogin,adminControllers.getAdminLoginPost)
+router.post('/admin-login',adminControllers.getAdminLoginPost)
 
 //admin all product 
 router.get('/all-product',varifyadmin.verifyLogin,adminControllers.getAdminAllProduct)
@@ -93,6 +93,9 @@ router.get('/salesReport',varifyadmin.verifyLogin,adminControllers.getsalesRepor
 
 //admin delete coupon 
 router.get('/delete-coupon/:id',varifyadmin.verifyLogin,adminControllers.getdelectCoupon)
+
+//admin logout 
+router.get('/admin-logout',adminControllers.getAdminLogout)
 
 
 

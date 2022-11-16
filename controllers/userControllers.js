@@ -242,7 +242,7 @@ module.exports = {
             let products = await product.findById(proId)
             console.log(products)
 
-            res.render('user/user-productOnePage', { products, user })
+            res.render('user/user-productOne', { products, user })
 
         } catch (error) {
             next(err)
@@ -309,8 +309,6 @@ module.exports = {
                 .then(verification_check =>{
                     console.log(verification_check.status)
                     if (verification_check.status == 'approved') {
-                        console.log('akljdsaaaaaaaaaaaaaaaaajlskd;;;;;;;;;')
-                        console.log(req.session.otp)
                         let user =  userModel.create(req.session.otp)
                         console.log(user + "ksdhfasbldagalhkgfalhk")
                         req.session.user = user
@@ -328,9 +326,6 @@ module.exports = {
         
                     }
                 });
-            
-
-
         } catch (error) {
             next(err)
         }
@@ -402,7 +397,7 @@ module.exports = {
                     }, 0)
                     console.log(cart.total)
                     await cart.save()
-
+res.json({status:true})
                 } else {
                     const total = quantity * price
                     cart = new cartSchema({
@@ -413,6 +408,8 @@ module.exports = {
                     })
                     console.log("masood 422")
                     await cart.save()
+res.json({status:true})
+
                 }
 
             } else {

@@ -2,53 +2,39 @@
     <%- include('./include/admin-navside'); %>
         <%- include('./include/admin-header'); %>
 
-            
 
-            <div class="container mt-4 " id="pdf">
+
+            <div class="container" id="pdf">
                 <div class="m-2" >
                     <a href=""  onclick="printDiv('pdf','title')" class="btn btn-danger">Print</a>
     
                 </div>
-
-                <table class="table table-bordered" id="salesData" >
-                    <thead>
-                        <tr>
-                            <th>OrderId</th>
-                            <th>Address</th>
-                            <th>Payment</th>
-                            <th>Cost</th>
-                            <th>Bill AMT</th>
-                            <th>Profit</th>
-                            <th>Date</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% salesreport.forEach(function(report){ %>
-                
+                <div class="row">
+                    <table class="table" id="salesData">
+                        <thead>
                             <tr>
-                                <td><%=report._id %></td>
-                                <td>
-                                    
-                                          <%=report.deliveryAddress[0].name%><br>
-                                        
-                                              <%=report.deliveryAddress[0].city%>,
-                                                  <%=report.deliveryAddress[0].state%><br>
-                                                    <%=report.deliveryAddress[0].zip%><br>
-                                                      <%=report.deliveryAddress[0].phoneNo%>
-                       
-                                </td>
-                                <td><%= report.paymentType%></td>
-                                <td><%= report.total *75 /100%></td>
-                                <td><%= report.total%></td>
-                                <td><%= report.total *25 /100%></td>
-                                <td><%= report.date%></td>
-                                <td><%= report.status%></td>
+                                <th scope="col">No</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Total Amount</th>
+                                <th scope="col">Profit</th>
+                                <th scope="col">Order</th>
                             </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <% salesreport.forEach(function(report,index){ %>
+                                <tr>
+                                    <th scope="row"><%=index+1%></th>
+                                    <td><%= report._id%></td>
+                                    <td><%= report.sales%></td>
+                                    <td><%= report.sales*20/100%></td>
+                                    <td><%= report.order%></td>
+                                </tr>
+                             <% }); %>
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
 
             <script>
                 var doc = new jsPDF();

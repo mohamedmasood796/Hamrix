@@ -1,9 +1,10 @@
 module.exports={
-    verifyLoggedIn:(req,res,next)=>{
+    verifyLogin:(req,res,next)=>{
        if(req.session.adminloggedIn){
            next()
        }else{
-           res.redirect('/admin-login')
+        console.log("spspsps");
+           res.redirect('/admin/admin-login')
        }
    }
 }
