@@ -378,18 +378,18 @@
 	<script>
 		let qty=document.getElementById('proqty').value
 		function addToCart(proId) {
-			console.log('aldjkf;')
-			console.log(qty)
 			$.ajax({
 				url:'/userCart/'+ proId+'/'+qty,
 				method: 'get',
 				success: (response) => {
 					if (response.status) {
-						swal.fire({
-							icon: 'success',
-							title: 'Added Succesfully',
-							showConfirmButton: false,
-						})
+						Swal.fire({
+								
+								icon: 'success',
+								title: 'Added Succesfully',
+								showConfirmButton: false,
+								timer: 1500
+							})
 					}
 				}
 			})
