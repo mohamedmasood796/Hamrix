@@ -1,6 +1,7 @@
+require('dotenv').config()
 const mongoose= require('mongoose')
 
-mongoose.connect("mongodb://localhost:27017/hamrix",{useNewUrlParser : true})
+mongoose.connect(process.env.MONGO_ATLES)
 
 mongoose.connection
     .once("open",()=> console.log("connected"))

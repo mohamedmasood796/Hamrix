@@ -609,7 +609,7 @@ module.exports = {
     },
 
     getsalesReport: async (req, res, next) => {
-        // try {
+        try {
             const salesreport = await orderSchema.aggregate([
                 {
                     $match: { "date": { $ne: null } }
@@ -644,9 +644,9 @@ module.exports = {
 
         
             res.render('admin/admin-salesReport', { salesreport})
-        // } catch (error) {
-        //     next(err)
-        // }
+        } catch (error) {
+            next(err)
+        }
 
     },
 

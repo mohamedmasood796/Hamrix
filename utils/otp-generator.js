@@ -2,9 +2,9 @@ const otpgenerator = require('otp-generator')
 
 const otpKeys = require("../utils/otp-keys");
 
-const accountSid = otpKeys.accountSid;
-const authToken = otpKeys.authToken;
-const serviseId = otpKeys.servieId;
+const accountSid = process.env.ACCOUNT_Sid;
+const authToken = process.env.AUTHTOKEN;
+const serviseId = process.env.SERVIEId;
 const client = require('twilio')(accountSid, authToken)
 
 module.exports = {
