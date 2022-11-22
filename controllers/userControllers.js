@@ -254,7 +254,7 @@ module.exports = {
     getUserSiginupPage: (req, res) => {
         try {
             const nna = userModel.find({ userEmail: req.body.email }, async (err, data) => {
-                
+
                 if (data.length == 0) {
                     if (req.body.password === req.body.ConfirmPassword) {
                         const user = new userModel({
@@ -305,24 +305,24 @@ module.exports = {
             client.verify.v2.services(serviseId)
                 .verificationChecks
                 .create({ to: `+91${req.session.otp.phone}`, code: req.body.otp })
-                .then(verification_check =>{
+                .then(verification_check => {
                     console.log(verification_check.status)
                     if (verification_check.status == 'approved') {
-                        let user =  userModel.create(req.session.otp)
+                        let user = userModel.create(req.session.otp)
                         console.log(user + "ksdhfasbldagalhkgfalhk")
                         req.session.user = user
-        
+
                         req.session.otp = null
                         req.session.otpgenerator = null,
                             loggedIn = true
                         // req.session.userloggedIn = true
                         // console.log(req.session.otp + "abu")
-        
+
                         res.redirect('/')
-        
+
                     } else {
                         res.redirect('/user-signup')
-        
+
                     }
                 });
         } catch (error) {
@@ -396,7 +396,7 @@ module.exports = {
                     }, 0)
                     console.log(cart.total)
                     await cart.save()
-res.json({status:true})
+                    res.json({ status: true })
                 } else {
                     const total = quantity * price
                     cart = new cartSchema({
@@ -407,7 +407,7 @@ res.json({status:true})
                     })
                     console.log("masood 422")
                     await cart.save()
-res.json({status:true})
+                    res.json({ status: true })
 
                 }
 
@@ -801,12 +801,23 @@ res.json({status:true})
 
     getUserOrder: async (req, res, next) => {
         try {
+            console.log('1111111111111111111')
             let userId = req.session.user._id
+            console.log(userId)
             let user = req.session.user
+            console.log(user)
             const userOrder = await orderSchema.find({ userId: userId }).sort({ date: -1 }).populate("products.productId").exec()
-            console.log(userOrder[0].products[0].productId)
+            console.log(userOrder)
+            if (userOrder.length === 0) {
+                console.log("2222222222222")
+                res.render('user/user-orderDetails', { user ,isOrder:true})
+            } else {
+                console.log('lksfjlskfj')
+                console.log(userOrder[0].products[0].productId)
 
-            res.render('user/user-orderDetails', { userOrder, user })
+                res.render('user/user-orderDetails', { userOrder, user })
+            }
+
 
         } catch (error) {
             next(err)

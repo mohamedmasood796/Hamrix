@@ -111,7 +111,7 @@ module.exports = {
 
                 if (data) {
                     bcrypt.compare(password, data.password).then((datas) => {
-                        if (datas) {
+                        if (data) {
                             console.log('bcript')
                             console.log(data.password)
                             req.session.adminloggedIn = true
