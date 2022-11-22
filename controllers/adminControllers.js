@@ -155,16 +155,15 @@ module.exports = {
             if (adminres) {
                 console.log(adminres)
                 console.log(adminres.password)
-                console.log(req.body.password)
                 console.log('masood')
                 let passRes = await bcrypt.compare(req.body.password, adminres.password)
 
                 if (passRes) {
                     console.log('bcript')
-                    console.log(data.password)
-                    console.log(datas)
+                    console.log(adminres.password)
+                    console.log(passRes)
                     req.session.adminloggedIn = true
-                    req.session.admin = data
+                    req.session.admin = passRes
                     res.redirect('/admin/')
                 } else {
                     req.session.loginErr = true
