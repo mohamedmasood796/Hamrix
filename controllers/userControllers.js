@@ -234,16 +234,15 @@ module.exports = {
     },
 
     getOnePageProduct: async (req, res, next) => {
+        console.log("hhhhhhhhhhhh");
         try {
             let user = req.session.user
             const proId = req.params.id
-            // console.log(user)
+            console.log(user)
             console.log(proId)
             let products = await product.findById(proId)
             console.log(products)
-
-            res.render('user/user-productOne', { products, user })
-
+            res.render('user/user-productOnePage', { products, user })
         } catch (error) {
             next(err)
         }

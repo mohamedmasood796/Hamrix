@@ -46,7 +46,7 @@ router.post('/to-home',userControllers.otpToHome)
 //user show all product 
 router.get('/user-all-product',userControllers.getUserAllProduct)
 
-//user cart page shew 
+//user cart page show 
 router.get('/userCart/:id/:quantity',varifySession.verifyLogin,userControllers.getUserCart)
 
 //show cart page
@@ -60,7 +60,6 @@ router.post('/posProduct/:proId',varifySession.verifyLogin,userControllers.getIn
 
 //degremont product quandity
 router.post('/negProduct/:proId',varifySession.verifyLogin,userControllers.getdegreasProduct)
-
 
 
 
