@@ -2,7 +2,7 @@ const admin = require('../models/admin')
 const product = require('../models/productSchema')
 const User = require("../models/user")
 const category = require('../models/categorySchema')
-const bcrypt = require('bcrypt')
+const bcrypt = require('bcryptjs')
 const cartSchema = require('../models/cartSchema')
 const orderSchema = require('../models/orderSchema')
 const collection = require('../config/collection')
@@ -13,7 +13,7 @@ const bannerSchema = require("../models/bannerSchema")
 const couponSchema = require('../models/couponSchema')
 const { BulkCountryUpdatePage } = require('twilio/lib/rest/voice/v1/dialingPermissions/bulkCountryUpdate')
 const { find } = require('../models/user')
-const verifyadmin=require('../middleware/adminSession')
+const verifyadmin = require('../middleware/adminSession')
 
 
 let categoryErr;
@@ -37,15 +37,15 @@ module.exports = {
                     totalsales = totalsales + sales[i].total
                 }
 
-                
-                const cancelOrder=await orderSchema.find({status:"cancelled"}).count()
-                const activeOrder = totalorder-cancelOrder
-                
 
-                const pending=await orderSchema.find({status:"pending"}).count()
-                const placed=await orderSchema.find({status:"placed"}).count()
-                const delivered=await orderSchema.find({status:"delivered"}).count()
-                const shipped= await orderSchema.find({status:"shipped"}).count()
+                const cancelOrder = await orderSchema.find({ status: "cancelled" }).count()
+                const activeOrder = totalorder - cancelOrder
+
+
+                const pending = await orderSchema.find({ status: "pending" }).count()
+                const placed = await orderSchema.find({ status: "placed" }).count()
+                const delivered = await orderSchema.find({ status: "delivered" }).count()
+                const shipped = await orderSchema.find({ status: "shipped" }).count()
 
 
                 const totalSales = await orderSchema.aggregate([
@@ -57,7 +57,7 @@ module.exports = {
                     // Second Stage
                     {
                         $group: {
-                            _id:   "$date"  ,
+                            _id: "$date",
                             sales: { $sum: "$total" },
                         }
                     },
@@ -69,16 +69,16 @@ module.exports = {
                         $limit: 7
                     }
                 ])
-                
-                
-                const salesLabels=totalSales.map(item =>{
+
+
+                const salesLabels = totalSales.map(item => {
                     return item._id
                 })
-                const salesData= totalSales.map(item =>{
+                const salesData = totalSales.map(item => {
                     return item.sales.toFixed(2)
                 })
 
-                res.render('admin/admin-home', {activeOrder,pending,placed,delivered,shipped, admin, userCount, productCount, sales, totalsales, totalorder ,cancelOrder,salesLabels,salesData})
+                res.render('admin/admin-home', { activeOrder, pending, placed, delivered, shipped, admin, userCount, productCount, sales, totalsales, totalorder, cancelOrder, salesLabels, salesData })
             } else {
                 res.render('admin/admin-login', { adminloginErr })
                 adminloginErr = null
@@ -89,10 +89,10 @@ module.exports = {
         }
     },
 
-    getAdminLogin: (req, res,next) => {
+    getAdminLogin: (req, res, next) => {
         try {
-            
-            res.render('admin/admin-login',{adminloginErr})
+
+            res.render('admin/admin-login', { adminloginErr })
 
         } catch (error) {
             next(err)
@@ -103,33 +103,80 @@ module.exports = {
 
     //-----------------------------------admin post login---------------------
 
-    getAdminLoginPost: (req, res, next) => {
+    // getAdminLoginPost: (req, res, next) => {
+    //     try {
+    //         const email = req.body.email
+
+    //         admin.findOne({ adminEmail: email }, (err, data) => {
+
+    //             if (data) {
+    //                 console.log(data)
+
+    //                 console.log(data.password)
+    //                 console.log(req.body.password)
+    //                 console.log('masood')
+    //                 bcrypt.compare(req.body.password,data.password).then((datas) => {
+    //                     console.log(datas)
+    //                     if (datas) {
+    //                         console.log('bcript')
+    //                         console.log(data.password)
+    //                         console.log(datas)
+    //                         req.session.adminloggedIn = true
+    //                         req.session.admin = data
+    //                         res.redirect('/admin/')
+    //                     } else {
+    //                         req.session.loginErr = true
+    //                         console.log("password incorrect")
+    //                         adminloginErr = "invalid password"
+    //                         res.redirect('/admin/')
+    //                     }
+    //                 })
+    //             } else {
+    //                 console.log("data not found")
+    //                 adminloginErr = "invalid email"
+    //                 res.redirect('/admin/')
+    //             }
+    //         })
+
+    //     } catch (error) {
+    //         next(err)
+    //     }
+
+
+
+    // },
+
+
+    //=====================================
+    getAdminLoginPost: async (req, res, next) => {
         try {
             const email = req.body.email
-            const password = req.body.password
-            admin.findOne({ adminEmail: email }, (err, data) => {
+            let adminres = await admin.findOne({ adminEmail: email })
+            if (adminres) {
+                console.log(adminres)
+                console.log(adminres.password)
+                console.log(req.body.password)
+                console.log('masood')
+                let passRes = await bcrypt.compare(req.body.password, adminres.password)
 
-                if (data) {
-                    bcrypt.compare(password, data.password).then((datas) => {
-                        if (data) {
-                            console.log('bcript')
-                            console.log(data.password)
-                            req.session.adminloggedIn = true
-                            req.session.user = data
-                            res.redirect('/admin/')
-                        } else {
-                            req.session.loginErr = true
-                            console.log("password incorrect")
-                            adminloginErr = "invalid password"
-                            res.redirect('/admin/')
-                        }
-                    })
+                if (passRes) {
+                    console.log('bcript')
+                    console.log(data.password)
+                    console.log(datas)
+                    req.session.adminloggedIn = true
+                    req.session.admin = data
+                    res.redirect('/admin/')
                 } else {
-                    console.log("data not found")
-                    adminloginErr = "invalid email"
+                    req.session.loginErr = true
+                    console.log("password incorrect")
+                    adminloginErr = "invalid password"
                     res.redirect('/admin/')
                 }
-            })
+            } else {
+                console.log("data not found")
+                adminloginErr = "invalid email"
+                res.redirect('/admin/')
+            }
 
         } catch (error) {
             next(err)
@@ -138,19 +185,18 @@ module.exports = {
 
 
     },
-
     //add product by admin
-    getAdminAllProduct:async (req, res, next) => {
-    
+    getAdminAllProduct: async (req, res, next) => {
+
         try {
             // const pageNum= req.query.page
             // console.log("hamble")
             // console.log(page)
             // const perPage=2
 
-            
 
-            const result= await product.find({})
+
+            const result = await product.find({})
             res.render('admin/admin-allproduct', { result })
 
 
@@ -300,7 +346,7 @@ module.exports = {
             for (file of req.files) {
                 imagename.push(file.filename)
             }
- 
+
             product.find({ _id: req.params.id }, (err, data) => {
                 product.updateOne({ _id: req.params.id }, {
                     $set: {
@@ -461,9 +507,9 @@ module.exports = {
         try {
             bannerSchema.find({}, (err, ans) => {
                 if (err) {
-                    
+
                 } else {
-                    
+
                     res.render('admin/admin-banner', { ans })
                 }
             })
@@ -488,7 +534,7 @@ module.exports = {
                 access: true,
 
             })
-            
+
             banner.save()
             res.redirect('/admin/banneraddpage')
 
@@ -530,8 +576,8 @@ module.exports = {
 
     getOrderManagment: async (req, res, next) => {
         try {
-            const userOrder = await orderSchema.find({}).sort({date: -1}).populate("products.productId").exec()
-            
+            const userOrder = await orderSchema.find({}).sort({ date: -1 }).populate("products.productId").exec()
+
             res.render('admin/admin-orderManagment', { userOrder })
 
         } catch (error) {
@@ -557,10 +603,10 @@ module.exports = {
 
     getchargeDeliveryStatus: async (req, res, next) => {
         try {
-            
+
             const proId = req.params.id
             const prodstatus = req.body
-            
+
             const update = await orderSchema.findOne({ _id: (proId) })
             update.status = prodstatus.status
             await update.save()
@@ -597,7 +643,7 @@ module.exports = {
                 isActive: true
 
             })
-            
+
             await coupon.save()
             res.redirect('/admin/adminCoupon')
 
@@ -615,14 +661,14 @@ module.exports = {
                     $match: { "date": { $ne: null } }
                 },
                 {
-                    $group:{
+                    $group: {
                         _id: "$date",
-                        sales:{$sum: "$total"},
-                        order:{$sum: 1 }
+                        sales: { $sum: "$total" },
+                        order: { $sum: 1 }
                     }
                 },
                 {
-                    $sort:{ _id:-1}
+                    $sort: { _id: -1 }
                 }
             ])
             // console.log('salesreport')
@@ -642,34 +688,34 @@ module.exports = {
             // console.log(salesamount)
             // console.log(salesorder)
 
-        
-            res.render('admin/admin-salesReport', { salesreport})
+
+            res.render('admin/admin-salesReport', { salesreport })
         } catch (error) {
             next(err)
         }
 
     },
 
-    getdelectCoupon:async(req,res,next)=>{
-        try{
-            couponId=req.params.id
-        await couponSchema.findByIdAndDelete(couponId)
-        res.redirect('/admin/adminCoupon')
+    getdelectCoupon: async (req, res, next) => {
+        try {
+            couponId = req.params.id
+            await couponSchema.findByIdAndDelete(couponId)
+            res.redirect('/admin/adminCoupon')
 
-        }catch(error){
+        } catch (error) {
             next(err)
         }
-        
+
     },
 
-    getAdminLogout:(req,res,next)=>{
-        try{
-            req.session.adminloggedIn=null
+    getAdminLogout: (req, res, next) => {
+        try {
+            req.session.adminloggedIn = null
             res.redirect('/admin')
-        }catch(error){
+        } catch (error) {
             next()
         }
-       
+
     }
 
 

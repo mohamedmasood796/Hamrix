@@ -51,11 +51,12 @@ module.exports = {
                                     } else {
                                         if (cartCoud[0]) {
                                             count = cartCoud[0].products.length
-
+                                            wcount = wishcount[0].myWish.length
                                         } else {
                                             count = 0
+                                            wcount = 0
                                         }
-                                        wcount = wishcount[0].myWish.length
+                                        
 
                                         //console.log('masood')
                                         //console.log(result)
