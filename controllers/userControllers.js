@@ -757,7 +757,7 @@ module.exports = {
     getSuccessPage: async (req, res, next) => {
         try {
             orderId = req.session.orderId
-
+            console.log("hw00000000000000000000000000000000")
             const newOder = await orderSchema.findOne({ _id: orderId })
             res.render('user/user-orderConform', { newOder })
 
@@ -783,6 +783,7 @@ module.exports = {
                 console.log('payment seccess')
                 orderId = req.session.orderId
                 await orderSchema.findByIdAndUpdate(orderId, { status: 'placed' })
+                res.json({status:true})
                 // const changeStatus = await orderSchema.findOne({ _id: orderId })
                 // cancelOrder.status = "cancelled"
                 // await cancelOrder.save()
@@ -809,17 +810,14 @@ module.exports = {
             console.log(user)
             const userOrder = await orderSchema.find({ userId: userId }).sort({ date: -1 }).populate("products.productId").exec()
             console.log(userOrder)
-            if (userOrder.length === 0) {
-                console.log("2222222222222")
-                res.render('user/user-orderDetails', { user ,isOrder:true})
-            } else {
-                console.log('lksfjlskfj')
-                console.log(userOrder[0].products[0].productId)
 
-                res.render('user/user-orderDetails', { userOrder, user })
+            if(userOrder.length === 0){
+                res.render('user/user-orderEmpty',{user})
+                
+            }else{
+                res.render('user/user-orderDetails',{user,userOrder})
             }
-
-
+           
         } catch (error) {
             next(err)
         }

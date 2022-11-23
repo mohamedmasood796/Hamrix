@@ -332,7 +332,16 @@
             payment,
             order
           },
-          method: 'post'
+          method: 'post',
+          success:(response)=>{
+            if(response.status){
+              location.href='/order-confirmed'
+              console.log('payment success')
+            }else{
+              console.log('payment is failed')
+            }
+
+          }
         })
       }
     </script>

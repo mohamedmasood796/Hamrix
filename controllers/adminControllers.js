@@ -277,7 +277,7 @@ module.exports = {
                 } else {
                     console.log(result)
 
-                    res.render('admin/admin-alluser', { result })
+                    res.render('admin/admin-allUser', { result })
                 }
             });
 
