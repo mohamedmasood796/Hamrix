@@ -44,7 +44,7 @@ router.post('/user-otp',userControllers.getUserSiginupPage)
 router.post('/to-home',userControllers.otpToHome)
 
 //user show all product 
-router.get('/user-all-product',userControllers.getUserAllProduct)
+router.get('/user-all-product',varifySession.verifyLogin,userControllers.getUserAllProduct)
 
 //user cart page show 
 router.get('/userCart/:id/:quantity',varifySession.verifyLogin,userControllers.getUserCart)
