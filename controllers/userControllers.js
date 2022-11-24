@@ -56,7 +56,7 @@ module.exports = {
                                             count = 0
                                             wcount = 0
                                         }
-                                        
+
 
                                         //console.log('masood')
                                         //console.log(result)
@@ -361,60 +361,66 @@ module.exports = {
         const quantity = parseInt(req.params.quantity)
 
         try {
-            const findProduct = await product.findById(productId)
-            console.log(findProduct)
-            //console.log(user)
-            const userId = req.session.user._id
-            const price = findProduct.price
-            const name = findProduct.name
-
-            if (findProduct.quantity >= quantity) {
-                findProduct.quantity -= quantity
+            if (req.session.user) {
+                const findProduct = await product.findById(productId)
+                console.log(findProduct)
+                //console.log(user)
                 const userId = req.session.user._id
+                const price = findProduct.price
+                const name = findProduct.name
 
-                let cart = await cartSchema.findOne({ userId })
+                if (findProduct.quantity >= quantity) {
+                    findProduct.quantity -= quantity
+                    const userId = req.session.user._id
 
-                console.log(cart)
-                if (cart) {
-                    console.log("if cart")
+                    let cart = await cartSchema.findOne({ userId })
 
-                    //cart is exists for user
-                    let itemIndex = cart.products.findIndex(p => p.productId == productId)
-                    if (itemIndex > -1) {//product und
-                        console.log("399")
-                        let productItem = cart.products[itemIndex]
-                        productItem.quantity += quantity
+                    console.log(cart)
+                    if (cart) {
+                        console.log("if cart")
+
+                        //cart is exists for user
+                        let itemIndex = cart.products.findIndex(p => p.productId == productId)
+                        if (itemIndex > -1) {//product und
+                            console.log("399")
+                            let productItem = cart.products[itemIndex]
+                            productItem.quantity += quantity
+                        } else {
+                            //product does not exist in cart, add new item 
+                            console.log("404")
+                            cart.products.push({ productId, quantity, name, price })
+                            console.log('worked')
+                        }
+                        //product add chayyan
+                        cart.total = cart.products.reduce((acc, curr) => {
+                            console.log("409")
+                            return acc + curr.quantity * curr.price
+                        }, 0)
+                        console.log(cart.total)
+                        await cart.save()
+                        res.json({ status: true })
                     } else {
-                        //product does not exist in cart, add new item 
-                        console.log("404")
-                        cart.products.push({ productId, quantity, name, price })
-                        console.log('worked')
-                    }
-                    //product add chayyan
-                    cart.total = cart.products.reduce((acc, curr) => {
-                        console.log("409")
-                        return acc + curr.quantity * curr.price
-                    }, 0)
-                    console.log(cart.total)
-                    await cart.save()
-                    res.json({ status: true })
-                } else {
-                    const total = quantity * price
-                    cart = new cartSchema({
+                        const total = quantity * price
+                        cart = new cartSchema({
 
-                        userId: userId,
-                        products: [{ productId, quantity, name, price }],
-                        total: total
-                    })
-                    console.log("masood 422")
-                    await cart.save()
-                    res.json({ status: true })
+                            userId: userId,
+                            products: [{ productId, quantity, name, price }],
+                            total: total
+                        })
+                        console.log("masood 422")
+                        await cart.save()
+                        res.json({ status: true })
+
+                    }
+
+                } else {
 
                 }
 
             } else {
-
+                res.json({ status: false })
             }
+
         } catch (error) {
             next(err)
 
@@ -757,6 +763,7 @@ module.exports = {
     getSuccessPage: async (req, res, next) => {
         try {
             orderId = req.session.orderId
+            
             console.log("hw00000000000000000000000000000000")
             const newOder = await orderSchema.findOne({ _id: orderId })
             res.render('user/user-orderConform', { newOder })
@@ -783,7 +790,7 @@ module.exports = {
                 console.log('payment seccess')
                 orderId = req.session.orderId
                 await orderSchema.findByIdAndUpdate(orderId, { status: 'placed' })
-                res.json({status:true})
+                res.json({ status: true })
                 // const changeStatus = await orderSchema.findOne({ _id: orderId })
                 // cancelOrder.status = "cancelled"
                 // await cancelOrder.save()
@@ -811,13 +818,13 @@ module.exports = {
             const userOrder = await orderSchema.find({ userId: userId }).sort({ date: -1 }).populate("products.productId").exec()
             console.log(userOrder)
 
-            if(userOrder.length === 0){
-                res.render('user/user-orderEmpty',{user})
-                
-            }else{
-                res.render('user/user-orderDetails',{user,userOrder})
+            if (userOrder.length === 0) {
+                res.render('user/user-orderEmpty', { user })
+
+            } else {
+                res.render('user/user-orderDetails', { user, userOrder })
             }
-           
+
         } catch (error) {
             next(err)
         }
@@ -858,8 +865,14 @@ module.exports = {
 
                         let discount = coupons.discount
 
+                        let maxlimit = coupons.maxlimit
+
                         let discountPrice = ((userCart.total / 100) * discount)
                         discountPrice = Math.round(discountPrice)
+
+                        if (discountPrice > maxlimit) {
+                            discountPrice= coupons.maxlimit
+                        } 
 
                         totalamount = (userCart.total) - (discountPrice)
                         userCart.total = totalamount

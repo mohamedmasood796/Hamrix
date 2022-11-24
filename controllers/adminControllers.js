@@ -632,13 +632,14 @@ module.exports = {
 
     getAddCoupon: async (req, res, next) => {
         try {
-            let { name, couponCode, discount, expDate } = req.body
+            let { name, couponCode, discount, expDate ,maxlimit } = req.body
 
             const coupon = new couponSchema({
                 name,
                 couponCode,
                 discount,
                 expDate,
+                maxlimit,
                 isActive: true
 
             })

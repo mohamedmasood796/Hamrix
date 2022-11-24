@@ -17,6 +17,9 @@
                                 <label for=""> Discount</label>
                                 <input type="text" name="discount" class="form-control" required><br>
 
+                                <label for=""> max limit</label>
+                                <input type="text" name="maxlimit" class="form-control" required><br>
+
                                 <label for=""> Date</label>
                                 <input type="date" name="expDate" class="form-control" required><br>
 
@@ -38,6 +41,7 @@
                                         <th scope="col">Name</th>
                                         <th scope="col">coupon Name</th>
                                         <th scope="col">Discount</th>
+                                        <th scope="col">maxlimit</th>
                                         <th scope="col">Date</th>
 
                                     </tr>
@@ -61,6 +65,10 @@
 
                                             <th>
                                                 <%= coupon.discount %> %
+                                            </th>
+
+                                            <th>
+                                                <%= coupon.maxlimit %> 
                                             </th>
 
                                             <th>
